@@ -39,11 +39,7 @@
             <artifactId>jackson-mapper-asl</artifactId>
             <version>1.5.3</version>
         </dependency>
-        <dependency>
-            <groupId>org.hsqldb</groupId>
-            <artifactId>hsqldb</artifactId>
-            <version>2.0.0</version>
-        </dependency>
+
             <dependency>
                 <groupId>postgresql</groupId>
                 <artifactId>postgresql</artifactId>
@@ -62,7 +58,7 @@
         </dependency>
     </dependencies>
     <build>
-        <finalName>todoapp</finalName>
+        <finalName>DiCon</finalName>
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -84,7 +80,7 @@
 
                     <url>http://localhost:8080/manager/html</url>
                     <server>tomcat7</server>
-                    <path>/DiCon</path>
+                    <path>/</path>
                 </configuration>
             </plugin>
         </plugins>

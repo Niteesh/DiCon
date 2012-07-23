@@ -30,7 +30,6 @@
     <orderEntry type="library" name="Maven: asm:asm:3.3.1" level="project" />
     <orderEntry type="library" name="Maven: org.codehaus.jackson:jackson-mapper-asl:1.5.3" level="project" />
     <orderEntry type="library" name="Maven: org.codehaus.jackson:jackson-core-asl:1.5.3" level="project" />
-    <orderEntry type="library" name="Maven: org.hsqldb:hsqldb:2.0.0" level="project" />
     <orderEntry type="library" name="Maven: postgresql:postgresql:8.4-701.jdbc4" level="project" />
     <orderEntry type="library" name="Maven: javax.servlet:jstl:1.2" level="project" />
     <orderEntry type="library" name="Maven: javax.servlet:servlet-api:2.5" level="project" />
