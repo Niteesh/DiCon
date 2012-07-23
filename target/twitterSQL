@@ -1,0 +1,34 @@
+﻿CREATE SEQUENCE serial START 101;
+
+CREATE TABLE public.user 
+(uid integer  NOT NULL DEFAULT nextval('serial') PRIMARY KEY ,
+email varchar(30) NOT NULL UNIQUE,
+password CHAR(128));
+
+CREATE TABLE public.userData
+( uid integer NOT NULL REFERENCES public.user(uid),
+fullName varchar(60) NOT NULL,
+dob date,
+phone varchar(13),
+pic varchar(256)
+); 
+
+CREATE TABLE public.followes
+(
+uid integer references public.user(uid),
+followuid integer references public.user(uid),
+startDate date,
+stopdate date
+);
+
+
+CREATE TABLE public.tweets
+(
+uid integer references public.user(uid),
+tweet varchar(400),
+timestamp TIMESTAMP WITH TIME ZONE
+);
+
+
+CREATE INDEX tweetIndex ON public.tweets (uid);
+

@@ -1,0 +1,9 @@
+<li id="todoItem<%=id%>">
+  <span id="itemName<%=name%>"><%=name%></span> |
+  <a class="todoDelete" href="javascript: void(0);">delete</a> |
+  <form class="todoUpdate" style="display:inline;" action="/todo/update" onsubmit="; return false;">
+    <input type="hidden" name="id" value="<%=id%>"/>
+    <input id="updateItemName<%=id%>" type="text" name="name" value="<%=name%>"/>
+    <input type="submit" value="Save Changes"/>
+  </form>
+</li>

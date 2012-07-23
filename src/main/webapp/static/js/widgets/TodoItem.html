@@ -1,0 +1,10 @@
+<li>
+  <span id="itemName${itemID}">${name}</span> |
+  <a href="javascript: void(0);" dojoAttachEvent="click: deleteItem">delete</a> |
+  <form style="display:inline;" action="/todo/update" dojoAttachEvent="submit: updateItem"
+        onsubmit="; return false;">
+    <input type="hidden" name="id" value="${itemID}"/>
+    <input id="updateItemName${itemID}" type="text" name="name" value="${name}"/>
+    <input type="submit" value="Save Changes"/>
+  </form>
+</li>
