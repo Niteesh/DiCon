@@ -22,6 +22,8 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws Exception {
 
+        if(request.getRequestURI().equals("/")||request.getRequestURI().equals("/sign_in")||request.getRequestURI().equals("/sign_up"))
+            return true;
         HttpSession session = request.getSession(false);
         if (session != null) {
             String email = (String) session.getAttribute("email");

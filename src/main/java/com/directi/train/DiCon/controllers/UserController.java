@@ -5,12 +5,14 @@ import com.directi.train.DiCon.services.TwitterUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpSession;
+import java.util.Map;
 
 @Controller
 public class UserController {
@@ -36,6 +38,7 @@ public class UserController {
 
         ModelAndView mv = new ModelAndView("home");
         mv.addObject("current_user_fullname",session.getAttribute("userID"));
+        mv.addObject("current_user_id",session.getAttribute("userID"));
         return mv;
 
     }
@@ -45,6 +48,18 @@ public class UserController {
         return "index";
     }
 
+    @RequestMapping(value="/{userID}", method=RequestMethod.GET)
+    public ModelAndView profilePage(@PathVariable("userID") Integer userID){
+       ModelAndView mv = new ModelAndView("profile");
+       mv.addObject("user_id",userID);
+        Map<String,Object> userDetails = dao.getDetails(userID);
+
+        mv.addObject("profile_name", userDetails.get("fullname"));
+        mv.addObject("profile_phone", userDetails.get("phone"));
+
+        return mv;
+
+    }
     @RequestMapping(value = "/sign_in", method = RequestMethod.POST)
     public ModelAndView login(@RequestParam("email") String email,
                               @RequestParam("password") String password,
@@ -69,7 +84,7 @@ public class UserController {
         return mv;
     }
 
-    @RequestMapping(value = "/user/logout")
+    @RequestMapping(value = "/logout")
     public String logout(HttpSession session) {
         session.invalidate();
         return "redirect:/";

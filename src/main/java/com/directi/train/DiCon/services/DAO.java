@@ -31,33 +31,42 @@ public class DAO {
     }
 
     public List<Map<String,Object>> getFollowersList(int user_id){
-        return db.queryForList("SELECT user_id_1 FROM twitter.follows WHERE user_id_2 = ? AND stop_time=null;", user_id);
+        return db.queryForList("SELECT user_id_1 FROM twitter.follows WHERE followuid = ? AND stoptime IS null;", user_id);
+    }
+
+    public Integer getFollowerCout(int user_id){
+        return db.queryForInt("select count(1) from twitter.follows WHERE followuid = ? and stoptime IS NULL;",user_id)   ;
     }
 
     public List<Map<String, Object>> getFollowingList(int user_id){
-        return db.queryForList("SELECT user_id_2 FROM twitter.follows WHERE user_id_1 = ? AND stop_time=null;",user_id);
+        return db.queryForList("SELECT user_id_2 FROM twitter.follows WHERE uid = ? AND stoptime=null;",user_id);
     }
+    public Integer getFollowingCout(int user_id){
+        return db.queryForInt("select count(1) from twitter.follows WHERE uid = ? and stoptime IS NULL;",user_id)   ;
+    }
+
 
     public List<Map<String,Object>> getPostsByUser(int user_id){
         return db.queryForList("SELECT text,timestamp FROM twitter.tweets WHERE user_id = ? ORDER BY timestamp DESC;",user_id);
     }
 
     public List<Map<String,Object>> getNewsFeed(int user_id){
-        return db.queryForList("SELECT F.user_id_2,T.text,T.timestamp FROM twitter.tweets T INNER JOIN twitter.follows F ON T.user_id = F.user_id_2 AND (T.timestamp BETWEEN F.start_time AND F.stop_time) WHERE F.user_id_1 = ? ORDER BY T.timestamp DESC;",user_id);
+        return db.queryForList("SELECT F.user_id_2,T.text,T.timestamp FROM twitter.tweets T INNER JOIN twitter.follows F ON T.user_id = F.followuid AND (T.timestamp BETWEEN F.starttime AND F.stoptime) WHERE F.uid = ? ORDER BY T.timestamp DESC;",user_id);
     }
 
     public int newUser(String email, String password, String lastname, String dob, String phone,String dp_url){
         int user_id = db.queryForInt("SELECT MAX(user_id) FROM twitter.login;") + 1;
+
         return db.update("INSERT into twitter.login VALUES(?,?,MD5(?));",user_id,email,password)
                 & db.update("INSERT into twitter.details VALUES(?,?,?,?,?);",user_id,dob,lastname,phone,dp_url);
     }
 
     public int follow(int user_id_1,int user_id_2){
-        return db.update("INSERT INTO twitter.follows(user_id_1,user_id_2,start_time,stop_time) VALUES(?,?,now(),null);",user_id_1,user_id_2);
+        return db.update("INSERT INTO twitter.follows(uid,followuid,starttime,stoptime) VALUES(?,?,now(),null);",user_id_1,user_id_2);
     }
 
     public int unFollow(int user_id_1,int user_id_2){
-        return db.update("UPDATE twitter.follows SET stop_time = now() WHERE user_id_1 = ? AND user_id_2 = ?;",user_id_1,user_id_2);
+        return db.update("UPDATE twitter.follows SET stoptime = now() WHERE uid = ? AND followuid = ?;",user_id_1,user_id_2);
     }
 
     public int newTweet(int user_id,String text){

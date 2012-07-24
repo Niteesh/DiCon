@@ -215,83 +215,13 @@
 
             <div class="pull-right">
               <div class="well topbar-tweet-btn">
-                <button original-title="Compose new Tweet" id="global-new-tweet-button" type="button" class="btn btn-tweet js-global-new-tweet js-hover js-tooltip" data-placement="bottom" data-component-term="new_tweet_button">
-                  <i class="nav-tweet"></i>
-                </button>
-              </div>
-              <i class="topbar-divider"></i>
-
-              <ul class="nav">
-                <li class="me dropdown session js-session" data-global-action="t1me" id="user-dropdown">
-                <a class="dropdown-toggle js-dropdown-toggle js-hover" href="#" id="user-dropdown-toggle">
-                  <span class="new-wrapper"><i class="nav-me"><span class="hidden-elements">Settings and help</span></i><i class="nav-new"></i></span> <span class="caret"></span>
-                </a>
-                <ul class="dropdown-menu">
-              <li class="dropdown-caret">
-                <span class="caret-outer"></span>
-                <span class="caret-inner"></span>
-              </li>
-
-              <li class="current-user" data-name="profile">
-                <a href="https://twitter.com/niteesh3k" class="account-summary account-summary-small" data-nav="profile">
-    	<div class="content">
-    	  <div class="account-group js-mini-current-user" data-user-id="612622708" data-screen-name="niteesh3k">
-    	    <img class="avatar size32" src="DiCon_Home_Files/Niteesh_Kumar_normal.png" alt="niteesh kumar" data-user-id="612622708">
-    	    <b class="fullname">niteesh kumar</b>
-    	    <small class="metadata">View my profile page</small>
-    	  </div>
-    	</div>
-    </a>
-  </li>
-
-
-                <li class="dropdown-divider"></li>
-                <li class="messages" data-name="messages">
-                  <a class="js-dm-dialog" href="https://twitter.com/#%21/" data-nav="messages">
-                    <span class="js-direct-message-count count"></span>
-                    Direct messages
-                  </a>
-                </li>
-                <li data-name="lists"><a href="https://twitter.com/niteesh3k/lists" data-nav="all_lists">Lists</a></li>
-                <li class="dropdown-divider"></li>
-
-
-              <li><a href="https://support.twitter.com/" data-nav="help_center">Help</a></li>
-
-
+              <ul class="nav js-global-actions" >
                 <li>
-                  <a href="#" class="js-keyboard-shortcut-trigger" data-nav="shortcuts">
-                    Keyboard shortcuts
-                  </a>
+                <a href="/logout" class="js-hover">Logout</a>
                 </li>
+                </ul>
+              </div>
 
-
-
-
-
-
-
-
-              <li class="dropdown-divider"></li>
-
-
-
-                  <li><a href="https://twitter.com/settings/account" data-nav="settings">Settings</a></li>
-
-
-
-              <li>
-                <a class="js-signout-button" id="signout-button" href="#" data-nav="logout">Sign out</a>
-                <form class="dropdown-link-form signout-form" id="signout-form" action="/logout" method="POST">
-                  <input value="ee512842f7fde4a344c9fd1b474546d89bcd3a44" name="authenticity_token" class="authenticity_token" type="hidden">
-                  <input name="reliability_event" class="js-reliability-event" type="hidden">
-                  <input name="scribe_log" type="hidden">
-                </form>
-              </li>
-
-            </ul>
-            </li>
-              </ul>
 
               <i class="topbar-divider"></i>
               <form class="form-search js-search-form has-saved-searches" action="/search" id="global-nav-search">
@@ -336,7 +266,7 @@
               <div class="dashboard"><div data-component-term="promptbird_dashboard_placeholder" id="js-promptbird-dashboard-narrow-hook" class="component"></div><div data-component-term="mini_home_profile" class="module mini-profile component">
 
   <div class="flex-module profile-summary js-profile-summary">
-  <a href="https://twitter.com/niteesh3k" class="account-summary account-summary-small" data-nav="profile">
+  <a href="/${current_user_id}" class="account-summary account-summary-small" data-nav="profile">
 	<div class="content">
 	  <div class="account-group js-mini-current-user" data-user-id="612622708" data-screen-name="niteesh3k">
 	    <img class="avatar size32" src="DiCon_Home_Files/Niteesh_Kumar_normal.png" alt="niteesh kumar" data-user-id="612622708">
@@ -359,7 +289,7 @@
 
 <div class="tweet-box tweet-user"><div class="tweet-box condensed">
   <div class="text-area">
-    <div class="text-area-editor twttr-editor"><textarea style="width: 258px; height: 75px; overflow: hidden;" class="twitter-anywhere-tweet-box-editor">Compose new Tweet...</textarea><ul style="width: 274px; top: 31px; left: 0px; visibility: hidden;" class="autocomplete-container"></ul><div style="display: none; font-family: &quot;Helvetica Neue&quot;,Arial,sans-serif; font-size: 13px; font-weight: 400; line-height: 18px; padding: 6px 8px 5px; white-space: pre-wrap; width: 258px; word-wrap: break-word;"></div></div>
+    <div class="text-area-editor twttr-editor"><textarea style="width: 258px; height: 75px; overflow: hidden;" class="twitter-anywhere-tweet-box-editor" id="new-tweet-box">Compose new Tweet...</textarea><ul style="width: 274px; top: 31px; left: 0px; visibility: hidden;" class="autocomplete-container"></ul><div style="display: none; font-family: &quot;Helvetica Neue&quot;,Arial,sans-serif; font-size: 13px; font-weight: 400; line-height: 18px; padding: 6px 8px 5px; white-space: pre-wrap; width: 258px; word-wrap: break-word;"></div></div>
   </div>
   <div class="tweet-button-container"><div class="turkey-control">
   <div class="turkey-add-action">
@@ -531,6 +461,17 @@
         <span class="spinner" title="Loading..."></span>
     </div>
 </div>
+   <script type = "text/javascript" >
+           $(document).ready(function () {
 
+             $("#moretab").mouseenter(function(){
+               $("#categories").show();
+             });
+
+             $("#categories, #moretab").mouseleave(function(){
+               $("#categories").hide();
+             });
+           });
+   </script>
 
 </body></html>
