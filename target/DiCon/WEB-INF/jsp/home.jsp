@@ -18,6 +18,85 @@
       <link rel="canonical" href="https://twitter.com/">
 
 
+<script src="//ajax.googleapis.com/ajax/libs/dojo/1.7.2/dojo/dojo.js" data-dojo-config="async: true"></script>
+<script type="text/javascript" src ='${pageContext.request.contextPath}/static/js/ejs_production.js'></script>
+<script type="text/javascript">
+require(["dojo/on", "dojo/dom", "dojo/query", "dojo/NodeList-dom", "dojo/domReady!"], function(on, dom, query) {
+
+on(dom.byId("new-tweet-textarea"), "blur", function() {
+dom.byId("new-tweet-textarea").innerHTML = "Compose new Tweet...";
+//query(".tweet-button-container")[0].style.display="none";
+});
+
+on(dom.byId("new-tweet-textarea"), "focus", function() {
+dom.byId("new-tweet-textarea").innerHTML = "";
+query(".tweet-button-container")[0].style.display = "block";
+});
+query("#tweet-button").removeClass("disabled");
+});
+
+
+require(["dojo/_base/xhr", "dojo/on", "dojo/dom", "dojo/NodeList-dom", "dojo/domReady!"],
+        function(xhr, on, dom) {
+
+        on(dom.byId("tweet-button"), "click", function() {
+        xhr.post({
+        url: "${current_user_id}/tweets/new",
+        handleAs: "json",
+        content: {
+        tweet_text : dom.byId("new-tweet-textarea").value.replace("\n", " ")
+        },
+        load: function(response) {
+        console.log("Successfully tweeted : " + response["tweet_text"]);
+        },
+        handle: function() {
+        dom.byId("new-tweet-textarea").value = "";
+        }
+        });
+        });
+        });
+
+</script>
+
+
+<script type="text/javascript">
+
+
+        var latest_feed_id = 0;
+        refreshFeed();
+        setInterval(refreshFeed, 5000);
+        function refreshFeed() {
+        require(["dojo/_base/xhr", "dojo/dom", "dojo/dom-construct", "dojo/_base/array", "dojo/NodeList-dom", "dojo/domReady!"],
+        function(xhr, dom, domConstruct) {
+
+        xhr.get({
+        url: "${current_user_id}/newsfeed",
+        handleAs: "json",
+        headers: { "Accept": "application/json"},
+        content: {
+        latest_feed_id : latest_feed_id
+        },
+        load: function(response) {
+        for (var i in response) {
+        var newFeed = new EJS({url: '${pageContext.request.contextPath}/static/ejs/tweet.ejs'}).render(response[i]);
+        domConstruct.place(newFeed, dom.byId("stream-list"), "first");
+        latest_feed_id = response[i]["tweet_id"];
+        }
+        console.log("new feeds = " + response.length);
+
+        },
+        error: function() {
+        console.log("Error fetching json.");
+        },
+        handle: function() {
+
+        }
+        });
+
+        });
+        }
+        </script>
+
 
         <style id="user-style-niteesh3k" class="js-user-style">
 
@@ -289,9 +368,9 @@
 
 <div class="tweet-box tweet-user"><div class="tweet-box condensed">
   <div class="text-area">
-    <div class="text-area-editor twttr-editor"><textarea style="width: 258px; height: 75px; overflow: hidden;" class="twitter-anywhere-tweet-box-editor" id="new-tweet-box">Compose new Tweet...</textarea><ul style="width: 274px; top: 31px; left: 0px; visibility: hidden;" class="autocomplete-container"></ul><div style="display: none; font-family: &quot;Helvetica Neue&quot;,Arial,sans-serif; font-size: 13px; font-weight: 400; line-height: 18px; padding: 6px 8px 5px; white-space: pre-wrap; width: 258px; word-wrap: break-word;"></div></div>
+    <div class="text-area-editor twttr-editor"><textarea style="width: 258px; height: 75px; overflow: hidden;" id="new-tweet-textarea" class="twitter-anywhere-tweet-box-editor" id="new-tweet-box">Compose new Tweet...</textarea><ul style="width: 274px; top: 31px; left: 0px; visibility: hidden;" class="autocomplete-container"></ul><div style="display: none; font-family: &quot;Helvetica Neue&quot;,Arial,sans-serif; font-size: 13px; font-weight: 400; line-height: 18px; padding: 6px 8px 5px; white-space: pre-wrap; width: 258px; word-wrap: break-word;"></div></div>
   </div>
-  <div class="tweet-button-container"><div class="turkey-control">
+  <div class="tweet-button-container" id="tweet-button"><div class="turkey-control">
   <div class="turkey-add-action">
     <div class="turkey"></div>
     <div class="swf"></div>
@@ -307,7 +386,7 @@
 </span>    <div class="tweet-button-sub-container">
       <img src="DiCon_Home_Files/spinner.gif" class="tweet-spinner" style="display: none;">
       <span style="opacity: 0;" class="tweetbox-counter-tipsy"></span><input class="tweet-counter" value="120" disabled="disabled">
-      <a href="#" class="tweet-button btn disabled">Tweet</a>    </div>
+      <a href="#" class="tweet-button btn enabled">Tweet</a>    </div>
   </div>
 </div></div></div><div data-component-term="japanese_ad" style="display: none;" class="component"></div><div data-component-term="user_recommendations" class="component"><div class="module wtf-module js-wtf-module has-content">
 
@@ -404,6 +483,8 @@
 
   <div class="stream js-stream-manager-container">
 <div class="stream-manager js-stream-manager-container" id="home-stream-manager">
+<ul id="stream-list">
+</ul>
 <div class="stream-title"></div>
 <div class="stream-container">
 <div media="true" data-component-term="stream" class="stream home-stream">

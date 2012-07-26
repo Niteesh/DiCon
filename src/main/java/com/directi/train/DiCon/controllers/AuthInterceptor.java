@@ -22,9 +22,14 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws Exception {
 
-        if(request.getRequestURI().equals("/")||request.getRequestURI().equals("/sign_in")||request.getRequestURI().equals("/sign_up"))
-            return true;
         HttpSession session = request.getSession(false);
+        if(request.getRequestURI().equals("/")||request.getRequestURI().equals("/sign_in")||request.getRequestURI().equals("/sign_up")){
+//            if(session!=null){
+//                response.sendRedirect("home");
+//                return false;
+//            }
+            return true;
+        }
         if (session != null) {
             String email = (String) session.getAttribute("email");
             if (email != null) {

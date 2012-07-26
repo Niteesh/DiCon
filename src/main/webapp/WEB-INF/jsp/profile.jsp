@@ -20,10 +20,50 @@
           <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/t1_core.css" type="text/css" media="screen">
     
         <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/t1_more.css" type="text/css" media="screen">
-        <script type="text/javascript" src ='${pageContext.request.contextPath}/static/js/ejs_production'></script>
-        <script type="text/javascript" src ='${pageContext.request.contextPath}/static/js/dojo/dojo.js'></script>
+        <script type="text/javascript" src ='${pageContext.request.contextPath}/static/js/ejs_production.js'></script>
+        <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/dojo/1.7.2/dojo/dojo.js" data-dojo-config="async: true"></script>
         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
-        
+
+
+        <script type="text/javascript">
+
+
+        var latest_tweet_id = 0;
+        refreshTweets();
+        setInterval(refreshTweets, 5000);
+        function refreshTweets() {
+        require(["dojo/_base/xhr", "dojo/dom", "dojo/dom-construct", "dojo/_base/array", "dojo/NodeList-dom", "dojo/domReady!"],
+        function(xhr, dom, domConstruct) {
+
+        xhr.get({
+        url: "${user_id}/tweets/fetch",
+        handleAs: "json",
+        headers: { "Accept": "application/json"},
+        content: {
+        latest_tweet_id : latest_tweet_id
+        },
+        load: function(response) {
+        for (var i in response) {
+        var newTweet = new EJS({url: '${pageContext.request.contextPath}/static/ejs/tweet.ejs'}).render(response[i]);
+        domConstruct.place(newTweet, dom.byId("stream-list"), "first");
+        latest_tweet_id = response[i]["tweet_id"];
+        }
+        console.log("new tweets = " + response.length);
+
+        },
+        error: function() {
+        console.log("Error fetching json.");
+        },
+        handle: function() {
+
+        }
+        });
+
+        });
+        }
+        </script>
+
+
     <style id="user-style-${user_id}" class="js-user-style">
     
     a,
@@ -168,32 +208,6 @@
     
     <script>(function(){function f(a){a=a||window.event;if(!a)return;!a.target&&a.srcElement&&(a.target=a.srcElement);if(!j(a))return;if(!document.addEventListener){var b={};for(var c in a)b[c]=a[c];a=b}return a.preventDefault=a.stopPropagation=function(){},d.push(a),!1}function g($){i();for(var b=0,c;c=d[b];b++){var e=$(c.target);if(c.type=="click"&&c.target.tagName.toLowerCase()=="a"){var f=$.data(e.get(0),"events"),g=f&&f.click,j=!c.target.hostname.match(a)||!c.target.href.match(/#$/);if(!g&&j){window.location=c.target.href;continue}}e.trigger(c)}window.swiftActionQueue.wasFlushed=!0}function i(){e&&clearTimeout(e);for(var a=0;a<c.length;a++)document["on"+c[a]]=null}function j(c){var d=c.target.tagName.toLowerCase();if(d=="label")if(c.target.getAttribute("for")){var e=document.getElementById(c.target.getAttribute("for"));if(e.getAttribute("type")=="checkbox")return!1}else for(var f=0;f<c.target.childNodes.length;f++)if((c.target.childNodes[f].tagName||"").toLowerCase()=="input"&&c.target.childNodes[f].getAttribute("type")=="checkbox")return!1;if(d=="textarea"||d=="input"&&c.target.getAttribute("type")=="text")if(c.type.match(b))return!1;return c.metaKey?!1:c.clientX&&c.shiftKey&&d=="a"?!1:c.target&&c.target.hostname&&!c.target.hostname.match(a)?!1:!0}var a=/^([^\.]+\.)*twitter.com$/,b=/^key/,c=["click","keydown","keypress","keyup"],d=[],e=null;for(var k=0;k<c.length;k++)document["on"+c[k]]=f;setTimeout(i,1e4),window.swiftActionQueue={flush:g,wasFlushed:!1}})();</script>  </head>
 
-  <script type = "text/javascript">
-
-                require(["dojo/_base/xhr", "dojo/domReady!"],
-                    function(xhr) {
-
-                        // Execute a HTTP GET request
-                        xhr.get({
-                            // The URL to request
-                            url: "/tweets",
-                            handleAs: "json",
-                            // The method that handles the request's successful result
-                            // Handle the response any way you'd like!
-                            load: function(result) {
-                                alert("The message is: " + result);
-                            }
-                        });
-
-                });
-
-
-               function appendTweet(data) {
-               console.log("entered appendtweet function");
-                          var todoItemDiv = $(new EJS({url: '${pageContext.request.contextPath}/static/ejs/tweets.ejs'}).render(data));
-                          $('#timeline').append(tweetItemDiv);
-                      }
-  </script>
   <body class="t1 logged-in user-style-${user_id}">
     <div id="doc" class="route-profile">
         <div class="push-loader" id="pushStateSpinner"></div>
@@ -665,15 +679,8 @@
         </h2>
       </div>
     </div>
-    <c:forEach var = 'tweet' items= '${tweetList}'>
-    <script type="text/javascript">
-
-            appendTweet(${tweet}) ;
-        </script>
-    </c:forEach>
-          </div>
-        </div>
-    </div>
+    <ul id="stream-list">
+    </ul>
 
     
     <div class="modal-overlay"></div>
