@@ -280,11 +280,11 @@
    <li><a href="https://twitter.com/niteesh3k" data-element-term="tweet_stats" data-nav="profile">
 
 
-        <strong>0</strong> Tweets
+        <strong>${home_tweetCount}</strong> Tweets
 
     </a></li>
-    <li><a href="https://twitter.com/#%21/following" data-element-term="following_stats" data-nav="following"><strong>15</strong> Following</a></li>
-    <li><a href="https://twitter.com/#%21/followers" data-element-term="follower_stats" data-nav="followers"><strong>0</strong> Followers</a></li>
+    <li><a href="https://twitter.com/#%21/following" data-element-term="following_stats" data-nav="following"><strong>${home_followingCount}</strong> Following</a></li>
+    <li><a href="https://twitter.com/#%21/followers" data-element-term="follower_stats" data-nav="followers"><strong>${home_followerCount}</strong> Followers</a></li>
 </ul></div>
 
 <div class="tweet-box tweet-user"><div class="tweet-box condensed">

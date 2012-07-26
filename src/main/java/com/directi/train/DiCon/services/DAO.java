@@ -31,27 +31,27 @@ public class DAO {
     }
 
     public List<Map<String,Object>> getFollowersList(int user_id){
-        return db.queryForList("SELECT user_id_1 FROM twitter.follows WHERE followuid = ? AND stoptime IS null;", user_id);
+        return db.queryForList("SELECT user_id_1 FROM twitter.follows WHERE followuid = ? AND stopdate IS null;", user_id);
     }
 
     public Integer getFollowerCout(int user_id){
-        return db.queryForInt("select count(1) from twitter.follows WHERE followuid = ? and stoptime IS NULL;",user_id)   ;
+        return db.queryForInt("select count(1) from twitter.follows WHERE followuid = ? and stopdate IS NULL;",user_id)   ;
     }
 
     public List<Map<String, Object>> getFollowingList(int user_id){
-        return db.queryForList("SELECT user_id_2 FROM twitter.follows WHERE uid = ? AND stoptime=null;",user_id);
+        return db.queryForList("SELECT user_id_2 FROM twitter.follows WHERE uid = ? AND stopdate=null;",user_id);
     }
     public Integer getFollowingCout(int user_id){
-        return db.queryForInt("select count(1) from twitter.follows WHERE uid = ? and stoptime IS NULL;",user_id)   ;
+        return db.queryForInt("select count(1) from twitter.follows WHERE uid = ? and stopdate IS NULL;",user_id)   ;
     }
 
 
     public List<Map<String,Object>> getPostsByUser(int user_id){
-        return db.queryForList("SELECT text,timestamp FROM twitter.tweets WHERE user_id = ? ORDER BY timestamp DESC;",user_id);
+        return db.queryForList("SELECT tweet,timestamp FROM twitter.tweets WHERE user_id = ? ORDER BY timestamp DESC;",user_id);
     }
 
     public List<Map<String,Object>> getNewsFeed(int user_id){
-        return db.queryForList("SELECT F.user_id_2,T.text,T.timestamp FROM twitter.tweets T INNER JOIN twitter.follows F ON T.user_id = F.followuid AND (T.timestamp BETWEEN F.starttime AND F.stoptime) WHERE F.uid = ? ORDER BY T.timestamp DESC;",user_id);
+        return db.queryForList("SELECT F.followuid,T.tweet,T.timestamp FROM twitter.tweets T INNER JOIN twitter.follows F ON T.user_id = F.followuid AND (T.timestamp BETWEEN F.startdate AND F.stopdate) WHERE F.uid = ? ORDER BY T.timestamp DESC;",user_id);
     }
 
     public int newUser(String email, String password, String lastname, String dob, String phone,String dp_url){
@@ -62,11 +62,11 @@ public class DAO {
     }
 
     public int follow(int user_id_1,int user_id_2){
-        return db.update("INSERT INTO twitter.follows(uid,followuid,starttime,stoptime) VALUES(?,?,now(),null);",user_id_1,user_id_2);
+        return db.update("INSERT INTO twitter.follows(uid,followuid,startdate,stopdate) VALUES(?,?,now(),null);",user_id_1,user_id_2);
     }
 
     public int unFollow(int user_id_1,int user_id_2){
-        return db.update("UPDATE twitter.follows SET stoptime = now() WHERE uid = ? AND followuid = ?;",user_id_1,user_id_2);
+        return db.update("UPDATE twitter.follows SET stopdate = now() WHERE uid = ? AND followuid = ?;",user_id_1,user_id_2);
     }
 
     public int newTweet(int user_id,String text){
@@ -91,5 +91,17 @@ public class DAO {
 
     public Map<String, Object> getLoginDetails(String email, String password) {
         return db.queryForMap("SELECT * from twitter.login WHERE email = ?",email);
+    }
+
+    public int getTweetCount(Integer userID) {
+
+        return db.queryForInt("select count(1) from twitter.tweets where user_id = ?", userID);
+    }
+
+    public String getUsersStatus(Integer profileUserID, Integer userID) {
+        int following = db.queryForInt("select count(1) from twitter.follows where uid = ? and followuid = ? ",profileUserID, userID )  ;
+        if (following > 0)
+            return "following";
+        return "follow";
     }
 }

@@ -1,4 +1,8 @@
 <!DOCTYPE html>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
+
 <html lang="en"><head>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <meta charset="utf-8">
@@ -16,7 +20,9 @@
           <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/t1_core.css" type="text/css" media="screen">
     
         <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/t1_more.css" type="text/css" media="screen">
-    
+        <script type="text/javascript" src ='${pageContext.request.contextPath}/static/js/ejs_production'></script>
+        <script type="text/javascript" src ='${pageContext.request.contextPath}/static/js/dojo/dojo.js'></script>
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
         
     <style id="user-style-${user_id}" class="js-user-style">
     
@@ -148,7 +154,7 @@
         background-color: #7a8282;
     }
     </style>
-    
+
     <style id="user-style-${user_id}-bg-img" class="js-user-style-bg-img">
       body.user-style-${user_id} {
               background-image: url(https://si0.twimg.com/profile_background_images/437788738/GRAZIA-SonamKapoor-2584.jpg);
@@ -161,6 +167,33 @@
     </script>
     
     <script>(function(){function f(a){a=a||window.event;if(!a)return;!a.target&&a.srcElement&&(a.target=a.srcElement);if(!j(a))return;if(!document.addEventListener){var b={};for(var c in a)b[c]=a[c];a=b}return a.preventDefault=a.stopPropagation=function(){},d.push(a),!1}function g($){i();for(var b=0,c;c=d[b];b++){var e=$(c.target);if(c.type=="click"&&c.target.tagName.toLowerCase()=="a"){var f=$.data(e.get(0),"events"),g=f&&f.click,j=!c.target.hostname.match(a)||!c.target.href.match(/#$/);if(!g&&j){window.location=c.target.href;continue}}e.trigger(c)}window.swiftActionQueue.wasFlushed=!0}function i(){e&&clearTimeout(e);for(var a=0;a<c.length;a++)document["on"+c[a]]=null}function j(c){var d=c.target.tagName.toLowerCase();if(d=="label")if(c.target.getAttribute("for")){var e=document.getElementById(c.target.getAttribute("for"));if(e.getAttribute("type")=="checkbox")return!1}else for(var f=0;f<c.target.childNodes.length;f++)if((c.target.childNodes[f].tagName||"").toLowerCase()=="input"&&c.target.childNodes[f].getAttribute("type")=="checkbox")return!1;if(d=="textarea"||d=="input"&&c.target.getAttribute("type")=="text")if(c.type.match(b))return!1;return c.metaKey?!1:c.clientX&&c.shiftKey&&d=="a"?!1:c.target&&c.target.hostname&&!c.target.hostname.match(a)?!1:!0}var a=/^([^\.]+\.)*twitter.com$/,b=/^key/,c=["click","keydown","keypress","keyup"],d=[],e=null;for(var k=0;k<c.length;k++)document["on"+c[k]]=f;setTimeout(i,1e4),window.swiftActionQueue={flush:g,wasFlushed:!1}})();</script>  </head>
+
+  <script type = "text/javascript">
+
+                require(["dojo/_base/xhr", "dojo/domReady!"],
+                    function(xhr) {
+
+                        // Execute a HTTP GET request
+                        xhr.get({
+                            // The URL to request
+                            url: "/tweets",
+                            handleAs: "json",
+                            // The method that handles the request's successful result
+                            // Handle the response any way you'd like!
+                            load: function(result) {
+                                alert("The message is: " + result);
+                            }
+                        });
+
+                });
+
+
+               function appendTweet(data) {
+               console.log("entered appendtweet function");
+                          var todoItemDiv = $(new EJS({url: '${pageContext.request.contextPath}/static/ejs/tweets.ejs'}).render(data));
+                          $('#timeline').append(tweetItemDiv);
+                      }
+  </script>
   <body class="t1 logged-in user-style-${user_id}">
     <div id="doc" class="route-profile">
         <div class="push-loader" id="pushStateSpinner"></div>
@@ -352,10 +385,10 @@
       </div>
       <div class="profile-card-actions">
           
-        <div class="user-actions btn-group following including" data-user-id="51376979" data-screen-name="${user_id}" data-name="${profile_name}" data-protected="false">
+        <div class="user-actions btn-group ${profile_status} including" data-user-id="51376979" data-screen-name="${user_id}" data-name="${profile_name}" data-protected="false">
         
             <button class="js-follow-btn follow-button btn" type="button">
-              <span class="button-text follow-text"><i class="follow"></i> Follow</span>
+              <span class="button-text follow-text">Follow</span>
               <span class="button-text following-text">Following</span>
               <span class="button-text unfollow-text">Unfollow</span>
               <span class="button-text blocked-text">Blocked</span>
@@ -370,10 +403,10 @@
            <li><a href="https://twitter.com/${user_id}" data-element-term="tweet_stats" data-nav="profile">
               
         
-        <strong>5,968</strong> Tweets
+        <strong>${profile_tweetCount}</strong> Tweets
           </a></li>
-            <li><a href="https://twitter.com/#%21/${user_id}/following" data-element-term="following_stats" data-nav="following"><strong>279</strong> Following</a></li>
-            <li><a href="https://twitter.com/#%21/${user_id}/followers" data-element-term="follower_stats" data-nav="followers"><strong>1,412,237</strong> Followers</a></li>
+            <li><a href="https://twitter.com/#%21/${user_id}/following" data-element-term="following_stats" data-nav="following"><strong>${profile_following}</strong> Following</a></li>
+            <li><a href="https://twitter.com/#%21/${user_id}/followers" data-element-term="follower_stats" data-nav="followers"><strong>${profile_follower}</strong> Followers</a></li>
         </ul>
     </div>
     </div>
@@ -627,201 +660,17 @@
     <div class="content-header">
       <div class="header-inner">
         <h2 class="js-timeline-title">Tweets
-            <small class="view-toggler"><a class="toggle-item-1 " href="https://twitter.com/${user_id}/with_replies">All</a> / <a class="toggle-item-2 active" href="https://twitter.com/${user_id}">No replies</a></small>
+            <small class="view-toggler"><a class="toggle-item-1 " href="https://twitter.com/${user_id}/with_replies">All</a> /
+            <a class="toggle-item-2 active" href="https://twitter.com/${user_id}">No replies</a></small>
         </h2>
       </div>
     </div>
-        <div class="stream-container" data-max-id="223670425790582784" data-since-id="227688930449965056">
-        <div class="stream profile-stream">
-          <div class="stream-items" id="stream-items-id"><div class="js-stream-item stream-item stream-item expanding-stream-item" data-item-id="227688930449965056" data-item-type="tweet" id="stream-item-tweet-227688930449965056">
-  
+    <c:forEach var = 'tweet' items= '${tweetList}'>
+    <script type="text/javascript">
 
-
-  
-
-  <div class="tweet original-tweet js-stream-tweet js-actionable-tweet js-hover js-profile-popup-actionable js-original-tweet  
-
-
-
-
- with-social-proof
-
-" data-tweet-id="227688930449965056" data-item-id="227688930449965056" data-screen-name="${user_id}" data-name="${profile_name}" data-user-id="51376979" data-is-reply-to="" data-expanded-footer="&lt;div class=&quot;js-tweet-details-fixer tweet-details-fixer&quot;&gt;
-    &lt;div class=&quot;js-tweet-media-container &quot;&gt;&lt;/div&gt;
-      &lt;div class=&quot;entities-media-container &quot; style=&quot;min-height:0px&quot;&gt;
-    &lt;/div&gt;
-  &lt;div class=&quot;js-machine-translated-tweet-container&quot;&gt;&lt;/div&gt;
-  &lt;div class=&quot;js-tweet-stats-container tweet-stats-container already-open&quot;&gt;
-  &lt;/div&gt;
-  
-    &lt;div class=&quot;geo-container tweet-geo-text&quot;&gt;
-    &lt;/div&gt;
-  &lt;div class=&quot;client-and-actions&quot;&gt;
-    &lt;span class=&quot;metadata&quot;&gt;
-      &lt;span title=&quot;1:57 AM - 24 Jul 12&quot;&gt;1:57 AM - 24 Jul 12&lt;/span&gt;
-
-       &lt;span class=&quot;tweet-source&quot;&gt;via &lt;a href=&quot;http://ubersocial.com&quot; rel=&quot;nofollow&quot;&gt;UberSocial for BlackBerry&lt;/a&gt;&lt;/span&gt;
-
-          &amp;middot; &lt;a class=&quot;permalink-link js-permalink&quot; href=&quot;/${user_id}/status/227688930449965056&quot; &gt;Details&lt;/a&gt;
-
-
-    &lt;/span&gt;
-  &lt;/div&gt;
-&lt;/div&gt;
-" data-mentions="">
-
-    
-    <i class="dogear"></i>
-
-    
-    <div class="content">
-
-      
-      <div class="stream-item-header">
-        <small class="time">
-            <a href="https://twitter.com/${user_id}/status/227688930449965056" class="tweet-timestamp js-permalink" title="1:57 AM - 24 Jul 12"><span class="_timestamp js-short-timestamp js-relative-timestamp" data-time="1343120245" data-long-form="true">55m</span></a>
-        </small>
-          <a class="account-group js-account-group js-action-profile js-user-profile-link" href="https://twitter.com/${user_id}" data-user-id="51376979">
-            <img class="avatar js-action-profile-avatar" src="${user_id}_files/image_normal.jpg" alt="${profile_name}">
-            <strong class="fullname js-action-profile-name show-popup-with-id">${profile_name}</strong>
-            <span>‏</span><span class="username js-action-profile-name"><s>@</s><b>${user_id}</b></span>
-          </a>
-              </div>
-
-      
-        <p class="js-tweet-text">
-              Ok I'm obsessed with cut the rope.
-                  </p>
-
-      
-      <div class="stream-item-footer">
-        
-        
-        
-        
-        
-        <div class="context">
-        </div>
-
-        
-        <a class="details with-icn js-details" href="https://twitter.com/${user_id}/status/227688930449965056">
-          <span class="details-icon js-icon-container">
-          </span>
-          <b>
-            <span class="expand-stream-item js-view-details">
-                
-                  <span class="expand-action-wrapper">
-                    Expand
-                  </span>
-            </span>
-            <span class="collapse-stream-item js-hide-details">
-                Collapse
-            </span>
-          </b>
-        </a>
-
-        
-        
-        
-        
-         <ul class="tweet-actions js-actions">
-          <li class="action-reply-container">
-            
-              <a class="with-icn js-action-reply" data-modal="tweet-reply" href="#" title="Reply">
-                <i class="sm-reply"></i>
-                <b>Reply</b>
-              </a>
-          </li>
-            <li class="action-rt-container">
-              <a class="with-icn js-toggle-rt" data-modal="tweet-retweet" href="#">
-                <i class="sm-rt"></i>
-                
-                
-                  <b><span class="undo-retweet" title="Undo retweet">Retweeted</span><span class="retweet" title="Retweet">Retweet</span></b>
-              </a>
-            </li>
-          <li class="action-del-container">
-            <a class="with-icn js-action-del" href="#" title="Delete">
-              <i class="sm-trash"></i>
-              <b>Delete</b>
-            </a>
-          </li>
-          <li class="action-fav-container">
-            <a class="with-icn js-toggle-fav" href="#">
-              <i class="sm-fav"></i>
-              
-              
-                <b><span class="unfavorite" title="Undo favorite">Favorited</span><span class="favorite" title="Favorite">Favorite</span></b>
-            </a>
-          </li>
-        </ul>      </div>
-
-      
-      <div class="expanded-content js-tweet-details-dropdown">
-      </div>
-    </div>
-  </div>
-
-
-</div>
-
-          <div class="stream-footer"><div class="timeline-end has-items has-more-items">
-  <div class="stream-end">
-    <div class="stream-end-inner">
-        <i class="bird-etched"></i>
-        <p class="empty-text">@${user_id} hasn't tweeted yet.</p>
-        <button style="display: inline;" type="button" class="btn-link back-to-top hidden">Back to top ↑</button>  </div>
-  </div>
-  <div class="stream-loading">
-    <div class="stream-end-inner">
-      <span class="spinner" title="Loading..."></span>
-    </div>
-  </div>
-</div></div>
-          <div class="stream-fail-container">
-            <div class="js-stream-whale-end stream-whale-end stream-placeholder centered-placeholder">
-          <div class="stream-end-inner">
-            <h2 class="title">Loading seems to be taking a while.</h2>
-            <p>
-              Twitter may be over capacity or experiencing a momentary hiccup. <a href="#" class="try-again-after-whale">Try again</a> or visit <a target="_blank" href="http://status.twitter.com/">Twitter Status</a> for more information.
-            </p>
-          </div>
-        </div>      </div>
-        </div>
-      </div>
-        <div id="sensitive_flag_dialog" class="modal-container">
-      <div class="close-modal-background-target"></div>
-      <div class="modal modal-small draggable">
-        <div class="modal-content">
-          <button class="modal-btn modal-close"><i class="close-medium"><span class="hidden-elements">Close</span></i></button>
-          <div class="modal-header">
-            <h3 class="modal-title">Flag this media</h3>
-          </div>
-          <div class="modal-body">
-            <p class="sensitive-title">This has already been marked as containing sensitive content.</p>
-    
-            <label class="checkbox" for="sensitive-settings-checkbox">
-              <input id="sensitive-settings-checkbox" value="settings" type="checkbox">
-              Change my settings to warn me before displaying media that may contain sensitive content.
-            </label>
-            <label class="checkbox" for="sensitive-illegal-checkbox">
-              <input id="sensitive-illegal-checkbox" value="illegal" type="checkbox">
-              Flag this as containing illegal content.
-            </label>
-          </div>
-          <div class="modal-footer">
-            <button id="submit_flag_confirmation" type="button" class="btn">Submit</button>
-            <button id="cancel_flag_confirmation" type="button" class="btn primary-btn">Cancel</button>
-    
-            <div class="sensitive-confirmation">
-              <a class="sensitive-learn-more" target="_blank" href="https://support.twitter.com/articles/20069937">Learn more about flagging media</a>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="modal-overlay"></div>
-    </div>
-    </div>
+            appendTweet(${tweet}) ;
+        </script>
+    </c:forEach>
           </div>
         </div>
     </div>

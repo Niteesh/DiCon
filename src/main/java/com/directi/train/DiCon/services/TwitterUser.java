@@ -70,7 +70,7 @@ public class TwitterUser {
     }
 
     public void removeUser(String email) {
-
+               //todo impliment this
     }
 
     public static boolean isValidEmail(String email){
