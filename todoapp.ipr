@@ -6,12 +6,12 @@
   <component name="ArtifactManager">
     <artifact type="war" name="todoapp:war">
       <output-path>$PROJECT_DIR$/target</output-path>
-      <root id="archive" name="todoapp.war">
+      <root id="archive" name="DiCon.war">
         <element id="artifact" artifact-name="todoapp:war exploded" />
       </root>
     </artifact>
     <artifact type="exploded-war" name="todoapp:war exploded">
-      <output-path>$PROJECT_DIR$/target/todoapp</output-path>
+      <output-path>$PROJECT_DIR$/target/DiCon</output-path>
       <root id="root">
         <element id="javaee-facet-resources" facet="todoapp/web/Web" />
         <element id="directory" name="WEB-INF">
@@ -39,7 +39,7 @@
             <element id="library" level="project" name="Maven: asm:asm:3.3.1" />
             <element id="library" level="project" name="Maven: org.codehaus.jackson:jackson-mapper-asl:1.5.3" />
             <element id="library" level="project" name="Maven: org.codehaus.jackson:jackson-core-asl:1.5.3" />
-            <element id="library" level="project" name="Maven: org.hsqldb:hsqldb:2.0.0" />
+            <element id="library" level="project" name="Maven: postgresql:postgresql:8.4-701.jdbc4" />
             <element id="library" level="project" name="Maven: javax.servlet:jstl:1.2" />
             <element id="library" level="project" name="Maven: javax.servlet:servlet-api:2.5" />
           </element>
@@ -49,6 +49,9 @@
   </component>
   <component name="BuildJarProjectSettings">
     <option name="BUILD_JARS_ON_MAKE" value="false" />
+  </component>
+  <component name="ClearCaseSharedConfig">
+    <option name="myUseUcmModel" value="true" />
   </component>
   <component name="CompilerConfiguration">
     <option name="DEFAULT_COMPILER" value="Javac" />
@@ -140,7 +143,9 @@
         <inspection_tool class="MissingOverrideAnnotation" enabled="true" level="ERROR" enabled_by_default="true">
           <option name="ignoreObjectMethods" value="true" />
         </inspection_tool>
-        <inspection_tool class="PublicMethodNotExposedInInterface" enabled="false" level="ERROR" enabled_by_default="false" />
+        <inspection_tool class="PublicMethodNotExposedInInterface" enabled="false" level="ERROR" enabled_by_default="false">
+          <option name="onlyWarnIfContainingClassImplementsAnInterface" value="false" />
+        </inspection_tool>
         <inspection_tool class="UnusedProperty" enabled="true" level="SERVER PROBLEM" enabled_by_default="true" />
       </profile>
     </profiles>
@@ -194,6 +199,127 @@
       </list>
     </option>
   </component>
+  <component name="Palette2">
+    <group name="Swing">
+      <item class="com.intellij.uiDesigner.HSpacer" tooltip-text="Horizontal Spacer" icon="/com/intellij/uiDesigner/icons/hspacer.png" removable="false" auto-create-binding="false" can-attach-label="false">
+        <default-constraints vsize-policy="1" hsize-policy="6" anchor="0" fill="1" />
+      </item>
+      <item class="com.intellij.uiDesigner.VSpacer" tooltip-text="Vertical Spacer" icon="/com/intellij/uiDesigner/icons/vspacer.png" removable="false" auto-create-binding="false" can-attach-label="false">
+        <default-constraints vsize-policy="6" hsize-policy="1" anchor="0" fill="2" />
+      </item>
+      <item class="javax.swing.JPanel" icon="/com/intellij/uiDesigner/icons/panel.png" removable="false" auto-create-binding="false" can-attach-label="false">
+        <default-constraints vsize-policy="3" hsize-policy="3" anchor="0" fill="3" />
+      </item>
+      <item class="javax.swing.JScrollPane" icon="/com/intellij/uiDesigner/icons/scrollPane.png" removable="false" auto-create-binding="false" can-attach-label="true">
+        <default-constraints vsize-policy="7" hsize-policy="7" anchor="0" fill="3" />
+      </item>
+      <item class="javax.swing.JButton" icon="/com/intellij/uiDesigner/icons/button.png" removable="false" auto-create-binding="true" can-attach-label="false">
+        <default-constraints vsize-policy="0" hsize-policy="3" anchor="0" fill="1" />
+        <initial-values>
+          <property name="text" value="Button" />
+        </initial-values>
+      </item>
+      <item class="javax.swing.JRadioButton" icon="/com/intellij/uiDesigner/icons/radioButton.png" removable="false" auto-create-binding="true" can-attach-label="false">
+        <default-constraints vsize-policy="0" hsize-policy="3" anchor="8" fill="0" />
+        <initial-values>
+          <property name="text" value="RadioButton" />
+        </initial-values>
+      </item>
+      <item class="javax.swing.JCheckBox" icon="/com/intellij/uiDesigner/icons/checkBox.png" removable="false" auto-create-binding="true" can-attach-label="false">
+        <default-constraints vsize-policy="0" hsize-policy="3" anchor="8" fill="0" />
+        <initial-values>
+          <property name="text" value="CheckBox" />
+        </initial-values>
+      </item>
+      <item class="javax.swing.JLabel" icon="/com/intellij/uiDesigner/icons/label.png" removable="false" auto-create-binding="false" can-attach-label="false">
+        <default-constraints vsize-policy="0" hsize-policy="0" anchor="8" fill="0" />
+        <initial-values>
+          <property name="text" value="Label" />
+        </initial-values>
+      </item>
+      <item class="javax.swing.JTextField" icon="/com/intellij/uiDesigner/icons/textField.png" removable="false" auto-create-binding="true" can-attach-label="true">
+        <default-constraints vsize-policy="0" hsize-policy="6" anchor="8" fill="1">
+          <preferred-size width="150" height="-1" />
+        </default-constraints>
+      </item>
+      <item class="javax.swing.JPasswordField" icon="/com/intellij/uiDesigner/icons/passwordField.png" removable="false" auto-create-binding="true" can-attach-label="true">
+        <default-constraints vsize-policy="0" hsize-policy="6" anchor="8" fill="1">
+          <preferred-size width="150" height="-1" />
+        </default-constraints>
+      </item>
+      <item class="javax.swing.JFormattedTextField" icon="/com/intellij/uiDesigner/icons/formattedTextField.png" removable="false" auto-create-binding="true" can-attach-label="true">
+        <default-constraints vsize-policy="0" hsize-policy="6" anchor="8" fill="1">
+          <preferred-size width="150" height="-1" />
+        </default-constraints>
+      </item>
+      <item class="javax.swing.JTextArea" icon="/com/intellij/uiDesigner/icons/textArea.png" removable="false" auto-create-binding="true" can-attach-label="true">
+        <default-constraints vsize-policy="6" hsize-policy="6" anchor="0" fill="3">
+          <preferred-size width="150" height="50" />
+        </default-constraints>
+      </item>
+      <item class="javax.swing.JTextPane" icon="/com/intellij/uiDesigner/icons/textPane.png" removable="false" auto-create-binding="true" can-attach-label="true">
+        <default-constraints vsize-policy="6" hsize-policy="6" anchor="0" fill="3">
+          <preferred-size width="150" height="50" />
+        </default-constraints>
+      </item>
+      <item class="javax.swing.JEditorPane" icon="/com/intellij/uiDesigner/icons/editorPane.png" removable="false" auto-create-binding="true" can-attach-label="true">
+        <default-constraints vsize-policy="6" hsize-policy="6" anchor="0" fill="3">
+          <preferred-size width="150" height="50" />
+        </default-constraints>
+      </item>
+      <item class="javax.swing.JComboBox" icon="/com/intellij/uiDesigner/icons/comboBox.png" removable="false" auto-create-binding="true" can-attach-label="true">
+        <default-constraints vsize-policy="0" hsize-policy="2" anchor="8" fill="1" />
+      </item>
+      <item class="javax.swing.JTable" icon="/com/intellij/uiDesigner/icons/table.png" removable="false" auto-create-binding="true" can-attach-label="false">
+        <default-constraints vsize-policy="6" hsize-policy="6" anchor="0" fill="3">
+          <preferred-size width="150" height="50" />
+        </default-constraints>
+      </item>
+      <item class="javax.swing.JList" icon="/com/intellij/uiDesigner/icons/list.png" removable="false" auto-create-binding="true" can-attach-label="false">
+        <default-constraints vsize-policy="6" hsize-policy="2" anchor="0" fill="3">
+          <preferred-size width="150" height="50" />
+        </default-constraints>
+      </item>
+      <item class="javax.swing.JTree" icon="/com/intellij/uiDesigner/icons/tree.png" removable="false" auto-create-binding="true" can-attach-label="false">
+        <default-constraints vsize-policy="6" hsize-policy="6" anchor="0" fill="3">
+          <preferred-size width="150" height="50" />
+        </default-constraints>
+      </item>
+      <item class="javax.swing.JTabbedPane" icon="/com/intellij/uiDesigner/icons/tabbedPane.png" removable="false" auto-create-binding="true" can-attach-label="false">
+        <default-constraints vsize-policy="3" hsize-policy="3" anchor="0" fill="3">
+          <preferred-size width="200" height="200" />
+        </default-constraints>
+      </item>
+      <item class="javax.swing.JSplitPane" icon="/com/intellij/uiDesigner/icons/splitPane.png" removable="false" auto-create-binding="false" can-attach-label="false">
+        <default-constraints vsize-policy="3" hsize-policy="3" anchor="0" fill="3">
+          <preferred-size width="200" height="200" />
+        </default-constraints>
+      </item>
+      <item class="javax.swing.JSpinner" icon="/com/intellij/uiDesigner/icons/spinner.png" removable="false" auto-create-binding="true" can-attach-label="true">
+        <default-constraints vsize-policy="0" hsize-policy="6" anchor="8" fill="1" />
+      </item>
+      <item class="javax.swing.JSlider" icon="/com/intellij/uiDesigner/icons/slider.png" removable="false" auto-create-binding="true" can-attach-label="false">
+        <default-constraints vsize-policy="0" hsize-policy="6" anchor="8" fill="1" />
+      </item>
+      <item class="javax.swing.JSeparator" icon="/com/intellij/uiDesigner/icons/separator.png" removable="false" auto-create-binding="false" can-attach-label="false">
+        <default-constraints vsize-policy="6" hsize-policy="6" anchor="0" fill="3" />
+      </item>
+      <item class="javax.swing.JProgressBar" icon="/com/intellij/uiDesigner/icons/progressbar.png" removable="false" auto-create-binding="true" can-attach-label="false">
+        <default-constraints vsize-policy="0" hsize-policy="6" anchor="0" fill="1" />
+      </item>
+      <item class="javax.swing.JToolBar" icon="/com/intellij/uiDesigner/icons/toolbar.png" removable="false" auto-create-binding="false" can-attach-label="false">
+        <default-constraints vsize-policy="0" hsize-policy="6" anchor="0" fill="1">
+          <preferred-size width="-1" height="20" />
+        </default-constraints>
+      </item>
+      <item class="javax.swing.JToolBar$Separator" icon="/com/intellij/uiDesigner/icons/toolbarSeparator.png" removable="false" auto-create-binding="false" can-attach-label="false">
+        <default-constraints vsize-policy="0" hsize-policy="0" anchor="0" fill="1" />
+      </item>
+      <item class="javax.swing.JScrollBar" icon="/com/intellij/uiDesigner/icons/scrollbar.png" removable="false" auto-create-binding="true" can-attach-label="false">
+        <default-constraints vsize-policy="6" hsize-policy="0" anchor="0" fill="2" />
+      </item>
+    </group>
+  </component>
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/todoapp.iml" filepath="$PROJECT_DIR$/todoapp.iml" />
@@ -233,6 +359,7 @@
   <component name="VcsDirectoryMappings">
     <mapping directory="" vcs="svn" />
   </component>
+  <component name="WebServicesPlugin" addRequiredLibraries="true" />
   <component name="com.sixrr.metrics.MetricsReloaded">
     <option name="selectedProfile" value="Default" />
     <option name="autoscroll" value="false" />
@@ -245,255 +372,255 @@
   <component name="libraryTable">
     <library name="Maven: aopalliance:aopalliance:1.0">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.m2/repository/aopalliance/aopalliance/1.0/aopalliance-1.0.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/aopalliance/aopalliance/1.0/aopalliance-1.0.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$USER_HOME$/.m2/repository/aopalliance/aopalliance/1.0/aopalliance-1.0-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/aopalliance/aopalliance/1.0/aopalliance-1.0-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$USER_HOME$/.m2/repository/aopalliance/aopalliance/1.0/aopalliance-1.0-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/aopalliance/aopalliance/1.0/aopalliance-1.0-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: asm:asm:3.3.1">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.m2/repository/asm/asm/3.3.1/asm-3.3.1.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/asm/asm/3.3.1/asm-3.3.1.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$USER_HOME$/.m2/repository/asm/asm/3.3.1/asm-3.3.1-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/asm/asm/3.3.1/asm-3.3.1-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$USER_HOME$/.m2/repository/asm/asm/3.3.1/asm-3.3.1-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/asm/asm/3.3.1/asm-3.3.1-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: cglib:cglib:2.2.2">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.m2/repository/cglib/cglib/2.2.2/cglib-2.2.2.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/cglib/cglib/2.2.2/cglib-2.2.2.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$USER_HOME$/.m2/repository/cglib/cglib/2.2.2/cglib-2.2.2-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/cglib/cglib/2.2.2/cglib-2.2.2-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$USER_HOME$/.m2/repository/cglib/cglib/2.2.2/cglib-2.2.2-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/cglib/cglib/2.2.2/cglib-2.2.2-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: com.google.collections:google-collections:1.0">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.m2/repository/com/google/collections/google-collections/1.0/google-collections-1.0.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/com/google/collections/google-collections/1.0/google-collections-1.0.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$USER_HOME$/.m2/repository/com/google/collections/google-collections/1.0/google-collections-1.0-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/com/google/collections/google-collections/1.0/google-collections-1.0-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$USER_HOME$/.m2/repository/com/google/collections/google-collections/1.0/google-collections-1.0-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/com/google/collections/google-collections/1.0/google-collections-1.0-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: commons-dbcp:commons-dbcp:1.4">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.m2/repository/commons-dbcp/commons-dbcp/1.4/commons-dbcp-1.4.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/commons-dbcp/commons-dbcp/1.4/commons-dbcp-1.4.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$USER_HOME$/.m2/repository/commons-dbcp/commons-dbcp/1.4/commons-dbcp-1.4-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/commons-dbcp/commons-dbcp/1.4/commons-dbcp-1.4-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$USER_HOME$/.m2/repository/commons-dbcp/commons-dbcp/1.4/commons-dbcp-1.4-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/commons-dbcp/commons-dbcp/1.4/commons-dbcp-1.4-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: commons-logging:commons-logging:1.1.1">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.m2/repository/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$USER_HOME$/.m2/repository/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$USER_HOME$/.m2/repository/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: commons-pool:commons-pool:1.5.4">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.m2/repository/commons-pool/commons-pool/1.5.4/commons-pool-1.5.4.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/commons-pool/commons-pool/1.5.4/commons-pool-1.5.4.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$USER_HOME$/.m2/repository/commons-pool/commons-pool/1.5.4/commons-pool-1.5.4-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/commons-pool/commons-pool/1.5.4/commons-pool-1.5.4-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$USER_HOME$/.m2/repository/commons-pool/commons-pool/1.5.4/commons-pool-1.5.4-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/commons-pool/commons-pool/1.5.4/commons-pool-1.5.4-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: javax.servlet:jstl:1.2">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.m2/repository/javax/servlet/jstl/1.2/jstl-1.2.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/javax/servlet/jstl/1.2/jstl-1.2.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$USER_HOME$/.m2/repository/javax/servlet/jstl/1.2/jstl-1.2-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/javax/servlet/jstl/1.2/jstl-1.2-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$USER_HOME$/.m2/repository/javax/servlet/jstl/1.2/jstl-1.2-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/javax/servlet/jstl/1.2/jstl-1.2-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: javax.servlet:servlet-api:2.5">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.m2/repository/javax/servlet/servlet-api/2.5/servlet-api-2.5.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/javax/servlet/servlet-api/2.5/servlet-api-2.5.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$USER_HOME$/.m2/repository/javax/servlet/servlet-api/2.5/servlet-api-2.5-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/javax/servlet/servlet-api/2.5/servlet-api-2.5-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$USER_HOME$/.m2/repository/javax/servlet/servlet-api/2.5/servlet-api-2.5-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/javax/servlet/servlet-api/2.5/servlet-api-2.5-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: org.codehaus.jackson:jackson-core-asl:1.5.3">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.m2/repository/org/codehaus/jackson/jackson-core-asl/1.5.3/jackson-core-asl-1.5.3.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/codehaus/jackson/jackson-core-asl/1.5.3/jackson-core-asl-1.5.3.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$USER_HOME$/.m2/repository/org/codehaus/jackson/jackson-core-asl/1.5.3/jackson-core-asl-1.5.3-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/codehaus/jackson/jackson-core-asl/1.5.3/jackson-core-asl-1.5.3-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$USER_HOME$/.m2/repository/org/codehaus/jackson/jackson-core-asl/1.5.3/jackson-core-asl-1.5.3-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/codehaus/jackson/jackson-core-asl/1.5.3/jackson-core-asl-1.5.3-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: org.codehaus.jackson:jackson-mapper-asl:1.5.3">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.m2/repository/org/codehaus/jackson/jackson-mapper-asl/1.5.3/jackson-mapper-asl-1.5.3.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/codehaus/jackson/jackson-mapper-asl/1.5.3/jackson-mapper-asl-1.5.3.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$USER_HOME$/.m2/repository/org/codehaus/jackson/jackson-mapper-asl/1.5.3/jackson-mapper-asl-1.5.3-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/codehaus/jackson/jackson-mapper-asl/1.5.3/jackson-mapper-asl-1.5.3-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$USER_HOME$/.m2/repository/org/codehaus/jackson/jackson-mapper-asl/1.5.3/jackson-mapper-asl-1.5.3-sources.jar!/" />
-      </SOURCES>
-    </library>
-    <library name="Maven: org.hsqldb:hsqldb:2.0.0">
-      <CLASSES>
-        <root url="jar://$USER_HOME$/.m2/repository/org/hsqldb/hsqldb/2.0.0/hsqldb-2.0.0.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$USER_HOME$/.m2/repository/org/hsqldb/hsqldb/2.0.0/hsqldb-2.0.0-javadoc.jar!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$USER_HOME$/.m2/repository/org/hsqldb/hsqldb/2.0.0/hsqldb-2.0.0-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/codehaus/jackson/jackson-mapper-asl/1.5.3/jackson-mapper-asl-1.5.3-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: org.springframework:spring-aop:3.0.5.RELEASE">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.m2/repository/org/springframework/spring-aop/3.0.5.RELEASE/spring-aop-3.0.5.RELEASE.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/springframework/spring-aop/3.0.5.RELEASE/spring-aop-3.0.5.RELEASE.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$USER_HOME$/.m2/repository/org/springframework/spring-aop/3.0.5.RELEASE/spring-aop-3.0.5.RELEASE-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/springframework/spring-aop/3.0.5.RELEASE/spring-aop-3.0.5.RELEASE-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$USER_HOME$/.m2/repository/org/springframework/spring-aop/3.0.5.RELEASE/spring-aop-3.0.5.RELEASE-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/springframework/spring-aop/3.0.5.RELEASE/spring-aop-3.0.5.RELEASE-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: org.springframework:spring-asm:3.0.5.RELEASE">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.m2/repository/org/springframework/spring-asm/3.0.5.RELEASE/spring-asm-3.0.5.RELEASE.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/springframework/spring-asm/3.0.5.RELEASE/spring-asm-3.0.5.RELEASE.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$USER_HOME$/.m2/repository/org/springframework/spring-asm/3.0.5.RELEASE/spring-asm-3.0.5.RELEASE-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/springframework/spring-asm/3.0.5.RELEASE/spring-asm-3.0.5.RELEASE-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$USER_HOME$/.m2/repository/org/springframework/spring-asm/3.0.5.RELEASE/spring-asm-3.0.5.RELEASE-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/springframework/spring-asm/3.0.5.RELEASE/spring-asm-3.0.5.RELEASE-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: org.springframework:spring-beans:3.0.5.RELEASE">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.m2/repository/org/springframework/spring-beans/3.0.5.RELEASE/spring-beans-3.0.5.RELEASE.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/springframework/spring-beans/3.0.5.RELEASE/spring-beans-3.0.5.RELEASE.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$USER_HOME$/.m2/repository/org/springframework/spring-beans/3.0.5.RELEASE/spring-beans-3.0.5.RELEASE-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/springframework/spring-beans/3.0.5.RELEASE/spring-beans-3.0.5.RELEASE-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$USER_HOME$/.m2/repository/org/springframework/spring-beans/3.0.5.RELEASE/spring-beans-3.0.5.RELEASE-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/springframework/spring-beans/3.0.5.RELEASE/spring-beans-3.0.5.RELEASE-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: org.springframework:spring-context-support:3.0.5.RELEASE">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.m2/repository/org/springframework/spring-context-support/3.0.5.RELEASE/spring-context-support-3.0.5.RELEASE.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/springframework/spring-context-support/3.0.5.RELEASE/spring-context-support-3.0.5.RELEASE.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$USER_HOME$/.m2/repository/org/springframework/spring-context-support/3.0.5.RELEASE/spring-context-support-3.0.5.RELEASE-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/springframework/spring-context-support/3.0.5.RELEASE/spring-context-support-3.0.5.RELEASE-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$USER_HOME$/.m2/repository/org/springframework/spring-context-support/3.0.5.RELEASE/spring-context-support-3.0.5.RELEASE-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/springframework/spring-context-support/3.0.5.RELEASE/spring-context-support-3.0.5.RELEASE-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: org.springframework:spring-context:3.0.5.RELEASE">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.m2/repository/org/springframework/spring-context/3.0.5.RELEASE/spring-context-3.0.5.RELEASE.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/springframework/spring-context/3.0.5.RELEASE/spring-context-3.0.5.RELEASE.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$USER_HOME$/.m2/repository/org/springframework/spring-context/3.0.5.RELEASE/spring-context-3.0.5.RELEASE-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/springframework/spring-context/3.0.5.RELEASE/spring-context-3.0.5.RELEASE-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$USER_HOME$/.m2/repository/org/springframework/spring-context/3.0.5.RELEASE/spring-context-3.0.5.RELEASE-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/springframework/spring-context/3.0.5.RELEASE/spring-context-3.0.5.RELEASE-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: org.springframework:spring-core:3.0.5.RELEASE">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.m2/repository/org/springframework/spring-core/3.0.5.RELEASE/spring-core-3.0.5.RELEASE.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/springframework/spring-core/3.0.5.RELEASE/spring-core-3.0.5.RELEASE.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$USER_HOME$/.m2/repository/org/springframework/spring-core/3.0.5.RELEASE/spring-core-3.0.5.RELEASE-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/springframework/spring-core/3.0.5.RELEASE/spring-core-3.0.5.RELEASE-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$USER_HOME$/.m2/repository/org/springframework/spring-core/3.0.5.RELEASE/spring-core-3.0.5.RELEASE-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/springframework/spring-core/3.0.5.RELEASE/spring-core-3.0.5.RELEASE-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: org.springframework:spring-expression:3.0.5.RELEASE">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.m2/repository/org/springframework/spring-expression/3.0.5.RELEASE/spring-expression-3.0.5.RELEASE.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/springframework/spring-expression/3.0.5.RELEASE/spring-expression-3.0.5.RELEASE.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$USER_HOME$/.m2/repository/org/springframework/spring-expression/3.0.5.RELEASE/spring-expression-3.0.5.RELEASE-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/springframework/spring-expression/3.0.5.RELEASE/spring-expression-3.0.5.RELEASE-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$USER_HOME$/.m2/repository/org/springframework/spring-expression/3.0.5.RELEASE/spring-expression-3.0.5.RELEASE-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/springframework/spring-expression/3.0.5.RELEASE/spring-expression-3.0.5.RELEASE-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: org.springframework:spring-jdbc:3.0.5.RELEASE">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.m2/repository/org/springframework/spring-jdbc/3.0.5.RELEASE/spring-jdbc-3.0.5.RELEASE.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/springframework/spring-jdbc/3.0.5.RELEASE/spring-jdbc-3.0.5.RELEASE.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$USER_HOME$/.m2/repository/org/springframework/spring-jdbc/3.0.5.RELEASE/spring-jdbc-3.0.5.RELEASE-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/springframework/spring-jdbc/3.0.5.RELEASE/spring-jdbc-3.0.5.RELEASE-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$USER_HOME$/.m2/repository/org/springframework/spring-jdbc/3.0.5.RELEASE/spring-jdbc-3.0.5.RELEASE-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/springframework/spring-jdbc/3.0.5.RELEASE/spring-jdbc-3.0.5.RELEASE-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: org.springframework:spring-tx:3.0.5.RELEASE">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.m2/repository/org/springframework/spring-tx/3.0.5.RELEASE/spring-tx-3.0.5.RELEASE.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/springframework/spring-tx/3.0.5.RELEASE/spring-tx-3.0.5.RELEASE.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$USER_HOME$/.m2/repository/org/springframework/spring-tx/3.0.5.RELEASE/spring-tx-3.0.5.RELEASE-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/springframework/spring-tx/3.0.5.RELEASE/spring-tx-3.0.5.RELEASE-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$USER_HOME$/.m2/repository/org/springframework/spring-tx/3.0.5.RELEASE/spring-tx-3.0.5.RELEASE-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/springframework/spring-tx/3.0.5.RELEASE/spring-tx-3.0.5.RELEASE-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: org.springframework:spring-web:3.0.5.RELEASE">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.m2/repository/org/springframework/spring-web/3.0.5.RELEASE/spring-web-3.0.5.RELEASE.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/springframework/spring-web/3.0.5.RELEASE/spring-web-3.0.5.RELEASE.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$USER_HOME$/.m2/repository/org/springframework/spring-web/3.0.5.RELEASE/spring-web-3.0.5.RELEASE-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/springframework/spring-web/3.0.5.RELEASE/spring-web-3.0.5.RELEASE-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$USER_HOME$/.m2/repository/org/springframework/spring-web/3.0.5.RELEASE/spring-web-3.0.5.RELEASE-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/springframework/spring-web/3.0.5.RELEASE/spring-web-3.0.5.RELEASE-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: org.springframework:spring-webmvc:3.0.5.RELEASE">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.m2/repository/org/springframework/spring-webmvc/3.0.5.RELEASE/spring-webmvc-3.0.5.RELEASE.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/springframework/spring-webmvc/3.0.5.RELEASE/spring-webmvc-3.0.5.RELEASE.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$USER_HOME$/.m2/repository/org/springframework/spring-webmvc/3.0.5.RELEASE/spring-webmvc-3.0.5.RELEASE-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/springframework/spring-webmvc/3.0.5.RELEASE/spring-webmvc-3.0.5.RELEASE-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$USER_HOME$/.m2/repository/org/springframework/spring-webmvc/3.0.5.RELEASE/spring-webmvc-3.0.5.RELEASE-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/springframework/spring-webmvc/3.0.5.RELEASE/spring-webmvc-3.0.5.RELEASE-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: postgresql:postgresql:8.4-701.jdbc4">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/postgresql/postgresql/8.4-701.jdbc4/postgresql-8.4-701.jdbc4.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/postgresql/postgresql/8.4-701.jdbc4/postgresql-8.4-701.jdbc4-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/postgresql/postgresql/8.4-701.jdbc4/postgresql-8.4-701.jdbc4-sources.jar!/" />
       </SOURCES>
     </library>
   </component>

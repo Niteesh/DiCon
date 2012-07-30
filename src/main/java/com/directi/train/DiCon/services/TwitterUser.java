@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
 @Service
 public class TwitterUser {
     public DAO dao;
-    private static final Pattern eamilPattern = Pattern.compile(
+    private static final Pattern emailPattern = Pattern.compile(
             "^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$"
     );
 
@@ -74,7 +74,7 @@ public class TwitterUser {
     }
 
     public static boolean isValidEmail(String email){
-        return eamilPattern.matcher(email).matches();
+        return emailPattern.matcher(email).matches();
 
     }
 

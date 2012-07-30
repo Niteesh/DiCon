@@ -50,8 +50,8 @@ public class DAO {
         return db.queryForList("SELECT text,timestamp,tweet_id,user_id FROM twitter.tweets WHERE user_id = ? AND tweet_id > ? ORDER BY timestamp ASC;",user_id,latest_tweet_id);
     }
 
-    public List<Map<String,Object>> getNewsFeed(int user_id){
-        return db.queryForList("SELECT T.text,T.timestamp,T.tweet_id,F.following_id FROM twitter.tweets T INNER JOIN twitter.follows F ON T.user_id = F.following_id AND (T.timestamp BETWEEN F.start_time AND F.stop_time OR F.stop_time IS NULL) WHERE F.follower_id = ? ORDER BY T.timestamp ASC;",user_id);
+    public List<Map<String,Object>> getNewsFeed(int user_id, int latest_feed_id){
+        return db.queryForList("SELECT DISTINCT T.text,T.timestamp,T.tweet_id,F.following_id FROM twitter.tweets T INNER JOIN twitter.follows F ON T.user_id = F.following_id AND (T.timestamp BETWEEN F.start_time AND F.stop_time OR (F.stop_time IS NULL AND T.timestamp >= F.start_time)) WHERE F.follower_id = ? AND tweet_id > ? ORDER BY T.timestamp ASC;",user_id,latest_feed_id);
     }
 
     public int newUser(String email, String password, String fullname, String description, String phone,String dp_url){
@@ -66,7 +66,7 @@ public class DAO {
     }
 
     public int unFollow(int follower_id,int following_id){
-        return db.update("UPDATE twitter.follows SET stop_time = now() WHERE follower_id = ? AND following_id = ?;",follower_id,following_id);
+        return db.update("UPDATE twitter.follows SET stop_time = now() WHERE follower_id = ? AND following_id = ? AND stop_time IS NULL;",follower_id,following_id);
     }
 
     public int newTweet(int user_id,String text){
@@ -99,7 +99,8 @@ public class DAO {
     }
 
     public String getUsersStatus(Integer profileUserID, Integer userID) {
-        int following = db.queryForInt("select count(1) from twitter.follows where follower_id = ? and following_id = ? ", userID, profileUserID )  ;
+        if(userID.equals(profileUserID)) return "";
+        int following = db.queryForInt("select count(1) from twitter.follows where follower_id = ? AND following_id = ? AND stop_time IS NULL;", userID, profileUserID )  ;
         if (following > 0)
             return "following";
         return "not-following";
@@ -107,5 +108,9 @@ public class DAO {
 
     public String getFullName(Integer user_id) {
         return db.queryForObject("SELECT fullname FROM twitter.details WHERE user_id = ?;",String.class,user_id);
+    }
+
+    public List<Map<String, Object>> searchByFullname(String search_string) {
+        return db.queryForList("SELECT user_id,fullname FROM twitter.details WHERE fullname LIKE ?;",search_string+"%");
     }
 }

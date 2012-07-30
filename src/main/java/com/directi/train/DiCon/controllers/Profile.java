@@ -51,17 +51,17 @@ public class Profile {
 
     @RequestMapping(value="follow", method= RequestMethod.GET)
     @ResponseBody
-    public void follow(@PathVariable("userID") Integer userID, HttpSession session){
+    public int follow(@PathVariable("userID") Integer userID, HttpSession session){
 
-        dao.follow((Integer) session.getAttribute("userID"), userID);
+        return dao.follow((Integer) session.getAttribute("userID"), userID);
 
     }
 
     @RequestMapping(value="unfollow", method= RequestMethod.GET)
     @ResponseBody
-    public void unFollow(@PathVariable("userID") Integer userID, HttpSession session){
+    public int unFollow(@PathVariable("userID") Integer userID, HttpSession session){
 
-        dao.unFollow((Integer) session.getAttribute("userID"), userID);
+        return dao.unFollow((Integer) session.getAttribute("userID"), userID);
 
     }
 
@@ -106,7 +106,7 @@ public class Profile {
     @ResponseBody
     public String newsFeed(HttpSession session,@PathVariable("userID") Integer userID, @RequestParam String latest_feed_id) {
 
-        List<Map<String, Object>> resultSet = dao.getNewsFeed(userID);
+        List<Map<String, Object>> resultSet = dao.getNewsFeed(userID, Integer.parseInt(latest_feed_id));
 //        List<Map<String, Object>> resultSet = dao.getPostsByUser(userID, Integer.parseInt(latest_tweet_id));
         if(resultSet.size()==0) return "[]";
         String responseString = "";
