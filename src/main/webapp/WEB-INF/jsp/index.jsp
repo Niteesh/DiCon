@@ -195,7 +195,6 @@
  		    
                     <input class="text-input email-input" name="email" title="Username or email" autocomplete="on" type="text" placeholder="Username or email">
 
-                    <input class="text-input email-input" name="email" placeholder="Email" title="Username or email" autocomplete="on" type="text">
 
                      
                   </div>
@@ -208,7 +207,6 @@
                             
                             <input class="text-input flex-table-input" name="password" title="Password" type="password" placeholder="Password">
 
-                            <input class="text-input flex-table-input" name="password" placeholder="Password" title="Password" type="password">
 
                             
                           </div>
@@ -254,15 +252,8 @@
                   <div class="placeholding-input">
                     <input class="text-input" name="password" type="password" placeholder="Password">
 
-                    <input class="text-input" autocomplete="off" name="fullname" placeholder="Full Name" maxlength="20" type="text">
-                    
-                  </div>
-                  <div class="placeholding-input">
-                    <input class="text-input email-input" autocomplete="off" name="email" placeholder="Email" type="text">
-                   
-                  </div>
-                  <div class="placeholding-input">
-                    <input class="text-input" name="password" placeholder="Password" type="password">
+
+
 
 
                   </div>

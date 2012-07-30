@@ -24,7 +24,88 @@
 <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/dojo/1.7.2/dojo/dojo.js"
         data-dojo-config="async: true"></script>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
+ <script type ="text/javascript">
 
+
+ </script>
+
+ <script type="text/javascript">
+
+ function getFollowingList() {
+         document.getElementById("tweets").style.display = "none";
+         document.getElementById("following").style.display = "block";
+          document.getElementById("follower").style.display = "none" ;
+
+
+         require(["dojo/_base/xhr", "dojo/dom", "dojo/dom-construct", "dojo/_base/array", "dojo/NodeList-dom", "dojo/domReady!"],
+                 function(xhr, dom, domConstruct) {
+
+                     xhr.get({
+                                 url: "${user_id}/following",
+                                 handleAs: "json",
+                                 headers: { "Accept": "application/json"},
+                                 content: {
+                                     latest_tweet_id : latest_tweet_id
+                                 },
+                                 load: function(response) {
+
+                                     for (var i in response) {
+                                         var newTweet = new EJS({url: '${pageContext.request.contextPath}/static/ejs/following.ejs'}).render(response[i]);
+                                         domConstruct.place(newTweet, dom.byId("stream-list-following"), "first");
+
+                                     }
+                                     console.log("new tweets = " + response.length);
+
+
+                                 },
+                                 error: function() {
+                                     console.log("Error fetching json.");
+                                 },
+                                 handle: function() {
+                                     console.log("latest tweet id = " + latest_tweet_id);
+                                 }
+                             });
+
+                 });
+     }
+
+     function getFollowerList() {
+              document.getElementById("tweets").style.display = "none";
+              document.getElementById("following").style.display = "none";
+              document.getElementById("follower").style.display = "block";
+
+              require([ "dojo/_base/xhr", "dojo/dom", "dojo/dom-construct", "dojo/_base/array", "dojo/NodeList-dom", "dojo/domReady!"],
+                      function(xhr, dom, domConstruct) {
+
+                          xhr.get({
+                                      url: "${user_id}/follower",
+                                      handleAs: "json",
+                                      headers: { "Accept": "application/json"},
+                                      content: {
+                                          latest_tweet_id : latest_tweet_id
+                                      },
+                                      load: function(response) {
+
+                                          for (var i in response) {
+                                              var newTweet = new EJS({url: '${pageContext.request.contextPath}/static/ejs/follower.ejs'}).render(response[i]);
+                                              domConstruct.place(newTweet, dom.byId("stream-list-follower"), "first");
+
+                                          }
+                                          console.log("new tweets = " + response.length);
+
+
+                                      },
+                                      error: function() {
+                                          console.log("Error fetching json.");
+                                      },
+                                      handle: function() {
+                                          console.log("latest tweet id = " + latest_tweet_id);
+                                      }
+                          });
+
+              });
+          }
+ </script>
 
 <script type="text/javascript">
 
@@ -34,6 +115,9 @@
     setInterval(refreshTweets, 5000);
 
     function refreshTweets() {
+        document.getElementById("tweets").style.display = "block";
+        document.getElementById("following").style.display = "none";
+        document.getElementById("follower").style.display = "none"
         require(["dojo/_base/xhr", "dojo/dom", "dojo/dom-construct", "dojo/_base/array", "dojo/NodeList-dom", "dojo/domReady!"],
                 function(xhr, dom, domConstruct) {
 
@@ -111,6 +195,10 @@
                 });
     }
 </script>
+
+
+
+
 
 
 <style id="user-style-${user_id}" class="js-user-style">
@@ -435,9 +523,9 @@
 
                     <strong>${profile_tweetCount}</strong> Tweets
                 </a></li>
-                <li><a href="https://twitter.com/#%21/${user_id}/following" data-element-term="following_stats"
+                <li><a href="#" data-element-term="following_stats" onclick="getFollowingList()"
                        data-nav="following"><strong>${profile_following}</strong> Following</a></li>
-                <li><a href="https://twitter.com/#%21/${user_id}/followers" data-element-term="follower_stats"
+                <li><a href="#" data-element-term="follower_stats"  onclick="getFollowerList()"
                        data-nav="followers"><strong>${profile_follower}</strong> Followers</a></li>
             </ul>
         </div>
@@ -522,15 +610,15 @@
     <div class="module profile-nav">
         <ul class="js-nav-links">
             <li class="active">
-                <a class="list-link" href="https://twitter.com/${user_id}" data-nav="profile">Tweets<i
+                <a class="list-link" href="#" data-nav="profile" onclick = "refreshTweets()">Tweets<i
                         class="chev-right"></i></a>
             </li>
             <li class="">
-                <a class="list-link" href="https://twitter.com/#%21/${user_id}/following" data-nav="following">Following<i
+                <a class="list-link" href="#" data-nav="following" onclick="getFollowingList()"  >Following<i
                         class="chev-right"></i></a>
             </li>
             <li class="">
-                <a class="list-link" href="https://twitter.com/#%21/${user_id}/followers" data-nav="followers">Followers<i
+                <a class="list-link" href="#" data-nav="followers" onclick="getFollowerList()">Followers<i
                         class="chev-right"></i></a>
             </li>
             <li class="">
@@ -765,19 +853,43 @@
 </div>
 </div>
 <div class="component" id="suggested-users"></div>
-<div class="content-main" id="timeline">
-<div class="content-header">
-    <div class="header-inner">
-        <h2 class="js-timeline-title">Tweets
-            <small class="view-toggler"><a class="toggle-item-1 "
+ <div class="content-main" id="timeline">      <!-- ----------------------------------- -->
+    <div id="tweets">
+    <div class="content-header" >
+        <div class="header-inner">
+            <h2 class="js-timeline-title">Tweets
+                 <small class="view-toggler"><a class="toggle-item-1 "
                                            href="https://twitter.com/${user_id}/with_replies">All</a> /
                 <a class="toggle-item-2 active" href="https://twitter.com/${user_id}">No replies</a></small>
-        </h2>
+            </h2>
+        </div>
     </div>
+    <ul id="stream-list">
+    </ul>
 </div>
-<ul id="stream-list">
-</ul>
 
+
+<div id="following" style="display: none">
+ <div class="content-header" >
+    <div class="header-inner">
+         <h2 class="js-timeline-title">Following
+         </h2>
+     </div>
+ </div>
+<ul id="stream-list-following">
+</ul>
+</div>
+
+<div id="follower" style="display: none">
+ <div class="content-header" >
+    <div class="header-inner">
+         <h2 class="js-timeline-title">Following
+         </h2>
+     </div>
+ </div>
+<ul id="stream-list-follower">
+</ul>
+</div>
 
 <div class="modal-overlay"></div>
 

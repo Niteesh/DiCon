@@ -31,7 +31,7 @@ public class DAO {
     }
 
     public List<Map<String,Object>> getFollowersList(int user_id){
-        return db.queryForList("SELECT follower_id FROM twitter.follows WHERE following_id = ? AND stop_time IS null;", user_id);
+        return db.queryForList("SELECT user_id, fullname, dp_url FROM twitter.follows follows INNER JOIN twitter.details  details ON details.user_id = follows.follower_id WHERE following_id = ? AND stop_time IS NULL;",user_id);
     }
 
     public Integer getFollowerCount(int user_id){
@@ -39,7 +39,7 @@ public class DAO {
     }
 
     public List<Map<String, Object>> getFollowingList(int user_id){
-        return db.queryForList("SELECT following_id FROM twitter.follows WHERE follower_id = ? AND stop_time IS NULL;",user_id);
+        return db.queryForList("SELECT user_id, fullname, dp_url FROM twitter.follows follows INNER JOIN twitter.details  details ON details.user_id = follows.following_id WHERE follower_id = ? AND stop_time IS NULL;",user_id);
     }
     public Integer getFollowingCount(int user_id){
         return db.queryForInt("select count(1) from twitter.follows WHERE follower_id = ? and stop_time IS NULL;",user_id)   ;

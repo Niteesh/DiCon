@@ -134,4 +134,17 @@ public class Profile {
         return responseString;
     }
 
+
+    @RequestMapping(value="following", method = RequestMethod.GET)
+    @ResponseBody
+    public List<Map<String,Object>> getFollowingList(HttpSession session,@PathVariable("userID") Integer userID){
+        return dao.getFollowingList(userID);
+    }
+
+    @RequestMapping(value="follower", method = RequestMethod.GET)
+    @ResponseBody
+    public List<Map<String,Object>> getFollowerList(HttpSession session,@PathVariable("userID") Integer userID){
+        return dao.getFollowersList(userID);
+    }
+
 }
