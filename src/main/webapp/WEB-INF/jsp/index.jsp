@@ -178,7 +178,7 @@
               <h3>DiCon.com makes heavy use of browser cookies</h3>
               <p>Please enable cookies in your browser preferences before signing in.</p>
             </div>
-          
+                                                                         l
           
             <div class="front-card">
                 <div class="front-welcome">
@@ -194,6 +194,9 @@
                   <div class="placeholding-input username">
  		    
                     <input class="text-input email-input" name="email" title="Username or email" autocomplete="on" type="text" placeholder="Username or email">
+
+                    <input class="text-input email-input" name="email" placeholder="Email" title="Username or email" autocomplete="on" type="text">
+
                      
                   </div>
           
@@ -204,6 +207,9 @@
                           <div class="placeholding-input password flex-table-form">
                             
                             <input class="text-input flex-table-input" name="password" title="Password" type="password" placeholder="Password">
+
+                            <input class="text-input flex-table-input" name="password" placeholder="Password" title="Password" type="password">
+
                             
                           </div>
                         </td>
@@ -237,6 +243,7 @@
                 <form action="/sign_up" class="signup" method="post">
                 <font color="red">${message}</font>
                   <div class="placeholding-input">
+
                     <input class="text-input" autocomplete="off" name="fullname" maxlength="20" type="text" placeholder="Full name">
                     
                   </div>
@@ -246,6 +253,17 @@
                   </div>
                   <div class="placeholding-input">
                     <input class="text-input" name="password" type="password" placeholder="Password">
+
+                    <input class="text-input" autocomplete="off" name="fullname" placeholder="Full Name" maxlength="20" type="text">
+                    
+                  </div>
+                  <div class="placeholding-input">
+                    <input class="text-input email-input" autocomplete="off" name="email" placeholder="Email" type="text">
+                   
+                  </div>
+                  <div class="placeholding-input">
+                    <input class="text-input" name="password" placeholder="Password" type="password">
+
 
                   </div>
           
