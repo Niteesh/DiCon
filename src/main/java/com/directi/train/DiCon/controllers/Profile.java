@@ -7,11 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import org.springframework.web.servlet.ModelAndView;
-import sun.awt.geom.AreaOp;
 import sun.misc.BASE64Encoder;
-
-import javax.servlet.ServletInputStream;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
@@ -95,6 +91,7 @@ public class Profile {
 
     }
 
+
     @RequestMapping(value="edit", method=RequestMethod.GET)
     public ModelAndView editPopup(@PathVariable("userID") Integer userID){
         ModelAndView mv = new ModelAndView("editpopup");
@@ -107,5 +104,20 @@ public class Profile {
         dao.updateDP(userID,new BASE64Encoder().encode(file.getBytes()));
         return ("editpopup");
     }
+
+
+    @RequestMapping(value="following", method = RequestMethod.GET)
+    @ResponseBody
+    public List<Map<String,Object>> getFollowingList(HttpSession session,@PathVariable("userID") Integer userID){
+        return dao.getFollowingList(userID);
+    }
+
+    @RequestMapping(value="follower", method = RequestMethod.GET)
+    @ResponseBody
+    public List<Map<String,Object>> getFollowerList(HttpSession session,@PathVariable("userID") Integer userID){
+        return dao.getFollowersList(userID);
+    }
+
+
 }
 

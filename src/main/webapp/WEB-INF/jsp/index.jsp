@@ -54,11 +54,11 @@
                   <fieldset class="textbox">
     <label class="username js-username">
 
-      <input class="js-username-field email-input" name="email" autocomplete="on" type="text">
+      <input class="js-username-field email-input" name="email" autocomplete="on" type="text" placeholder="email">
     </label>
     <label class="password js-password">
 
-      <input class="js-password-field" value="" name="password" type="password">
+      <input class="js-password-field" value="" name="password" type="password" placeholder="Password">
     </label>
   </fieldset>
   <fieldset class="subchck">
@@ -178,7 +178,7 @@
               <h3>DiCon.com makes heavy use of browser cookies</h3>
               <p>Please enable cookies in your browser preferences before signing in.</p>
             </div>
-          
+                                                                         l
           
             <div class="front-card">
                 <div class="front-welcome">
@@ -193,7 +193,9 @@
                 <form action="/sign_in" class="signin" method="post">
                   <div class="placeholding-input username">
  		    
-                    <input class="text-input email-input" name="email" placeholder="Email" title="Username or email" autocomplete="on" type="text">
+                    <input class="text-input email-input" name="email" title="Username or email" autocomplete="on" type="text" placeholder="Username or email">
+
+
                      
                   </div>
           
@@ -203,7 +205,9 @@
                         <td class="flex-table-primary">
                           <div class="placeholding-input password flex-table-form">
                             
-                            <input class="text-input flex-table-input" name="password" placeholder="Password" title="Password" type="password">
+                            <input class="text-input flex-table-input" name="password" title="Password" type="password" placeholder="Password">
+
+
                             
                           </div>
                         </td>
@@ -237,15 +241,20 @@
                 <form action="/sign_up" class="signup" method="post">
                 <font color="red">${message}</font>
                   <div class="placeholding-input">
-                    <input class="text-input" autocomplete="off" name="fullname" placeholder="Full Name" maxlength="20" type="text">
+
+                    <input class="text-input" autocomplete="off" name="fullname" maxlength="20" type="text" placeholder="Full name">
                     
                   </div>
                   <div class="placeholding-input">
-                    <input class="text-input email-input" autocomplete="off" name="email" placeholder="Email" type="text">
+                    <input class="text-input email-input" autocomplete="off" name="email" type="text" placeholder="email">
                    
                   </div>
                   <div class="placeholding-input">
-                    <input class="text-input" name="password" placeholder="Password" type="password">
+                    <input class="text-input" name="password" type="password" placeholder="Password">
+
+
+
+
 
                   </div>
           
