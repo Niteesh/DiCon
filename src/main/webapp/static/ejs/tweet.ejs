@@ -10,7 +10,7 @@
 
  with-social-proof
 
-" data-tweet-id="224970532737654784" data-item-id="224970532737654784" data-screen-name="enrique305"
+" data-tweet-id="224970532737654784" data-item-id="224970532737654784" data-screen-name="<%=user_id%>"
          data-name="Enrique Iglesias" data-user-id="46452468" data-is-reply-to="">
 
 
@@ -28,8 +28,8 @@
                             data-long-form="true"><%=timestamp%></span></a>
                 </small>
                 <a class="account-group js-account-group js-action-profile js-user-profile-link"
-                   href="https://twitter.com/enrique305" data-user-id="46452468">
-                    <img class="avatar js-action-profile-avatar" src="DiCon_Home_Files/Euphoria_Album_Cover_normal.jpg"
+                   href="/<%=user_id%>" data-user-id="46452468">
+                    <img class="avatar js-action-profile-avatar" src="data:image/jpeg;base64,<%=dp%>"
                          alt="Enrique Iglesias">
                     <strong class="fullname js-action-profile-name show-popup-with-id"><%=fullname%></strong>
                     <span>‏</span><span class="username js-action-profile-name"><s>@</s><b><%=user_id%></b></span>
@@ -37,7 +37,7 @@
             </div>
 
 
-            <p class="js-tweet-text"><%=tweet_text%></p>
+            <p class="js-tweet-text"><%=text%></p>
 
 
             <div class="stream-item-footer">

@@ -77,6 +77,7 @@
             el.className = el.className.replace(new RegExp('(\\s|^)' + name + '(\\s|$)'), ' ').replace(/^\s+|\s+$/g, '');
         }
     }
+
     function triggerFollow(btn) {
         var triggerURL;
         if (btn.id == "following-button") {
@@ -84,6 +85,9 @@
         }
         else if (btn.id == "not-following-button") {
             triggerURL = "${user_id}/follow";
+        }
+        else if (btn.id == "edit-button") {
+            triggerURL = "${user_id}/edit";
         }
         require(["dojo/_base/xhr", "dojo/domReady!"],
                 function(xhr) {
@@ -106,10 +110,69 @@
                                         removeClass(btn.parentNode, "not-following");
                                         addClass(btn.parentNode, "following");
                                     }
+                                    else if (btn.id == "edit-button") {
+
+                                    }
                                 }
                             });
                 });
     }
+
+    require(["dojo/_base/xhr", "dojo/on", "dojo/dom", "dojo/query", "dojo/dom-construct", "dojo/_base/array", "dojo/NodeList-dom", "dojo/domReady!"], function(xhr, on, dom, query, domConstruct) {
+        var hide_searchresults_timeout;
+        on(dom.byId("search-query"), "focus", function() {
+            clearTimeout(hide_searchresults_timeout);
+            query("#global-nav-search").addClass("focus");
+            query("#search-query").addClass("focus");
+
+            if (this.value != "")
+                dom.byId("search-results-container").style.display = "block";
+        });
+
+        on(dom.byId("search-query"), "blur", function() {
+            query("#global-nav-search").removeClass("focus");
+            query("#search-query").removeClass("focus");
+            hide_searchresults_timeout = setTimeout(function() {
+                dom.byId("search-results-container").style.display = "none"
+            }, 1000);
+        });
+
+        on(dom.byId("search-query"), "keyup", function() {
+            if (this.value != "")
+                searchQuery(this.value);
+            else {
+                domConstruct.empty(dom.byId("results-list"));
+                dom.byId("search-results-container").style.display = "none";
+            }
+        });
+
+        function searchQuery(search_string) {
+            xhr.post({
+                        url: "search.json",
+                        handleAs: "json",
+                        content: {
+                            search_string : search_string
+                        },
+                        load: function(response) {
+                            if (response.length == 0)
+                                dom.byId("search-results-container").style.display = "none";
+                            else
+                                dom.byId("search-results-container").style.display = "block";
+                            domConstruct.empty(dom.byId("results-list"));
+                            for (var i in response) {
+                                var result = new EJS({url: '${pageContext.request.contextPath}/static/ejs/searchResult.ejs'}).render(response[i]);
+                                domConstruct.place(result, dom.byId("results-list"));
+                            }
+                        },
+                        error: function() {
+                            console.log("Error fetching search results.");
+                        }
+                    });
+        }
+
+    });
+
+
 </script>
 
 
@@ -275,7 +338,7 @@
 </head>
 
 <body class="t1 logged-in user-style-${user_id}">
-<div id="doc" class="route-profile">
+
 <div class="push-loader" id="pushStateSpinner"></div>
 
 <div class="topbar js-topbar">
@@ -296,87 +359,90 @@
             <div class="container">
                 <ul class="nav js-global-actions" id="global-actions">
                     <li id="global-nav-home" class="home" data-global-action="home">
-                        <a class="js-hover" href="https://twitter.com/" data-component-term="home_nav" data-nav="home">
+                        <a class="js-hover" href="/home" data-component-term="home_nav" data-nav="home">
                             <span class="new-wrapper"><i class="nav-home"></i><i class="nav-new"></i></span> Home
                         </a>
                     </li>
                     <li class="people" data-global-action="connect">
                         <a class="js-hover" href="https://twitter.com/i/connect" data-component-term="connect_nav"
                            data-nav="connect">
-                            <span class="new-wrapper"><i class="nav-people"></i><i class="nav-new"></i></span> Connect
+                            <span class="new-wrapper"><i class="nav-people"></i><i class="nav-new"></i></span>
+                            Connect
                         </a>
                     </li>
                     <li class="topics" data-global-action="discover">
                         <a class="js-hover" href="https://twitter.com/i/discover" data-component-term="discover_nav"
                            data-nav="discover">
-                            <span class="new-wrapper"><i class="nav-topics"></i><i class="nav-new"></i></span> Discover
+                            <span class="new-wrapper"><i class="nav-topics"></i><i class="nav-new"></i></span>
+                            Discover
                         </a>
                     </li>
                 </ul>
                 <i class="bird-topbar-etched"></i>
 
                 <div class="pull-right">
-                    <div class="well topbar-tweet-btn">
-                        <ul class="nav js-global-actions">
-                            <li>
-                                <a href="/logout" class="js-hover">Logout</a>
-                            </li>
-                        </ul>
-                    </div>
-                    <i class="topbar-divider"></i>
+                    <ul class="nav js-global-actions">
+                        <li class="people" data-global-action="connect">
+                            <a class="js-hover" href="/logout"
+                               data-component-term="connect_nav"
+                               data-nav="connect">
+                                <span class="new-wrapper"><i class="nav-people"></i><i class="nav-new"></i></span>Logout</a>
+                        </li>
+                    </ul>
+                </div>
 
-                    <form class="form-search js-search-form" action="/search" id="global-nav-search">
+                <form class="form-search js-search-form" action="/search" id="global-nav-search">
             <span class="search-icon js-search-action">
               <i class="nav-search" tabindex="0"></i>
             </span>
-                        <label class="hidden-elements" for="search-query">Search</label>
-                        <input data-focus="false" class="search-input" id="search-query" placeholder="Search" name="q"
-                               autocomplete="off" spellcheck="false" tabindex="-1" type="text">
-                        <input disabled="disabled" class="search-input search-hinting-input" id="search-query-hint"
-                               autocomplete="off" spellcheck="false" type="text">
+                    <label class="hidden-elements" for="search-query">Search</label>
+                    <input data-focus="false" class="search-input" id="search-query" placeholder="Search" name="q"
+                           autocomplete="off" spellcheck="false" tabindex="-1" type="text">
+                    <input disabled="disabled" class="search-input search-hinting-input" id="search-query-hint"
+                           autocomplete="off" spellcheck="false" type="text">
 
-                        <div style="display: none;" class="dropdown-menu typeahead">
+                    <div id="search-results-container" class="dropdown-menu typeahead" style="display: none; ">
                             <div class="dropdown-caret">
                                 <div class="caret-outer"></div>
                                 <div class="caret-inner"></div>
                             </div>
                             <div class="dropdown-inner js-typeahead-results">
-                                <ul class="typeahead-items saved-searches-list"></ul>
-                                <ul style="display: none;" class="typeahead-items topics-list"></ul>
-                                <div style="display: none;" class="typeahead-accounts js-typeahead-accounts">
-                                    <ul class="typeahead-items">
+                                <div class="js-typeahead-saved-searches" style="display: none; ">
+                                    <ul class="typeahead-items typeahead-searches" data-search-query="harish"></ul>
+                                </div>
+                                <div class="typeahead-accounts js-typeahead-accounts has-results" style="">
+                                    <ul id="results-list" class="typeahead-items" data-query="harish">
 
 
-                                        <li class="js-selectable typeahead-accounts-shortcut js-shortcut"><a href=""
-                                                                                                             data-search-query=""
-                                                                                                             data-query-source="typeahead_click"
-                                                                                                             data-shortcut="true"
-                                                                                                             data-ds="account_search"></a>
-                                        </li>
+                                        <%--<li class="js-selectable js-shortcut"><a href="/#!/search/users/harish"
+                                                                                 data-search-query="harish"
+                                                                                 data-query-source="typeahead_click"
+                                                                                 data-shortcut="true">Search all people
+                                            for <strong>harish</strong></a></li>--%>
                                     </ul>
                                 </div>
                             </div>
                         </div>
-                    </form>
+                </form>
 
-                </div>
-
-
-                <a id="close-all-button" class="close-all-tweets js-close-all-tweets" href="#"
-                   title="Close all open Tweets">
-                    <i class="nav-breaker"></i>
-                </a>
             </div>
-        </div>
-    </div>
-    <div class="alert-messages hidden" id="message-drawer">
-        <div class="message ">
-            <div class="message-inside">
-                <span class="message-text"></span><a class="dismiss" href="#">×</a>
-            </div>
+
+
+            <a id="close-all-button" class="close-all-tweets js-close-all-tweets" href="#"
+               title="Close all open Tweets">
+                <i class="nav-breaker"></i>
+            </a>
         </div>
     </div>
 </div>
+<div class="alert-messages hidden" id="message-drawer">
+    <div class="message ">
+        <div class="message-inside">
+            <span class="message-text"></span><a class="dismiss" href="#">×</a>
+        </div>
+    </div>
+</div>
+
 <div id="page-outer">
 <div id="page-container" class="wrapper wrapper-profile">
 <div class="module profile-card component" data-component-term="profile_follow_card">
@@ -384,7 +450,7 @@
 
 
         <a href="https://si0.twimg.com/profile_images/2325645639/image.jpg" class="profile-picture" target="_blank">
-            <img src="${user_id}_files/image_reasonably_small.jpg" alt="${profile_name}" class="avatar size128">
+            <img src="data:image/jpeg;base64,${profile_dp}" alt="${profile_name}" class="avatar size128">
         </a>
 
         <div class="profile-card-inner" data-screen-name="${user_id}" data-user-id="51376979">
@@ -398,12 +464,8 @@
 
             </h2>
 
-            <p class="bio ">a female actor who lives to eat and read in that order.</p>
+            <p class="bio ">${profile_description}</p>
 
-            <p class="location-and-url">
-          <span class="location">
-            ÜT: 19.167049,72.845301
-          </span>
           <span class="url">
             <a target="_blank" rel="me nofollow" href="">
 
@@ -421,6 +483,7 @@
                     <span class="button-text follow-text">Follow</span>
                     <span class="button-text following-text">Following</span>
                     <span class="button-text unfollow-text">Unfollow</span>
+                    <span class="button-text edit-text">Edit</span>
                     <span class="button-text blocked-text">Blocked</span>
                     <span class="button-text unblock-text">Unblock</span>
                     <span class="button-text pending-text">Pending</span>

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpSession;
+import java.util.Map;
 
 @Controller
 public class UserController {
@@ -38,11 +39,13 @@ public class UserController {
         int followerCount = dao.getFollowerCount(userID);
         int followingCount = dao.getFollowingCount(userID);
         int tweetCount = dao.getTweetCount(userID);
-        mv.addObject("current_user_fullname", session.getAttribute("userID"));
-        mv.addObject("current_user_id", session.getAttribute("userID"));
+        Map<String, Object> details = dao.getDetails(userID);
+        mv.addObject("current_user_fullname", details.get("fullname"));
+        mv.addObject("current_user_id", userID);
         mv.addObject("home_tweetCount", tweetCount);
         mv.addObject("home_followingCount", followingCount);
         mv.addObject("home_followerCount", followerCount);
+        mv.addObject("current_user_dp", details.get("dp"));
 
         return mv;
 
@@ -52,10 +55,6 @@ public class UserController {
     public String loginForm() {
         return "index";
     }
-
-
-
-
 
 
     @RequestMapping(value = "/sign_in", method = RequestMethod.POST)

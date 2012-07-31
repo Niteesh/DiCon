@@ -10,8 +10,11 @@
 
 <link href="https://twitter.com/favicons/favicon.ico" rel="shortcut icon" type="image/x-icon">
 
-<link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/t1_core.css" type="text/css" media="screen">
-
+<link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/t1_core.css" type="text/css" media="screen"/>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/t1_core.bundle.css" type="text/css"
+      media="screen"/>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/t1_more.bundle.css" type="text/css"
+      media="screen"/>
 
 <link rel="canonical" href="https://twitter.com/">
 
@@ -34,7 +37,8 @@
         });
 
         on(dom.byId("new-tweet-textarea"), "keyup", function() {
-            if (dom.byId("new-tweet-textarea").value == "") {
+            query(".tweet-counter")[0].value = 140 - dom.byId("new-tweet-textarea").value.length;
+            if (dom.byId("new-tweet-textarea").value == "" || query(".tweet-counter")[0].value < 0) {
                 query("#tweet-button").addClass("disabled");
                 query("#tweet-button").removeClass("primary-btn");
             }
@@ -43,21 +47,28 @@
                 query("#tweet-button").removeClass("disabled");
             }
         });
-
+        var hide_searchresults_timeout;
         on(dom.byId("search-query"), "focus", function() {
-            dom.byId("search-results-container").style.display = "block";
+            clearTimeout(hide_searchresults_timeout);
+            query("#global-nav-search").addClass("focus");
+            query("#search-query").addClass("focus");
+
+            if (this.value != "")
+                dom.byId("search-results-container").style.display = "block";
         });
 
         on(dom.byId("search-query"), "blur", function() {
-            setTimeout(function() {
+            query("#global-nav-search").removeClass("focus");
+            query("#search-query").removeClass("focus");
+            hide_searchresults_timeout = setTimeout(function() {
                 dom.byId("search-results-container").style.display = "none"
             }, 1000);
         });
 
         on(dom.byId("search-query"), "keyup", function() {
-            if(this.value!="")
+            if (this.value != "")
                 searchQuery(this.value);
-            else{
+            else {
                 domConstruct.empty(dom.byId("results-list"));
                 dom.byId("search-results-container").style.display = "none";
             }
@@ -256,8 +267,6 @@
 <body class="t1  logged-in front-random-image-city-balcony    mozilla user-style-niteesh3k">
 <iframe tabindex="-1" role="presentation" style="position: absolute; top: -9999px;"
         src="${pageContext.request.contextPath}/static/html/receiver.html"></iframe>
-<div class="route-home" id="doc">
-<div class="push-loader" id="pushStateSpinner"></div>
 
 <div class="topbar js-topbar">
     <div id="banners" class="js-banners">
@@ -265,9 +274,8 @@
             <div class="banner-outer">
                 <div class="banner">
                     <div class="banner-inside noscript-warning">
-                        <h5>Twitter.com makes heavy use of JavaScript.</h5>
-                        <span class="warning">If you cannot enable it in your browser's preferences, you may have a better experience on our <a
-                                href="http://m.twitter.com">mobile site</a>.</span>
+                        <h5>Our site makes heavy use of JavaScript.</h5>
+                        <span class="warning">If you cannot enable it in your browser's preferences, it is not our problem.</span>
                     </div>
                 </div>
             </div>
@@ -279,7 +287,7 @@
             <div class="container">
                 <ul class="nav js-global-actions" id="global-actions">
                     <li id="global-nav-home" class="home active" data-global-action="home">
-                        <a class="js-hover" href="https://twitter.com/#%21/" data-component-term="home_nav"
+                        <a class="js-hover" href="/home" data-component-term="home_nav"
                            data-nav="home">
                             <span class="new-wrapper"><i class="nav-home"></i><i class="nav-new"></i></span> Home
                         </a>
@@ -287,77 +295,78 @@
                     <li class="people" data-global-action="connect">
                         <a class="js-hover" href="https://twitter.com/i/connect" data-component-term="connect_nav"
                            data-nav="connect">
-                            <span class="new-wrapper"><i class="nav-people"></i><i class="nav-new"></i></span> Connect
+                            <span class="new-wrapper"><i class="nav-people"></i><i class="nav-new"></i></span>
+                            Connect
                         </a>
                     </li>
                     <li class="topics" data-global-action="discover">
                         <a class="js-hover" href="https://twitter.com/i/discover" data-component-term="discover_nav"
                            data-nav="discover">
-                            <span class="new-wrapper"><i class="nav-topics"></i><i class="nav-new"></i></span> Discover
+                            <span class="new-wrapper"><i class="nav-topics"></i><i class="nav-new"></i></span>
+                            Discover
                         </a>
                     </li>
                 </ul>
                 <i class="bird-topbar-etched"></i>
 
                 <div class="pull-right">
-                    <div class="well topbar-tweet-btn">
-                        <ul class="nav js-global-actions">
-                            <li>
-                                <a href="/logout" class="js-hover">Logout</a>
-                            </li>
-                        </ul>
-                    </div>
 
-
-                    <i class="topbar-divider"></i>
-
-                    <form class="form-search js-search-form has-saved-searches" action="/search" id="global-nav-search">
-            <span class="search-icon js-search-action">
-              <i class="nav-search" tabindex="0"></i>
-            </span>
-                        <label class="hidden-elements" for="search-query">Search</label>
-                        <input class="search-input" id="search-query" placeholder="Search" name="q" autocomplete="off"
-                               spellcheck="false" tabindex="-1" type="text">
-                        <input disabled="disabled" class="search-input search-hinting-input" id="search-query-hint"
-                               autocomplete="off" spellcheck="false" type="text">
-
-                        <div id="search-results-container" class="dropdown-menu typeahead" style="display: none; ">
-                            <div class="dropdown-caret">
-                                <div class="caret-outer"></div>
-                                <div class="caret-inner"></div>
-                            </div>
-                            <div class="dropdown-inner js-typeahead-results">
-                                <div class="js-typeahead-saved-searches" style="display: none; ">
-                                    <ul class="typeahead-items typeahead-searches" data-search-query="harish"></ul>
-                                </div>
-                                <div class="typeahead-accounts js-typeahead-accounts has-results" style="">
-                                    <ul id="results-list" class="typeahead-items" data-query="harish">
-
-
-                                        <li class="js-selectable js-shortcut"><a href="/#!/search/users/harish"
-                                                                                 data-search-query="harish"
-                                                                                 data-query-source="typeahead_click"
-                                                                                 data-shortcut="true">Search all people
-                                            for <strong>harish</strong></a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-
+                    <ul class="nav js-global-actions">
+                        <li class="people" data-global-action="connect">
+                            <a class="js-hover" href="/logout"
+                               data-component-term="connect_nav"
+                               data-nav="connect">
+                                <span class="new-wrapper"><i class="nav-people"></i><i class="nav-new"></i></span>Logout</a>
+                        </li>
+                    </ul>
                 </div>
 
 
-                <a style="display: none;" original-title="Close all open Tweets" id="close-all-button"
-                   class="close-all-tweets js-close-all-tweets" href="#">
-                    <i class="nav-breaker"></i>
-                </a>
+                <i class="topbar-divider"></i>
+
+                <form class="form-search js-search-form" action="/search" id="global-nav-search">
+            <span class="search-icon js-search-action">
+              <i class="nav-search" tabindex="0"></i>
+            </span>
+                    <label class="hidden-elements" for="search-query">Search</label>
+                    <input class="search-input" id="search-query" placeholder="Search" name="q" autocomplete="off"
+                           spellcheck="false" tabindex="-1" type="text">
+                    <input disabled="disabled" class="search-input search-hinting-input" id="search-query-hint"
+                           autocomplete="off" spellcheck="false" type="text">
+
+                    <div id="search-results-container" class="dropdown-menu typeahead" style="display: none; ">
+                        <div class="dropdown-caret">
+                            <div class="caret-outer"></div>
+                            <div class="caret-inner"></div>
+                        </div>
+                        <div class="dropdown-inner js-typeahead-results">
+                            <div class="js-typeahead-saved-searches" style="display: none; ">
+                                <ul class="typeahead-items typeahead-searches" data-search-query="harish"></ul>
+                            </div>
+                            <div class="typeahead-accounts js-typeahead-accounts has-results" style="">
+                                <ul id="results-list" class="typeahead-items" data-query="harish">
+
+
+                                    <%--<li class="js-selectable js-shortcut"><a href="/#!/search/users/harish"
+                                                                        data-search-query="harish"
+                                                                        data-query-source="typeahead_click"
+                                                                        data-shortcut="true">Search all people
+                                   for <strong>harish</strong></a></li>--%>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
             </div>
+
+
         </div>
     </div>
-    <div class="alert-messages " id="message-drawer">
-    </div>
 </div>
+<div class="alert-messages " id="message-drawer">
+</div>
+
 <div id="page-outer">
 <div id="page-container" class="wrapper home-container">
 <div class="new-js-banners"></div>
@@ -372,7 +381,8 @@
                 <div class="content">
                     <div class="account-group js-mini-current-user" data-user-id="612622708"
                          data-screen-name="niteesh3k">
-                        <img class="avatar size32" src="DiCon_Home_Files/Niteesh_Kumar_normal.png" alt="niteesh kumar"
+                        <img class="avatar size32" src="data:image/jpeg;base64,${current_user_dp}"
+                             alt="${current_user_fullname}"
                              data-user-id="612622708">
                         <b class="fullname">${current_user_fullname}</b>
                         <small class="metadata">View my profile page</small>
@@ -426,9 +436,10 @@
 
                     <div class="tweet-button-sub-container">
                         <img src="DiCon_Home_Files/spinner.gif" class="tweet-spinner" style="display: none;">
-                        <span style="opacity: 0;" class="tweetbox-counter-tipsy"></span><input class="tweet-counter"
-                                                                                               value="120"
-                                                                                               disabled="disabled">
+                        <span style="opacity: 0;" class="tweetbox-counter-tipsy"></span>
+                        <input class="tweet-counter"
+                               value="140"
+                               disabled="disabled">
                         <a href="#" class="tweet-button btn disabled" id="tweet-button">Tweet</a></div>
                 </div>
             </div>
@@ -442,9 +453,9 @@
 
                 <div class="flex-module-header">
                     <h3>Who to follow</h3>
-                    <small>· <a class="js-refresh-suggestions" href="#">Refresh</a></small>
-                    <small class="view-all">· <a href="https://twitter.com/#%21/who_to_follow/suggestions"
-                                                 data-element-term="view_all_link">View all</a></small>
+                    <small><a class="js-refresh-suggestions" href="#">Refresh</a></small>
+                    <small class="view-all"><a href="https://twitter.com/#%21/who_to_follow/suggestions"
+                                               data-element-term="view_all_link">View all</a></small>
                 </div>
 
                 <div class="js-recommended-followers dashboard-user-recommendations flex-module-inner"
@@ -460,8 +471,6 @@
                                      src="DiCon_Home_Files/SMUSA_Twitter_profile_normal.jpg" alt="Samsung Mobile US">
       <span class="account-group-inner js-action-profile-name" data-user-id="14117843">
         <b class="fullname">Follow Suggestion 1</b>
-        <span>‏</span>
-        <i class="verified"></i>
           <span class="username"><s>@</s><span class="js-username">followusername</span></span>
       </span>
                             </a>
@@ -509,7 +518,7 @@
             <div class="flex-module">
                 <div class="flex-module-inner js-items-container">
                     <ul class="clearfix">
-                        <li class="copyright">© 2012 Twitter</li>
+                        <li class="copyright">&#169; 2012 DiCon</li>
                         <li><a href="https://twitter.com/about">About</a></li>
                         <li><a href="https://support.twitter.com/">Help</a></li>
                         <li><a href="https://twitter.com/tos">Terms</a></li>
@@ -546,61 +555,14 @@
 
     <div class="stream js-stream-manager-container">
         <div class="stream-manager js-stream-manager-container" id="home-stream-manager">
-            <ul id="stream-list">
-            </ul>
+
             <div class="stream-title"></div>
             <div class="stream-container">
                 <div media="true" data-component-term="stream" class="stream home-stream">
 
                     <div class="js-stream-items stream-items" id="stream-items-id">
-                        <div class="js-stream-item stream-item stream-item expanding-stream-item"
-                             data-item-id="225153770210856960"
-                             data-item-type="tweet" id="stream-item-tweet-225153770210856960">
-
-
-                            <div class="tweet original-tweet js-stream-tweet js-actionable-tweet js-hover js-profile-popup-actionable js-original-tweet        with-social-proof"
-                                 data-tweet-id="225153770210856960" data-item-id="225153770210856960"
-                                 data-screen-name="sonamakapoor"
-                                 data-name="Sonam Kapoor" data-user-id="51376979" data-is-reply-to="">
-
-
-                                <i class="dogear"></i>
-
-
-                                <div class="content">
-
-
-                                    <div class="stream-item-header">
-                                        <small class="time">
-                                            <a href="https://twitter.com/sonamakapoor/status/225153770210856960"
-                                               class="tweet-timestamp js-permalink" title="2:33 PM - 17 Jul 12"><span
-                                                    class="_timestamp js-short-timestamp " data-time="1342515816000"
-                                                    data-long-form="true">3h</span></a>
-                                        </small>
-                                        <a class="account-group js-account-group js-action-profile js-user-profile-link"
-                                           href="https://twitter.com/sonamakapoor" data-user-id="51376979">
-                                            <img class="avatar js-action-profile-avatar"
-                                                 src="DiCon_Home_Files/image_normal.jpg"
-                                                 alt="Sonam Kapoor">
-                                            <strong class="fullname js-action-profile-name show-popup-with-id">FULL
-                                                NAME</strong>
-                                            <span></span><span class="username js-action-profile-name"><s>@</s><b>USERNAME</b></span>
-                                        </a>
-                                    </div>
-
-
-                                    <p class="js-tweet-text">TWEET TEXT</p>
-
-                                    </a>
-
-
-                                </div>
-
-
-                                <div class="expanded-content js-tweet-details-dropdown">
-                                </div>
-                            </div>
-                        </div>
+                        <ul id="stream-list">
+                        </ul>
 
                     </div>
 
@@ -621,6 +583,7 @@
                             });
                         });
                     </script>
+
 
 </body>
 </html>
