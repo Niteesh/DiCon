@@ -24,91 +24,87 @@
 <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/dojo/1.7.2/dojo/dojo.js"
         data-dojo-config="async: true"></script>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
- <script type ="text/javascript">
 
-
- </script>
-
- <script type="text/javascript">
-
- function getFollowingList() {
-         document.getElementById("tweets").style.display = "none";
-         document.getElementById("following").style.display = "block";
-          document.getElementById("follower").style.display = "none" ;
-
-
-         require(["dojo/_base/xhr", "dojo/dom", "dojo/dom-construct", "dojo/_base/array", "dojo/NodeList-dom", "dojo/domReady!"],
-                 function(xhr, dom, domConstruct) {
-
-                     xhr.get({
-                                 url: "${user_id}/following",
-                                 handleAs: "json",
-                                 headers: { "Accept": "application/json"},
-                                 content: {
-                                     latest_tweet_id : latest_tweet_id
-                                 },
-                                 load: function(response) {
-
-                                     for (var i in response) {
-                                         var newTweet = new EJS({url: '${pageContext.request.contextPath}/static/ejs/following.ejs'}).render(response[i]);
-                                         domConstruct.place(newTweet, dom.byId("stream-list-following"), "first");
-
-                                     }
-                                     console.log("new tweets = " + response.length);
-
-
-                                 },
-                                 error: function() {
-                                     console.log("Error fetching json.");
-                                 },
-                                 handle: function() {
-                                     console.log("latest tweet id = " + latest_tweet_id);
-                                 }
-                             });
-
-                 });
-     }
-
-     function getFollowerList() {
-              document.getElementById("tweets").style.display = "none";
-              document.getElementById("following").style.display = "none";
-              document.getElementById("follower").style.display = "block";
-
-              require([ "dojo/_base/xhr", "dojo/dom", "dojo/dom-construct", "dojo/_base/array", "dojo/NodeList-dom", "dojo/domReady!"],
-                      function(xhr, dom, domConstruct) {
-
-                          xhr.get({
-                                      url: "${user_id}/follower",
-                                      handleAs: "json",
-                                      headers: { "Accept": "application/json"},
-                                      content: {
-                                          latest_tweet_id : latest_tweet_id
-                                      },
-                                      load: function(response) {
-
-                                          for (var i in response) {
-                                              var newTweet = new EJS({url: '${pageContext.request.contextPath}/static/ejs/follower.ejs'}).render(response[i]);
-                                              domConstruct.place(newTweet, dom.byId("stream-list-follower"), "first");
-
-                                          }
-                                          console.log("new tweets = " + response.length);
-
-
-                                      },
-                                      error: function() {
-                                          console.log("Error fetching json.");
-                                      },
-                                      handle: function() {
-                                          console.log("latest tweet id = " + latest_tweet_id);
-                                      }
-                          });
-
-              });
-          }
- </script>
 
 <script type="text/javascript">
 
+    function getFollowingList() {
+        document.getElementById("tweets").style.display = "none";
+        document.getElementById("following").style.display = "block";
+        document.getElementById("follower").style.display = "none";
+
+
+        require(["dojo/_base/xhr", "dojo/dom", "dojo/dom-construct", "dojo/_base/array", "dojo/NodeList-dom", "dojo/domReady!"],
+                function(xhr, dom, domConstruct) {
+
+                    xhr.get({
+                                url: "${user_id}/following",
+                                handleAs: "json",
+                                headers: { "Accept": "application/json"},
+                                content: {
+                                    latest_tweet_id : latest_tweet_id
+                                },
+                                load: function(response) {
+
+                                    for (var i in response) {
+                                        var newTweet = new EJS({url: '${pageContext.request.contextPath}/static/ejs/following.ejs'}).render(response[i]);
+                                        domConstruct.place(newTweet, dom.byId("stream-list-following"), "first");
+
+                                    }
+                                    console.log("new tweets = " + response.length);
+
+
+                                },
+                                error: function() {
+                                    console.log("Error fetching json.");
+                                },
+                                handle: function() {
+                                    console.log("latest tweet id = " + latest_tweet_id);
+                                }
+                            });
+
+                });
+    }
+
+    function getFollowerList() {
+        document.getElementById("tweets").style.display = "none";
+        document.getElementById("following").style.display = "none";
+        document.getElementById("follower").style.display = "block";
+
+        require([ "dojo/_base/xhr", "dojo/dom", "dojo/dom-construct", "dojo/_base/array", "dojo/NodeList-dom", "dojo/domReady!"],
+                function(xhr, dom, domConstruct) {
+
+                    xhr.get({
+                                url: "${user_id}/follower",
+                                handleAs: "json",
+                                headers: { "Accept": "application/json"},
+                                content: {
+                                    latest_tweet_id : latest_tweet_id
+                                },
+                                load: function(response) {
+
+                                    for (var i in response) {
+                                        var newTweet = new EJS({url: '${pageContext.request.contextPath}/static/ejs/follower.ejs'}).render(response[i]);
+                                        domConstruct.place(newTweet, dom.byId("stream-list-follower"), "first");
+
+                                    }
+                                    console.log("new tweets = " + response.length);
+
+
+                                },
+                                error: function() {
+                                    console.log("Error fetching json.");
+                                },
+                                handle: function() {
+                                    console.log("latest tweet id = " + latest_tweet_id);
+                                }
+                            });
+
+                });
+    }
+</script>
+
+<script type="text/javascript">
 
     var latest_tweet_id = 0;
     refreshTweets();
@@ -130,6 +126,7 @@
                                 },
                                 load: function(response) {
                                     for (var i in response) {
+                                        response[i]["timestamp"]=makeTimestamp(response[i]["days"],response[i]["hours"],response[i]["minutes"]);
                                         var newTweet = new EJS({url: '${pageContext.request.contextPath}/static/ejs/tweet.ejs'}).render(response[i]);
                                         domConstruct.place(newTweet, dom.byId("stream-list"), "first");
                                         latest_tweet_id = response[i]["tweet_id"];
@@ -147,6 +144,37 @@
                             });
 
                 });
+    }
+
+    function makeTimestamp(days,hours,minutes){
+        var str="";
+        if(days!=0)
+            str+=days+" days ";
+        if(hours!=0)
+            str+=hours+" hours ";
+        if(minutes!=0)
+            str+=minutes+" minutes ";
+        if(days+hours+minutes==0)
+            str+="a few seconds ";
+        str+="ago";
+        return str;
+    }
+    function convertTimeIntoDifference(timediff) {
+        if (timediff < 60){
+            return "a few seconds ago";
+        }
+        else if (timediff < 3600){
+            timediff = parseInt(timediff / 60);
+            return timediff + "minutes ago";
+        }
+        else if (timediff < 3600*24){
+            timediff = parseInt(timediff / 3600);
+            return timediff + "hours ago";
+        }
+        else {
+            timediff = parseInt(timediff / 3600*24);
+            return timediff + "days ago";
+        }
     }
     function hasClass(el, name) {
         return new RegExp('(\\s|^)' + name + '(\\s|$)').test(el.className);
@@ -258,10 +286,6 @@
 
 
 </script>
-
-
-
-
 
 
 <style id="user-style-${user_id}" class="js-user-style">
@@ -478,6 +502,7 @@
                         </li>
                     </ul>
                 </div>
+                <i class="topbar-divider"></i>
 
                 <form class="form-search js-search-form" action="/search" id="global-nav-search">
             <span class="search-icon js-search-action">
@@ -490,27 +515,27 @@
                            autocomplete="off" spellcheck="false" type="text">
 
                     <div id="search-results-container" class="dropdown-menu typeahead" style="display: none; ">
-                            <div class="dropdown-caret">
-                                <div class="caret-outer"></div>
-                                <div class="caret-inner"></div>
+                        <div class="dropdown-caret">
+                            <div class="caret-outer"></div>
+                            <div class="caret-inner"></div>
+                        </div>
+                        <div class="dropdown-inner js-typeahead-results">
+                            <div class="js-typeahead-saved-searches" style="display: none; ">
+                                <ul class="typeahead-items typeahead-searches" data-search-query="harish"></ul>
                             </div>
-                            <div class="dropdown-inner js-typeahead-results">
-                                <div class="js-typeahead-saved-searches" style="display: none; ">
-                                    <ul class="typeahead-items typeahead-searches" data-search-query="harish"></ul>
-                                </div>
-                                <div class="typeahead-accounts js-typeahead-accounts has-results" style="">
-                                    <ul id="results-list" class="typeahead-items" data-query="harish">
+                            <div class="typeahead-accounts js-typeahead-accounts has-results" style="">
+                                <ul id="results-list" class="typeahead-items" data-query="harish">
 
 
-                                        <%--<li class="js-selectable js-shortcut"><a href="/#!/search/users/harish"
-                                                                                 data-search-query="harish"
-                                                                                 data-query-source="typeahead_click"
-                                                                                 data-shortcut="true">Search all people
-                                            for <strong>harish</strong></a></li>--%>
-                                    </ul>
-                                </div>
+                                    <%--<li class="js-selectable js-shortcut"><a href="/#!/search/users/harish"
+                                                                        data-search-query="harish"
+                                                                        data-query-source="typeahead_click"
+                                                                        data-shortcut="true">Search all people
+                                   for <strong>harish</strong></a></li>--%>
+                                </ul>
                             </div>
                         </div>
+                    </div>
                 </form>
 
             </div>
@@ -588,7 +613,7 @@
                 </a></li>
                 <li><a href="#" data-element-term="following_stats" onclick="getFollowingList()"
                        data-nav="following"><strong>${profile_following}</strong> Following</a></li>
-                <li><a href="#" data-element-term="follower_stats"  onclick="getFollowerList()"
+                <li><a href="#" data-element-term="follower_stats" onclick="getFollowerList()"
                        data-nav="followers"><strong>${profile_follower}</strong> Followers</a></li>
             </ul>
         </div>
@@ -673,11 +698,11 @@
     <div class="module profile-nav">
         <ul class="js-nav-links">
             <li class="active">
-                <a class="list-link" href="#" data-nav="profile" onclick = "refreshTweets()">Tweets<i
+                <a class="list-link" href="#" data-nav="profile" onclick="refreshTweets()">Tweets<i
                         class="chev-right"></i></a>
             </li>
             <li class="">
-                <a class="list-link" href="#" data-nav="following" onclick="getFollowingList()"  >Following<i
+                <a class="list-link" href="#" data-nav="following" onclick="getFollowingList()">Following<i
                         class="chev-right"></i></a>
             </li>
             <li class="">
@@ -896,7 +921,7 @@
     <div class="flex-module">
         <div class="flex-module-inner js-items-container">
             <ul class="clearfix">
-                <li class="copyright">© 2012 Twitter</li>
+                <li class="copyright">© 2012 DiCon</li>
                 <li><a href="https://twitter.com/about">About</a></li>
                 <li><a href="https://support.twitter.com/">Help</a></li>
                 <li><a href="https://twitter.com/tos">Terms</a></li>
@@ -916,14 +941,14 @@
 </div>
 </div>
 <div class="component" id="suggested-users"></div>
- <div class="content-main" id="timeline">      <!-- ----------------------------------- -->
-    <div id="tweets">
-    <div class="content-header" >
+<div class="content-main" id="timeline">      <!-- ----------------------------------- -->
+<div id="tweets">
+    <div class="content-header">
         <div class="header-inner">
             <h2 class="js-timeline-title">Tweets
-                 <small class="view-toggler"><a class="toggle-item-1 "
-                                           href="https://twitter.com/${user_id}/with_replies">All</a> /
-                <a class="toggle-item-2 active" href="https://twitter.com/${user_id}">No replies</a></small>
+                <small class="view-toggler"><a class="toggle-item-1 "
+                                               href="https://twitter.com/${user_id}/with_replies">All</a> /
+                    <a class="toggle-item-2 active" href="https://twitter.com/${user_id}">No replies</a></small>
             </h2>
         </div>
     </div>
@@ -933,25 +958,25 @@
 
 
 <div id="following" style="display: none">
- <div class="content-header" >
-    <div class="header-inner">
-         <h2 class="js-timeline-title">Following
-         </h2>
-     </div>
- </div>
-<ul id="stream-list-following">
-</ul>
+    <div class="content-header">
+        <div class="header-inner">
+            <h2 class="js-timeline-title">Following
+            </h2>
+        </div>
+    </div>
+    <ul id="stream-list-following">
+    </ul>
 </div>
 
 <div id="follower" style="display: none">
- <div class="content-header" >
-    <div class="header-inner">
-         <h2 class="js-timeline-title">Following
-         </h2>
-     </div>
- </div>
-<ul id="stream-list-follower">
-</ul>
+    <div class="content-header">
+        <div class="header-inner">
+            <h2 class="js-timeline-title">Following
+            </h2>
+        </div>
+    </div>
+    <ul id="stream-list-follower">
+    </ul>
 </div>
 
 <div class="modal-overlay"></div>

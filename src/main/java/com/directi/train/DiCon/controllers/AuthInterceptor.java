@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 public class AuthInterceptor extends HandlerInterceptorAdapter {
-    private final ThreadLocal<Integer> usergit ID;
+    private final ThreadLocal<Integer> userID;
 
 
 

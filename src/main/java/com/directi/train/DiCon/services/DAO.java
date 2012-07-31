@@ -32,7 +32,7 @@ public class DAO {
 
 
     public List<Map<String,Object>> getFollowersList(int user_id){
-        return db.queryForList("SELECT user_id, fullname, dp_url FROM twitter.follows follows INNER JOIN twitter.details  details ON details.user_id = follows.follower_id WHERE following_id = ? AND stop_time IS NULL;",user_id);
+        return db.queryForList("SELECT user_id, fullname, dp FROM twitter.follows follows INNER JOIN twitter.details  details ON details.user_id = follows.follower_id WHERE following_id = ? AND stop_time IS NULL;",user_id);
     }
 
     public Integer getFollowerCount(int user_id) {
@@ -41,7 +41,7 @@ public class DAO {
 
 
     public List<Map<String, Object>> getFollowingList(int user_id){
-        return db.queryForList("SELECT user_id, fullname, dp_url FROM twitter.follows follows INNER JOIN twitter.details  details ON details.user_id = follows.following_id WHERE follower_id = ? AND stop_time IS NULL;",user_id);
+        return db.queryForList("SELECT user_id, fullname, dp FROM twitter.follows follows INNER JOIN twitter.details  details ON details.user_id = follows.following_id WHERE follower_id = ? AND stop_time IS NULL;",user_id);
     }
 
     public Integer getFollowingCount(int user_id) {
@@ -50,7 +50,7 @@ public class DAO {
 
 
     public List<Map<String, Object>> getPostsByUser(int user_id, int latest_tweet_id) {
-        return db.queryForList("SELECT D.fullname,D.dp,T.text,T.timestamp,T.tweet_id,T.user_id FROM twitter.tweets T INNER JOIN twitter.details D ON T.user_id = D.user_id WHERE T.user_id = ? AND T.tweet_id > ? ORDER BY T.timestamp ASC;", user_id, latest_tweet_id);
+        return db.queryForList("SELECT D.fullname,D.dp,T.text,date_part('days',now()-T.timestamp) as days,date_part('hours',now()-T.timestamp) as hours,date_part('minutes',now()-T.timestamp) as minutes,T.tweet_id,T.user_id FROM twitter.tweets T INNER JOIN twitter.details D ON T.user_id = D.user_id WHERE T.user_id = ? AND T.tweet_id > ? ORDER BY T.timestamp ASC;", user_id, latest_tweet_id);
     }
 
     public List<Map<String, Object>> getNewsFeed(int user_id, int latest_feed_id) {

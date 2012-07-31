@@ -113,16 +113,25 @@
       <file leaf-file-name="home.jsp" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/home.jsp">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="472" column="54" selection-start="21858" selection-end="21858" vertical-scroll-proportion="-2.9607842">
+            <state line="324" column="46" selection-start="13444" selection-end="13474" vertical-scroll-proportion="-6.4117646">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="AuthInterceptor.java" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="AuthInterceptor.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/directi/train/DiCon/controllers/AuthInterceptor.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="11" column="47" selection-start="492" selection-end="492" vertical-scroll-proportion="0.028960818">
+            <state line="11" column="43" selection-start="488" selection-end="488" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="AppConfig.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/directi/train/DiCon/AppConfig.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="12" column="54" selection-start="477" selection-end="477" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -137,10 +146,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="profile.jsp" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="profile.jsp" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/profile.jsp">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="512" column="30" selection-start="22018" selection-end="22018" vertical-scroll-proportion="-8.960784">
+            <state line="147" column="36" selection-start="6696" selection-end="6696" vertical-scroll-proportion="0.41491395">
               <folding />
             </state>
           </provider>
@@ -158,8 +167,19 @@
       <file leaf-file-name="tweet.ejs" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/webapp/static/ejs/tweet.ejs">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="31" column="98" selection-start="1308" selection-end="1308" vertical-scroll-proportion="-10.72">
+            <state line="27" column="62" selection-start="1009" selection-end="1009" vertical-scroll-proportion="-14.28">
               <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="DAO.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/directi/train/DiCon/services/DAO.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="52" column="201" selection-start="2239" selection-end="2239" vertical-scroll-proportion="-4.18">
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -178,7 +198,6 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/index.jsp" />
         <option value="$PROJECT_DIR$/src/main/java/com/directi/train/DiCon/controllers/SearchController.java" />
         <option value="$PROJECT_DIR$/src/main/webapp/static/css/t1_more.bundle.css" />
         <option value="$PROJECT_DIR$/src/main/webapp/static/css/t1_core.bundle.css" />
@@ -186,14 +205,15 @@
         <option value="$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/editpopup.jsp" />
         <option value="$PROJECT_DIR$/src/main/webapp/static/css/t1_core.css" />
         <option value="$PROJECT_DIR$/pom.xml" />
-        <option value="$PROJECT_DIR$/src/main/webapp/static/ejs/tweet.ejs" />
         <option value="$PROJECT_DIR$/src/main/webapp/static/ejs/searchResult.ejs" />
-        <option value="$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/profile.jsp" />
         <option value="$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/home.jsp" />
         <option value="$PROJECT_DIR$/src/main/webapp/WEB-INF/dispatcher-servlet.xml" />
         <option value="$PROJECT_DIR$/src/main/java/com/directi/train/DiCon/controllers/Profile.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/directi/train/DiCon/services/DAO.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/directi/train/DiCon/controllers/AuthInterceptor.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/directi/train/DiCon/AppConfig.java" />
+        <option value="$PROJECT_DIR$/src/main/webapp/static/ejs/tweet.ejs" />
+        <option value="$PROJECT_DIR$/src/main/java/com/directi/train/DiCon/services/DAO.java" />
+        <option value="$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/profile.jsp" />
       </list>
     </option>
   </component>
@@ -474,36 +494,6 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="ejs" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="todoapp" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="DiCon" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="webapp" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="static" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="css" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -820,7 +810,7 @@
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32979852" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Web" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
-      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.24652407" sideWeight="0.65111345" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.24759358" sideWeight="0.65111345" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Dependency Viewer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.1855615" sideWeight="0.65111345" order="0" side_tool="false" content_ui="tabs" />
@@ -950,13 +940,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/webapp/static/ejs/tweet.ejs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="31" column="98" selection-start="1308" selection-end="1308" vertical-scroll-proportion="-10.72">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/webapp/static/ejs/searchResult.ejs">
       <provider selected="true" editor-type-id="text-editor">
         <state line="3" column="86" selection-start="333" selection-end="333" vertical-scroll-proportion="0.0">
@@ -969,32 +952,9 @@
         <state line="0" column="70" selection-start="70" selection-end="70" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/home.jsp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="472" column="54" selection-start="21858" selection-end="21858" vertical-scroll-proportion="-2.9607842">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/directi/train/DiCon/controllers/Profile.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="120" column="0" selection-start="4472" selection-end="4472" vertical-scroll-proportion="0.81654674">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/profile.jsp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="512" column="30" selection-start="22018" selection-end="22018" vertical-scroll-proportion="-8.960784">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/directi/train/DiCon/services/DAO.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="44" column="20" selection-start="1771" selection-end="1771" vertical-scroll-proportion="-1.5989208">
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -1011,16 +971,46 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/directi/train/DiCon/AppConfig.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/directi/train/DiCon/controllers/AuthInterceptor.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="8" column="13" selection-start="288" selection-end="288" vertical-scroll-proportion="0.14480409">
+        <state line="11" column="43" selection-start="488" selection-end="488" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/directi/train/DiCon/controllers/AuthInterceptor.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/directi/train/DiCon/AppConfig.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="11" column="47" selection-start="492" selection-end="492" vertical-scroll-proportion="0.028960818">
+        <state line="12" column="54" selection-start="477" selection-end="477" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/home.jsp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="324" column="46" selection-start="13444" selection-end="13474" vertical-scroll-proportion="-6.4117646">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/directi/train/DiCon/services/DAO.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="52" column="201" selection-start="2239" selection-end="2239" vertical-scroll-proportion="-4.18">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/webapp/static/ejs/tweet.ejs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="27" column="62" selection-start="1009" selection-end="1009" vertical-scroll-proportion="-14.28">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/profile.jsp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="147" column="36" selection-start="6696" selection-end="6696" vertical-scroll-proportion="0.41491395">
           <folding />
         </state>
       </provider>
