@@ -138,7 +138,7 @@ public class Profile {
     @RequestMapping(value="following", method = RequestMethod.GET)
     @ResponseBody
     public List<Map<String,Object>> getFollowingList(HttpSession session,@PathVariable("userID") Integer userID){
-        return dao.getFollowingList(userID);
+        return dao.getFollowingList(userID, (Integer) session.getAttribute("userID"));
     }
 
     @RequestMapping(value="follower", method = RequestMethod.GET)

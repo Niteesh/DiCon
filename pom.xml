@@ -40,11 +40,11 @@
             <version>1.7.1</version>
         </dependency>
 
-            <dependency>
-                <groupId>postgresql</groupId>
-                <artifactId>postgresql</artifactId>
-                <version>8.4-701.jdbc4</version>
-            </dependency>
+        <dependency>
+            <groupId>postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>8.4-701.jdbc4</version>
+        </dependency>
 
         <dependency>
             <groupId>javax.servlet</groupId>
