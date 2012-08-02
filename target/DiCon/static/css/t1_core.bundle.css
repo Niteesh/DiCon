@@ -117,12 +117,12 @@ button.btn::-moz-focus-inner, input[type=submit].btn::-moz-focus-inner {
     border-color: #ec8b11;
 }
 
-.primary-btn, .following.first-hover .follow-btn:hover, .following .follow-btn, .following .follow-button.cancel-hover-style:hover, .following .follow-button{
+.primary-btn, .following.first-hover .follow-btn:hover, .following .follow-btn, .following .follow-button.cancel-hover-style:hover, .following .follow-button {
     color: #fff;
     text-shadow: 0 -1px 0 rgba(0, 0, 0, .25);
     background-color: #019ad2;
     background-repeat: repeat-x;
-    background-image: -khtml-gradient(linear, left top, left bottom, from(#4CC417), to(#019ad2));
+    background-image: -khtml-gradient(linear, left top, left bottom, from(#33bcef), to(#019ad2));
     background-image: -moz-linear-gradient(#33bcef, #019ad2);
     background-image: -ms-linear-gradient(#33bcef, #019ad2);
     background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #33bcef), color-stop(100%, #019ad2));
@@ -131,44 +131,6 @@ button.btn::-moz-focus-inner, input[type=submit].btn::-moz-focus-inner {
     background-image: linear-gradient(#33bcef, #019ad2);
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = '#33bcef', endColorstr = '#019ad2', GradientType = 0);
     border-color: #057ed0;
-    -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, .1);
-    -moz-box-shadow: inset 0 1px 0 rgba(255, 255, 255, .1);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .1);
-}
-
-.edit .follow-button{
-    color: #fff;
-    text-shadow: 0 -1px 0 rgba(0, 0, 0, .25);
-    background-color: #4AA02C;
-    background-repeat: repeat-x;
-    background-image: -khtml-gradient(linear, left top, left bottom, from(#00FF00), to(#4AA02C));
-    background-image: -moz-linear-gradient(#00FF00, #4AA02C);
-    background-image: -ms-linear-gradient(#00FF00, #4AA02C);
-    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #00FF00), color-stop(100%, #4AA02C));
-    background-image: -webkit-linear-gradient(#00FF00, #4AA02C);
-    background-image: -o-linear-gradient(#00FF00, #4AA02C);
-    background-image: linear-gradient(#00FF00, #4AA02C);
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = '#00FF00', endColorstr = '#4AA02C', GradientType = 0);
-    border-color: #347235;
-    -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, .1);
-    -moz-box-shadow: inset 0 1px 0 rgba(255, 255, 255, .1);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .1);
-}
-
-.edit .follow-button:hover{
-    color: #fff;
-    text-shadow: 0 -1px 0 rgba(0, 0, 0, .25);
-    background-color: #348017;
-    background-repeat: repeat-x;
-    background-image: -khtml-gradient(linear, left top, left bottom, from(#4CC417), to(#348017));
-    background-image: -moz-linear-gradient(#4CC417, #348017);
-    background-image: -ms-linear-gradient(#4CC417, #348017);
-    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #4CC417), color-stop(100%, #348017));
-    background-image: -webkit-linear-gradient(#4CC417, #348017);
-    background-image: -o-linear-gradient(#4CC417, #348017);
-    background-image: linear-gradient(#4CC417, #348017);
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = '#4CC417', endColorstr = '#348017', GradientType = 0);
-    border-color: #347235;
     -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, .1);
     -moz-box-shadow: inset 0 1px 0 rgba(255, 255, 255, .1);
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, .1);
@@ -331,15 +293,15 @@ button.btn::-moz-focus-inner, input[type=submit].btn::-moz-focus-inner {
     margin-right: 3 px\9;
 }
 
-.edit .follow-button .button-text,.following .follow-button .button-text, .blocked .follow-button .button-text, .pending .follow-button .button-text {
+.following .follow-button .button-text, .blocked .follow-button .button-text, .pending .follow-button .button-text {
     text-align: center;
 }
 
-.edit .follow-button .edit-text, .not-following .follow-button .follow-text, .following .follow-button .following-text, .following .follow-button:hover .unfollow-text, .following .follow-button.cancel-hover-style:hover .following-text, .blocked .follow-button .blocked-text, .blocked .follow-button:hover .unblock-text, .pending .follow-button .pending-text, .pending .follow-button:hover .cancel-text, .pending .follow-button.cancel-hover-style:hover .pending-text {
+.not-following .follow-button .follow-text, .following .follow-button .following-text, .following .follow-button:hover .unfollow-text, .following .follow-button.cancel-hover-style:hover .following-text, .blocked .follow-button .blocked-text, .blocked .follow-button:hover .unblock-text, .pending .follow-button .pending-text, .pending .follow-button:hover .cancel-text, .pending .follow-button.cancel-hover-style:hover .pending-text {
     display: block;
 }
 
-.not-following .follow-button .edit-text, .following .follow-button .edit-text, .pending .follow-button .follow-text, .following .follow-button:hover .following-text, .following .follow-button.cancel-hover-style:hover .unfollow-text, .blocked .follow-button:hover .blocked-text, .pending .follow-button:hover .pending-text, .pending .follow-button.cancel-hover-style:hover .cancel-text {
+.pending .follow-button .follow-text, .following .follow-button:hover .following-text, .following .follow-button.cancel-hover-style:hover .unfollow-text, .blocked .follow-button:hover .blocked-text, .pending .follow-button:hover .pending-text, .pending .follow-button.cancel-hover-style:hover .cancel-text {
     display: none;
 }
 
@@ -380,6 +342,22 @@ button.btn::-moz-focus-inner, input[type=submit].btn::-moz-focus-inner {
 }
 
 .user-actions .open .dropdown-menu {
+    display: block;
+}
+
+.friend-actions .active-btn-text {
+    display: block;
+}
+
+.friend-actions .pending-btn-text {
+    display: none;
+}
+
+.friend-actions .pending .active-btn-text {
+    display: none;
+}
+
+.friend-actions .pending .pending-btn-text {
     display: block;
 }
 
@@ -965,63 +943,63 @@ i {
     width: 11px;
 }
 
-.media-gallery-content .sm-reply, .media-gallery-content .tweet:hover .sm-reply {
+.gallery-tweet .sm-reply, .gallery-tweet .tweet:hover .sm-reply {
     background-position: 0 -250px;
 }
 
-.media-gallery-content .sm-rt, .media-gallery-content .tweet:hover .sm-rt {
+.gallery-tweet .sm-rt, .gallery-tweet .tweet:hover .sm-rt {
     background-position: -20px -250px;
 }
 
-.media-gallery-content .sm-fav, .media-gallery-content .tweet:hover .sm-fav {
+.gallery-tweet .sm-fav, .gallery-tweet .tweet:hover .sm-fav {
     background-position: -40px -250px;
 }
 
-.media-gallery-content .sm-image, .media-gallery-content .tweet:hover .sm-image {
+.gallery-tweet .sm-image, .gallery-tweet .tweet:hover .sm-image {
     background-position: -60px -250px;
 }
 
-.media-gallery-content .sm-video, .media-gallery-content .tweet:hover .sm-video {
+.gallery-tweet .sm-video, .gallery-tweet .tweet:hover .sm-video {
     background-position: -80px -250px;
 }
 
-.media-gallery-content .sm-audio, .media-gallery-content .tweet:hover .sm-audio {
+.gallery-tweet .sm-audio, .gallery-tweet .tweet:hover .sm-audio {
     background-position: -100px -250px;
 }
 
-.media-gallery-content .sm-geo, .media-gallery-content .tweet:hover .sm-geo {
+.gallery-tweet .sm-geo, .gallery-tweet .tweet:hover .sm-geo {
     background-position: -120px -250px;
 }
 
-.media-gallery-content .sm-in, .media-gallery-content .tweet:hover .sm-in {
+.gallery-tweet .sm-in, .gallery-tweet .tweet:hover .sm-in {
     background-position: -140px -250px;
 }
 
-.media-gallery-content .sm-lock, .media-gallery-content .tweet:hover .sm-lock {
+.gallery-tweet .sm-lock, .gallery-tweet .tweet:hover .sm-lock {
     background-position: -160px -250px;
 }
 
-.media-gallery-content .sm-trash, .media-gallery-content .tweet:hover .sm-trash {
+.gallery-tweet .sm-trash, .gallery-tweet .tweet:hover .sm-trash {
     background-position: -180px -250px;
 }
 
-.media-gallery-content .sm-page, .media-gallery-content .tweet:hover .sm-page {
+.gallery-tweet .sm-page, .gallery-tweet .tweet:hover .sm-page {
     background-position: -200px -250px;
 }
 
-.media-gallery-content .sm-embed, .media-gallery-content .tweet:hover .sm-embed {
+.gallery-tweet .sm-embed, .gallery-tweet .tweet:hover .sm-embed {
     background-position: -240px -250px;
 }
 
-.media-gallery-content .sm-chat, .media-gallery-content .tweet:hover .sm-chat {
+.gallery-tweet .sm-chat, .gallery-tweet .tweet:hover .sm-chat {
     background-position: -100px -250px;
 }
 
-.media-gallery-content .sm-bird, .media-gallery-content .tweet:hover .sm-bird {
+.gallery-tweet .sm-bird, .gallery-tweet .tweet:hover .sm-bird {
     background-position: -100px -250px;
 }
 
-.media-gallery-content .sm-top-tweet, .media-gallery-content .tweet:hover .sm-top-tweet {
+.gallery-tweet .sm-top-tweet, .gallery-tweet .tweet:hover .sm-top-tweet {
     background-position: -100px -250px;
 }
 
@@ -1373,7 +1351,7 @@ i {
     background-position: -20px -690px;
 }
 
-.geo-focused .checkmark, a:hover .dropdown-check, .selected .dropdown-check {
+.geo-focused .checkmark, a:hover .dropdown-check, .dropdown-link:hover .dropdown-check, .selected .dropdown-check {
     background-position: -40px -690px;
 }
 
@@ -1588,6 +1566,26 @@ a:hover .trash {
 
 .tweet:hover .mark-as-spam-silhouette {
     background-position: -20px -1160px;
+}
+
+.stream-autoplay-marker .arrow {
+    background-position: -120px -1187px;
+}
+
+.autoplay-control .autoplay-play {
+    background-position: -60px -1190px;
+}
+
+.autoplay-control .autoplay-play:hover {
+    background-position: -90px -1190px;
+}
+
+.autoplay-control .autoplay-pause {
+    background-position: 0 -1190px;
+}
+
+.autoplay-control .autoplay-pause:hover {
+    background-position: -30px -1190px;
 }
 
 .with-icn {
@@ -3169,7 +3167,7 @@ html[lang=ja] .has-sms {
     text-decoration: none;
 }
 
-.user-similarities-list {
+.user-similarities-list, .wtf-module .empty-timeline {
     padding-bottom: 10px;
 }
 
@@ -3389,7 +3387,7 @@ html[lang=ja] .has-sms {
     white-space: nowrap;
 }
 
-.trends .badge-promoted {
+.trends .badge-promoted, .trends .badge-top {
     margin-left: 3px;
     margin-right: 4px;
 }
@@ -3460,7 +3458,7 @@ html[lang=ja] .has-sms {
     padding: 4px 3px 3px 4px;
 }
 
-.empty-timeline-header .dismiss.disabled {
+.empty-timeline-header .dismiss.disabled, .empty-timeline-header .js-done.disabled {
     display: none;
 }
 
@@ -3522,6 +3520,7 @@ html[lang=ja] .has-sms {
 }
 
 .empty-timeline-footer {
+    border-top-width: 0;
     -webkit-border-radius: 0 0 6px 6px;
     -moz-border-radius: 0 0 6px 6px;
     border-radius: 0 0 6px 6px;
@@ -4665,6 +4664,16 @@ b {
     user-select: none;
 }
 
+.stream {
+    overflow: hidden;
+    position: relative;
+}
+
+.stream-items {
+    position: relative;
+    overflow: hidden;
+}
+
 .stream-item, .unfocusable-stream-item {
     background: #fff;
     border-left: 1px solid #e8e8e8;
@@ -4732,6 +4741,11 @@ b {
 
 .tweet .context a {
     color: #999;
+}
+
+.tweet a .invisible {
+    font-size: 0;
+    line-height: 0;
 }
 
 .tweet .stream-item-footer {
@@ -5040,6 +5054,11 @@ b {
     font-size: 18px;
 }
 
+.permalink .permalink-header .verified {
+    margin-left: 5px;
+    margin-top: 3px;
+}
+
 .permalink .permalink-header .username {
     font-size: 14px;
 }
@@ -5152,7 +5171,7 @@ b {
     border-bottom: 1px solid #ddd;
 }
 
-.before-expanded>.tweet {
+.before-expanded .original-tweet {
     border-bottom: 0;
 }
 
@@ -5997,7 +6016,7 @@ body.ar .media-not-displayed p, body.fa .media-not-displayed p, body.ur .media-n
     box-shadow: inset 0 1px 0 #ccc;
 }
 
-.profile-tweet-box .thumbnail-container {
+.dashboard .tweet-form .thumbnail-container {
     width: 274px;
 }
 

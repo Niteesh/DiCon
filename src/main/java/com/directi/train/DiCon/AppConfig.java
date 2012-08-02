@@ -10,7 +10,9 @@ public class AppConfig {
     @Bean
     public SimpleJdbcTemplate simpleJdbcTemplate() {
         BasicDataSource dataSource = new BasicDataSource();
+
         dataSource.setUrl("jdbc:postgresql://localhost:5432/twitter");
+
         dataSource.setDriverClassName("org.postgresql.Driver");
         dataSource.setUsername("postgres");
         dataSource.setPassword("medusa@123");
