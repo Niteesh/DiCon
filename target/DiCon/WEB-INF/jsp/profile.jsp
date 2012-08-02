@@ -149,14 +149,14 @@
     function makeTimestamp(days,hours,minutes){
         var str="";
         if(days!=0)
-            str+=days+" days";
+            str+=days+" days ";
         if(hours!=0)
-            str+=hours+" hours";
+            str+=hours+" hours ";
         if(minutes!=0)
-            str+=minutes+" minutes";
+            str+=minutes+" minutes ";
         if(days+hours+minutes==0)
-            str+="a few seconds";
-        str+=" ago";
+            str+="a few seconds ";
+        str+="ago";
         return str;
     }
     function convertTimeIntoDifference(timediff) {

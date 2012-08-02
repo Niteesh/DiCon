@@ -31,9 +31,11 @@ public class DAO {
     }
 
 
-    public List<Map<String,Object>> getFollowersList(int user_id){
-        return db.queryForList("SELECT user_id, fullname, dp FROM twitter.follows follows INNER JOIN twitter.details  details ON details.user_id = follows.follower_id WHERE following_id = ? AND stop_time IS NULL;",user_id);
-    }
+    public List<Map<String,Object>> getFollowersList(int user_id, int login_id){
+        return db.queryForList(" select details.user_id, fullname, dp, status From twitter.details details" +
+                " INNER JOIN (select f2.follower_id as user_id, CASE WHEN  f3.follower_id= ? AND f3.stop_time IS NULL THEN 'following' ELSE 'not-following' END as status " +
+                "from twitter.follows f2 inner join twitter.follows f3 on f2.follower_id = f3.following_id WHERE f2.following_id= ?  AND f2.stop_time IS NULL) as follow  " +
+                "ON details.user_id = follow.user_id;", user_id, login_id);    }
 
     public Integer getFollowerCount(int user_id) {
         return db.queryForInt("select count(1) from twitter.follows WHERE following_id = ? AND stop_time IS NULL;", user_id);
@@ -43,8 +45,8 @@ public class DAO {
     public List<Map<String, Object>> getFollowingList(int user_id, int login_id){
 
         return db.queryForList(" select details.user_id, fullname, dp, status From twitter.details details" +
-                " INNER JOIN (select f2.following_id as user_id, CASE WHEN  f3.follower_id= ? THEN 'following' ELSE 'not-following' END as status " +
-                "from twitter.follows f2 inner join twitter.follows f3 on f2.following_id = f3.following_id WHERE f2.follower_id= ?) as follow  " +
+                " INNER JOIN (select f2.following_id as user_id, CASE WHEN  f3.follower_id= ?  AND f3.stop_time IS NULL THEN 'following' ELSE 'not-following' END as status " +
+                "from twitter.follows f2 inner join twitter.follows f3 on f2.following_id = f3.following_id WHERE f2.follower_id= ? AND f2.stop_time IS NULL) as follow  " +
                 "ON details.user_id = follow.user_id;", user_id, login_id);
 
     }
@@ -59,7 +61,10 @@ public class DAO {
     }
 
     public List<Map<String, Object>> getNewsFeed(int user_id, int latest_feed_id) {
-        return db.queryForList("SELECT DISTINCT D.dp,D.fullname,T.text,T.timestamp,T.tweet_id,T.user_id FROM twitter.tweets T INNER JOIN twitter.follows  F ON T.user_id = F.following_id INNER JOIN twitter.details D on T.user_id = D.user_id AND (T.timestamp BETWEEN F.start_time AND F.stop_time OR (F.stop_time IS NULL AND T.timestamp >= F.start_time)) WHERE F.follower_id = ? AND tweet_id > ? ORDER BY T.timestamp ASC;", user_id, latest_feed_id);
+        return db.queryForList("SELECT DISTINCT D.dp,D.fullname,T.text,T.timestamp,T.tweet_id,T.user_id" +
+                " FROM twitter.tweets T INNER JOIN twitter.follows  F ON T.user_id = F.following_id " +
+                "INNER JOIN twitter.details D on T.user_id = D.user_id AND (T.timestamp BETWEEN F.start_time AND F.stop_time OR (F.stop_time IS NULL AND T.timestamp >= F.start_time)) " +
+                "WHERE F.follower_id = ? AND tweet_id > ? ORDER BY T.timestamp ASC;", user_id, latest_feed_id);
     }
 
     public int newUser(String email, String password, String fullname, String description, String phone, String dp) {
@@ -70,7 +75,7 @@ public class DAO {
     }
 
     public int follow(int follower_id, int following_id) {
-        return db.update("INSERT INTO twitter.follows(follower_id,following_id,start_time,stop_time) VALUES(?,?,now(),null);", follower_id, following_id);
+        return db.update("INSERT INTO twitter.follows(follower_id,following_id) VALUES(?,?);", follower_id, following_id);
     }
 
     public int unFollow(int follower_id, int following_id) {
@@ -78,7 +83,7 @@ public class DAO {
     }
 
     public int newTweet(int user_id, String text) {
-        return db.update("INSERT INTO twitter.tweets(user_id, text, timestamp) VALUES(?,?,now());", user_id, text);
+        return db.update("INSERT INTO twitter.tweets(user_id, text) VALUES(?,?);", user_id, text);
     }
 
     public int updateFirstName(int user_id, String fullname) {

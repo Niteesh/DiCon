@@ -120,6 +120,9 @@
                                     query("#tweet-button").removeClass("primary-btn");
                                     query("#new-tweet-textarea-container").addClass("condensed");
                                 }
+                                error: function() {
+                                    console.log("Error sending tweets.");
+                                }
                             });
                 });
 
@@ -157,10 +160,10 @@
 
                                 },
                                 error: function() {
-                                    console.log("Error fetching json.");
+                                    console.log("Error fetching json for newsfeeds.");
                                 },
                                 handle: function() {
-                                    console.log("latest feed id = " + latest_feed_id);
+                                    console.log("latest feed id  = " + latest_feed_id);
                                 }
                             });
 
