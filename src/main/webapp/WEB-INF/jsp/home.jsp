@@ -119,7 +119,7 @@
                                     query("#tweet-button").addClass("disabled");
                                     query("#tweet-button").removeClass("primary-btn");
                                     query("#new-tweet-textarea-container").addClass("condensed");
-                                }
+                                },
                                 error: function() {
                                     console.log("Error sending tweets.");
                                 }

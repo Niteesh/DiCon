@@ -27,262 +27,253 @@
 
 
 <script type="text/javascript">
+var latest_tweet_id = 0;
+refreshTweets();
 
-    function getFollowingList() {
-        document.getElementById("tweets").style.display = "none";
-        document.getElementById("following").style.display = "block";
-        document.getElementById("follower").style.display = "none";
+setInterval(refreshTweets, 5000);
 
+function refreshTweets() {
 
-        require(["dojo/_base/xhr", "dojo/dom", "dojo/dom-construct", "dojo/_base/array", "dojo/NodeList-dom", "dojo/domReady!"],
-                function(xhr, dom, domConstruct) {
-
-                    xhr.get({
-                                url: "${user_id}/following",
-                                handleAs: "json",
-                                headers: { "Accept": "application/json"},
-                                content: {
-                                    latest_tweet_id : latest_tweet_id
-                                },
-                                load: function(response) {
-
-                                    for (var i in response) {
-                                        var newTweet = new EJS({url: '${pageContext.request.contextPath}/static/ejs/following.ejs'}).render(response[i]);
-                                        domConstruct.place(newTweet, dom.byId("stream-list-following"), "first");
-
-                                    }
-                                    console.log("new tweets = " + response.length);
-
-
-                                },
-                                error: function() {
-                                    console.log("Error fetching json.");
-                                },
-                                handle: function() {
-                                    console.log("latest tweet id = " + latest_tweet_id);
+    require(["dojo/_base/xhr", "dojo/dom", "dojo/dom-construct", "dojo/_base/array", "dojo/NodeList-dom", "dojo/domReady!"],
+            function(xhr, dom, domConstruct) {
+                dom.byId("tweets").style.display = "block";
+                dom.byId("following").style.display = "none";
+                dom.byId("follower").style.display = "none";
+                xhr.get({
+                            url: "${user_id}/tweets/fetch",
+                            handleAs: "json",
+                            headers: { "Accept": "application/json"},
+                            content: {
+                                latest_tweet_id : latest_tweet_id
+                            },
+                            load: function(response) {
+                                for (var i in response) {
+                                    response[i]["timestamp"] = makeTimestamp(response[i]["days"], response[i]["hours"], response[i]["minutes"]);
+                                    var newTweet = new EJS({url: '${pageContext.request.contextPath}/static/ejs/tweet.ejs'}).render(response[i]);
+                                    domConstruct.place(newTweet, dom.byId("stream-list"), "first");
+                                    latest_tweet_id = response[i]["tweet_id"];
                                 }
-                            });
+                                console.log("new tweets = " + response.length);
 
-                });
-    }
+                            },
+                            error: function() {
+                                console.log("Error fetching json.");
+                            },
+                            handle: function() {
 
-    function getFollowerList() {
-        document.getElementById("tweets").style.display = "none";
-        document.getElementById("following").style.display = "none";
-        document.getElementById("follower").style.display = "block";
-
-        require([ "dojo/_base/xhr", "dojo/dom", "dojo/dom-construct", "dojo/_base/array", "dojo/NodeList-dom", "dojo/domReady!"],
-                function(xhr, dom, domConstruct) {
-
-                    xhr.get({
-                                url: "${user_id}/follower",
-                                handleAs: "json",
-                                headers: { "Accept": "application/json"},
-                                content: {
-                                    latest_tweet_id : latest_tweet_id
-                                },
-                                load: function(response) {
-
-                                    for (var i in response) {
-                                        var newTweet = new EJS({url: '${pageContext.request.contextPath}/static/ejs/follower.ejs'}).render(response[i]);
-                                        domConstruct.place(newTweet, dom.byId("stream-list-follower"), "first");
-
-                                    }
-                                    console.log("new tweets = " + response.length);
-
-
-                                },
-                                error: function() {
-                                    console.log("Error fetching json.");
-                                },
-                                handle: function() {
-                                    console.log("latest tweet id = " + latest_tweet_id);
-                                }
-                            });
-
-                });
-    }
-</script>
-
-<script type="text/javascript">
-
-    var latest_tweet_id = 0;
-    refreshTweets();
-    setInterval(refreshTweets, 5000);
-
-    function refreshTweets() {
-        document.getElementById("tweets").style.display = "block";
-        document.getElementById("following").style.display = "none";
-        document.getElementById("follower").style.display = "none"
-        require(["dojo/_base/xhr", "dojo/dom", "dojo/dom-construct", "dojo/_base/array", "dojo/NodeList-dom", "dojo/domReady!"],
-                function(xhr, dom, domConstruct) {
-
-                    xhr.get({
-                                url: "${user_id}/tweets/fetch",
-                                handleAs: "json",
-                                headers: { "Accept": "application/json"},
-                                content: {
-                                    latest_tweet_id : latest_tweet_id
-                                },
-                                load: function(response) {
-                                    for (var i in response) {
-                                        response[i]["timestamp"]=makeTimestamp(response[i]["days"],response[i]["hours"],response[i]["minutes"]);
-                                        var newTweet = new EJS({url: '${pageContext.request.contextPath}/static/ejs/tweet.ejs'}).render(response[i]);
-                                        domConstruct.place(newTweet, dom.byId("stream-list"), "first");
-                                        latest_tweet_id = response[i]["tweet_id"];
-                                    }
-                                    console.log("new tweets = " + response.length);
-
-
-                                },
-                                error: function() {
-                                    console.log("Error fetching json.");
-                                },
-                                handle: function() {
-                                    console.log("latest tweet id = " + latest_tweet_id);
-                                }
-                            });
-
-                });
-    }
-
-    function makeTimestamp(days,hours,minutes){
-        var str="";
-        if(days!=0)
-            str+=days+" days ";
-        if(hours!=0)
-            str+=hours+" hours ";
-        if(minutes!=0)
-            str+=minutes+" minutes ";
-        if(days+hours+minutes==0)
-            str+="a few seconds ";
-        str+="ago";
-        return str;
-    }
-    function convertTimeIntoDifference(timediff) {
-        if (timediff < 60){
-            return "a few seconds ago";
-        }
-        else if (timediff < 3600){
-            timediff = parseInt(timediff / 60);
-            return timediff + "minutes ago";
-        }
-        else if (timediff < 3600*24){
-            timediff = parseInt(timediff / 3600);
-            return timediff + "hours ago";
-        }
-        else {
-            timediff = parseInt(timediff / 3600*24);
-            return timediff + "days ago";
-        }
-    }
-    function hasClass(el, name) {
-        return new RegExp('(\\s|^)' + name + '(\\s|$)').test(el.className);
-    }
-    function addClass(el, name) {
-        if (!hasClass(el, name)) {
-            el.className += (el.className ? ' ' : '') + name;
-        }
-    }
-    function removeClass(el, name) {
-        if (hasClass(el, name)) {
-            el.className = el.className.replace(new RegExp('(\\s|^)' + name + '(\\s|$)'), ' ').replace(/^\s+|\s+$/g, '');
-        }
-    }
-
-    function triggerFollow(btn) {
-        var triggerURL;
-        if (btn.id == "following-button") {
-            triggerURL = "${user_id}/unfollow";
-        }
-        else if (btn.id == "not-following-button") {
-            triggerURL = "${user_id}/follow";
-        }
-        else if (btn.id == "edit-button") {
-            triggerURL = "${user_id}/edit";
-        }
-        require(["dojo/_base/xhr", "dojo/domReady!"],
-                function(xhr) {
-                    xhr.get({
-                                url: triggerURL,
-                                load: function(response) {
-                                    console.log("followed = " + response);
-                                },
-                                error: function() {
-                                    console.log("Error following or unfollowing.");
-                                },
-                                handle: function() {
-                                    if (btn.id == "following-button") {
-                                        btn.id = "not-following-button";
-                                        addClass(btn.parentNode, "not-following");
-                                        removeClass(btn.parentNode, "following");
-                                    }
-                                    else if (btn.id == "not-following-button") {
-                                        btn.id = "following-button";
-                                        removeClass(btn.parentNode, "not-following");
-                                        addClass(btn.parentNode, "following");
-                                    }
-                                    else if (btn.id == "edit-button") {
-
-                                    }
-                                }
-                            });
-                });
-    }
-
-    require(["dojo/_base/xhr", "dojo/on", "dojo/dom", "dojo/query", "dojo/dom-construct", "dojo/_base/array", "dojo/NodeList-dom", "dojo/domReady!"], function(xhr, on, dom, query, domConstruct) {
-        var hide_searchresults_timeout;
-        on(dom.byId("search-query"), "focus", function() {
-            clearTimeout(hide_searchresults_timeout);
-            query("#global-nav-search").addClass("focus");
-            query("#search-query").addClass("focus");
-
-            if (this.value != "")
-                dom.byId("search-results-container").style.display = "block";
-        });
-
-        on(dom.byId("search-query"), "blur", function() {
-            query("#global-nav-search").removeClass("focus");
-            query("#search-query").removeClass("focus");
-            hide_searchresults_timeout = setTimeout(function() {
-                dom.byId("search-results-container").style.display = "none"
-            }, 1000);
-        });
-
-        on(dom.byId("search-query"), "keyup", function() {
-            if (this.value != "")
-                searchQuery(this.value);
-            else {
-                domConstruct.empty(dom.byId("results-list"));
-                dom.byId("search-results-container").style.display = "none";
-            }
-        });
-
-        function searchQuery(search_string) {
-            xhr.post({
-                        url: "search.json",
-                        handleAs: "json",
-                        content: {
-                            search_string : search_string
-                        },
-                        load: function(response) {
-                            if (response.length == 0)
-                                dom.byId("search-results-container").style.display = "none";
-                            else
-                                dom.byId("search-results-container").style.display = "block";
-                            domConstruct.empty(dom.byId("results-list"));
-                            for (var i in response) {
-                                var result = new EJS({url: '${pageContext.request.contextPath}/static/ejs/searchResult.ejs'}).render(response[i]);
-                                domConstruct.place(result, dom.byId("results-list"));
+                                console.log("latest tweet id = " + latest_tweet_id);
                             }
-                        },
-                        error: function() {
-                            console.log("Error fetching search results.");
-                        }
-                    });
-        }
+                        });
 
+            });
+}
+
+function makeTimestamp(days, hours, minutes) {
+    var str = "";
+    if (days != 0)
+        str += days + " days ";
+    if (hours != 0)
+        str += hours + " hours ";
+    if (minutes != 0)
+        str += minutes + " minutes ";
+    if (days + hours + minutes == 0)
+        str += "a few seconds ";
+    str += "ago";
+    return str;
+}
+function convertTimeIntoDifference(timediff) {
+    if (timediff < 60) {
+        return "a few seconds ago";
+    }
+    else if (timediff < 3600) {
+        timediff = parseInt(timediff / 60);
+        return timediff + "minutes ago";
+    }
+    else if (timediff < 3600 * 24) {
+        timediff = parseInt(timediff / 3600);
+        return timediff + "hours ago";
+    }
+    else {
+        timediff = parseInt(timediff / 3600 * 24);
+        return timediff + "days ago";
+    }
+}
+function hasClass(el, name) {
+    return new RegExp('(\\s|^)' + name + '(\\s|$)').test(el.className);
+}
+function addClass(el, name) {
+    if (!hasClass(el, name)) {
+        el.className += (el.className ? ' ' : '') + name;
+    }
+}
+function removeClass(el, name) {
+    if (hasClass(el, name)) {
+        el.className = el.className.replace(new RegExp('(\\s|^)' + name + '(\\s|$)'), ' ').replace(/^\s+|\s+$/g, '');
+    }
+}
+
+function triggerFollow(btn) {
+    var triggerURL;
+    if (btn.id == "following-button") {
+        triggerURL = "${user_id}/unfollow";
+    }
+    else if (btn.id == "not-following-button") {
+        triggerURL = "${user_id}/follow";
+    }
+    else if (btn.id == "edit-button") {
+        triggerURL = "${user_id}/edit";
+    }
+    require(["dojo/_base/xhr", "dojo/domReady!"],
+            function(xhr) {
+                xhr.get({
+                            url: triggerURL,
+                            load: function(response) {
+                                console.log("followed = " + response);
+                            },
+                            error: function() {
+                                console.log("Error following or unfollowing.");
+                            },
+                            handle: function() {
+                                if (btn.id == "following-button") {
+                                    btn.id = "not-following-button";
+                                    addClass(btn.parentNode, "not-following");
+                                    removeClass(btn.parentNode, "following");
+                                }
+                                else if (btn.id == "not-following-button") {
+                                    btn.id = "following-button";
+                                    removeClass(btn.parentNode, "not-following");
+                                    addClass(btn.parentNode, "following");
+                                }
+                                else if (btn.id == "edit-button") {
+
+                                }
+                            }
+                        });
+            });
+}
+
+function getFollowingList() {
+
+
+    require(["dojo/_base/xhr", "dojo/dom", "dojo/dom-construct", "dojo/_base/array", "dojo/NodeList-dom", "dojo/domReady!"],
+            function(xhr, dom, domConstruct) {
+                dom.byId("tweets").style.display = "none";
+                dom.byId("following").style.display = "block";
+                dom.byId("follower").style.display = "none";
+
+                xhr.get({
+                            url: "${user_id}/following",
+                            handleAs: "json",
+                            headers: { "Accept": "application/json"},
+                            content: {
+                                latest_tweet_id : latest_tweet_id
+                            },
+                            load: function(response) {
+
+                                for (var i in response) {
+                                    var followingItem = new EJS({url: '${pageContext.request.contextPath}/static/ejs/following.ejs'}).render(response[i]);
+                                    domConstruct.place(followingItem, dom.byId("stream-list-following"), "first");
+
+                                }
+                                console.log("following = " + response.length);
+
+
+                            },
+                            error: function() {
+                                console.log("Error fetching following.");
+                            }
+                        });
+
+            });
+}
+
+function getFollowerList() {
+    require([ "dojo/_base/xhr", "dojo/dom", "dojo/dom-construct", "dojo/_base/array", "dojo/NodeList-dom", "dojo/domReady!"],
+            function(xhr, dom, domConstruct) {
+                dom.byId("tweets").style.display = "none";
+                dom.byId("following").style.display = "none";
+                dom.byId("follower").style.display = "block";
+
+
+                xhr.get({
+                            url: "${user_id}/follower",
+                            handleAs: "json",
+                            headers: { "Accept": "application/json"},
+                            content: {
+                                latest_tweet_id : latest_tweet_id
+                            },
+                            load: function(response) {
+
+                                for (var i in response) {
+                                    var followerItem = new EJS({url: '${pageContext.request.contextPath}/static/ejs/follower.ejs'}).render(response[i]);
+                                    domConstruct.place(followerItem, dom.byId("stream-list-follower"), "first");
+
+                                }
+                                console.log("followers = " + response.length);
+
+
+                            },
+                            error: function() {
+                                console.log("Error fetching followers.");
+                            }
+                        });
+
+            });
+}
+
+require(["dojo/_base/xhr", "dojo/on", "dojo/dom", "dojo/query", "dojo/dom-construct", "dojo/_base/array", "dojo/NodeList-dom", "dojo/domReady!"], function(xhr, on, dom, query, domConstruct) {
+    var hide_searchresults_timeout;
+    on(dom.byId("search-query"), "focus", function() {
+        clearTimeout(hide_searchresults_timeout);
+        query("#global-nav-search").addClass("focus");
+        query("#search-query").addClass("focus");
+
+        if (this.value != "")
+            dom.byId("search-results-container").style.display = "block";
     });
+
+    on(dom.byId("search-query"), "blur", function() {
+        query("#global-nav-search").removeClass("focus");
+        query("#search-query").removeClass("focus");
+        hide_searchresults_timeout = setTimeout(function() {
+            dom.byId("search-results-container").style.display = "none"
+        }, 1000);
+    });
+
+    on(dom.byId("search-query"), "keyup", function() {
+        if (this.value != "")
+            searchQuery(this.value);
+        else {
+            domConstruct.empty(dom.byId("results-list"));
+            dom.byId("search-results-container").style.display = "none";
+        }
+    });
+
+    function searchQuery(search_string) {
+        xhr.post({
+                    url: "search.json",
+                    handleAs: "json",
+                    content: {
+                        search_string : search_string
+                    },
+                    load: function(response) {
+                        if (response.length == 0)
+                            dom.byId("search-results-container").style.display = "none";
+                        else
+                            dom.byId("search-results-container").style.display = "block";
+                        domConstruct.empty(dom.byId("results-list"));
+                        for (var i in response) {
+                            var result = new EJS({url: '${pageContext.request.contextPath}/static/ejs/searchResult.ejs'}).render(response[i]);
+                            domConstruct.place(result, dom.byId("results-list"));
+                        }
+                    },
+                    error: function() {
+                        console.log("Error fetching search results.");
+                    }
+                });
+    }
+
+});
 
 
 </script>

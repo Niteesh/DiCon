@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="todoapp:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <root id="archive" name="DiCon.war">
+      <element id="artifact" artifact-name="todoapp:war exploded" />
+    </root>
+  </artifact>
+</component>

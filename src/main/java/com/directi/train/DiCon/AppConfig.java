@@ -11,7 +11,7 @@ public class AppConfig {
     public SimpleJdbcTemplate simpleJdbcTemplate() {
         BasicDataSource dataSource = new BasicDataSource();
 
-        dataSource.setUrl("jdbc:postgresql://localhost:5432/twitter");
+        dataSource.setUrl("jdbc:postgresql://localhost:5432/postgres");
 
         dataSource.setDriverClassName("org.postgresql.Driver");
         dataSource.setUsername("postgres");
