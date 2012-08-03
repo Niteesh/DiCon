@@ -30,7 +30,13 @@
 var latest_tweet_id = 0;
 refreshTweets();
 
-setInterval(refreshTweets, 5000);
+var tweetRefreshTimer = setInterval(refreshTweets, 5000);
+
+dojo.require("dijit.form.Button");
+dojo.require("dijit.Dialog");
+dojo.require("dijit.form.TextBox");
+dojo.require("dijit.form.DateTextBox");
+dojo.require("dijit.form.TimeTextBox");
 
 function refreshTweets() {
 
@@ -157,6 +163,7 @@ function getFollowingList() {
 
     require(["dojo/_base/xhr", "dojo/dom", "dojo/dom-construct", "dojo/_base/array", "dojo/NodeList-dom", "dojo/domReady!"],
             function(xhr, dom, domConstruct) {
+                clearInterval(tweetRefreshTimer);
                 dom.byId("tweets").style.display = "none";
                 dom.byId("following").style.display = "block";
                 dom.byId("follower").style.display = "none";
@@ -169,11 +176,10 @@ function getFollowingList() {
                                 latest_tweet_id : latest_tweet_id
                             },
                             load: function(response) {
-
+                                domConstruct.empty(dom.byId("stream-list-following"));
                                 for (var i in response) {
                                     var followingItem = new EJS({url: '${pageContext.request.contextPath}/static/ejs/following.ejs'}).render(response[i]);
                                     domConstruct.place(followingItem, dom.byId("stream-list-following"), "first");
-
                                 }
                                 console.log("following = " + response.length);
 
@@ -190,6 +196,7 @@ function getFollowingList() {
 function getFollowerList() {
     require([ "dojo/_base/xhr", "dojo/dom", "dojo/dom-construct", "dojo/_base/array", "dojo/NodeList-dom", "dojo/domReady!"],
             function(xhr, dom, domConstruct) {
+                clearInterval(tweetRefreshTimer);
                 dom.byId("tweets").style.display = "none";
                 dom.byId("following").style.display = "none";
                 dom.byId("follower").style.display = "block";
@@ -203,7 +210,7 @@ function getFollowerList() {
                                 latest_tweet_id : latest_tweet_id
                             },
                             load: function(response) {
-
+                                domConstruct.empty(dom.byId("stream-list-follower"));
                                 for (var i in response) {
                                     var followerItem = new EJS({url: '${pageContext.request.contextPath}/static/ejs/follower.ejs'}).render(response[i]);
                                     domConstruct.place(followerItem, dom.byId("stream-list-follower"), "first");
@@ -440,7 +447,7 @@ require(["dojo/_base/xhr", "dojo/on", "dojo/dom", "dojo/query", "dojo/dom-constr
 })();</script>
 </head>
 
-<body class="t1 logged-in user-style-${user_id}">
+<body class="t1 logged-in user-style-${user_id} claro">
 
 <div class="push-loader" id="pushStateSpinner"></div>
 
@@ -597,11 +604,9 @@ require(["dojo/_base/xhr", "dojo/on", "dojo/dom", "dojo/query", "dojo/dom-constr
 
             </div>
             <ul class="stats js-mini-profile-stats">
-                <li><a href="https://twitter.com/${user_id}" data-element-term="tweet_stats" data-nav="profile">
-
-
-                    <strong>${profile_tweetCount}</strong> Tweets
-                </a></li>
+                <li><a href="#" data-element-term="tweet_stats"
+                       onclick="refreshTweets();tweetRefreshTimer = setInterval(refreshTweets, 5000);"
+                       data-nav="profile"><strong>${profile_tweetCount}</strong> Tweets</a></li>
                 <li><a href="#" data-element-term="following_stats" onclick="getFollowingList()"
                        data-nav="following"><strong>${profile_following}</strong> Following</a></li>
                 <li><a href="#" data-element-term="follower_stats" onclick="getFollowerList()"
@@ -689,7 +694,8 @@ require(["dojo/_base/xhr", "dojo/on", "dojo/dom", "dojo/query", "dojo/dom-constr
     <div class="module profile-nav">
         <ul class="js-nav-links">
             <li class="active">
-                <a class="list-link" href="#" data-nav="profile" onclick="refreshTweets()">Tweets<i
+                <a class="list-link" href="#" data-nav="profile"
+                   onclick="refreshTweets();tweetRefreshTimer = setInterval(refreshTweets, 5000);">Tweets<i
                         class="chev-right"></i></a>
             </li>
             <li class="">
@@ -1200,6 +1206,158 @@ require(["dojo/_base/xhr", "dojo/on", "dojo/dom", "dojo/query", "dojo/dom-constr
         </div>
     </div>
 </div>
+<div class="content-main" data-dojo-type="dijit.Dialog" id="formDialog" title="Form Dialog"
+     execute="alert('submitted w/args:\n' + dojo.toJson(arguments[0], true));">
+    <div class="content-header">
+        <div class="header-inner">
+            <h2>Profile</h2>
+
+            <p class="subheader">This information appears on your public profile, search results, and beyond.</p>
+        </div>
+    </div>
+    <div class="content-inner no-stream-end">
+        <form id="profile-form" class="form-horizontal" enctype="multipart/form-data" method="POST"
+              action="https://twitter.com/settings/profile">
+            <div id="settings-alert-box" class="alert" style="display: none;">
+                <i id="settings-alert-close" class="close"></i>
+            </div>
+            <input name="authenticity_token" value="6682db2dd8ff40c23fb4265318fd06d67d834a66" type="hidden">
+            <input value="PUT" name="_method" type="hidden">
+            <fieldset id="profile-image-controls" class="control-group">
+                <label class="control-label" for="profile_image_uploaded_data">Picture</label>
+
+                <div class="controls">
+                    <div class="uploader-avatar clearfix">
+                        <img class="avatar size73" id="avatar_preview"
+                             src="https://twimg0-a.akamaihd.net/sticky/default_profile_images/default_profile_2_bigger.png">
+
+                        <div class="uploader-tools">
+                            <div class="photo-selector">
+                                <button class="btn" type="button">Choose file</button>
+                                <span class="photo-file-name">No file selected</span>
+
+                                <div class="image-selector">
+                                    <input name="media_file_name" class="file-name" type="hidden">
+                                    <input name="media_data_empty" class="file-data" type="hidden">
+                                    <input name="media_empty" class="file-input" type="file">
+
+                                    <div class="swf-container"></div>
+                                </div>
+                            </div>
+                            <p>
+                                Maximum size of 700k. JPG, GIF, PNG.<br>
+                                Need help uploading a profile image? <a
+                                    href="https://support.twitter.com/articles/127871" target="_blank"
+                                    id="profile_image_help">Learn more</a>.<br>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+            <hr>
+            <fieldset class="control-group">
+                <label class="control-label" for="user_name">Name</label>
+
+                <div class="controls">
+                    <input id="user_name" maxlength="20" name="user[name]" value="Harishchandra Reddy" type="text">
+
+                    <p>Enter your real name, so people you know can recognize you.</p>
+                </div>
+            </fieldset>
+            <fieldset class="control-group">
+                <label class="control-label" for="user_location">Location</label>
+
+                <div class="controls">
+                    <input id="user_location" name="user[location]" value="Mumbai" type="text">
+
+                    <p>Where in the world are you?</p>
+                </div>
+            </fieldset>
+            <fieldset id="user_web_fieldset" class="control-group">
+                <label class="control-label" for="user_url">Website</label>
+
+                <div class="controls">
+                    <input id="user_url" name="user[url]" rel="http://" size="30" value="http://" type="text">
+
+                    <p>Have a homepage or a blog? Put the address here.</p>
+
+                    <p><a href="/goodies" title="Put Twitter on your site!" id="tfw_link">You can also add Twitter to
+                        your site here.</a></p>
+                </div>
+                <div class="controls">
+                </div>
+            </fieldset>
+            <fieldset class="control-group">
+                <label class="control-label" for="user_description">Bio</label>
+
+                <div class="controls">
+                    <textarea class="input-xlarge" id="user_description" maxlength="160" name="user[description]">DotA,
+                        WoW:Wotlk , AoE2, CS1.6. Nuff said.</textarea>
+
+                    <p>About yourself in fewer than <strong>160</strong> characters.</p>
+                </div>
+            </fieldset>
+
+            <hr>
+
+            <div id="fb-button" class="fb-button-or-iframe">
+                <label class="control-label" for="">Facebook</label>
+
+                <div class="controls">
+                    <iframe id="fb-iframe" style="display: none;" frameborder="0" scrolling="no"></iframe>
+                    <p><a href="#" id="fb-anchor" class="btn" style=""><span>Post your Tweets to Facebook</span></a></p>
+
+                    <p>Having trouble? <a href="https://support.twitter.com/articles/31113" target="_blank">Learn
+                        more</a>.</p>
+                </div>
+            </div>
+            <hr>
+            <div class="form-actions">
+                <button id="settings_save" class="btn primary-btn" type="submit">Save changes</button>
+            </div>
+        </form>
+
+        <div id="in_product_help_dialog" class="modal-container modal-profile-image-help">
+            <div class="close-modal-background-target"></div>
+            <div class="modal modal-small draggable">
+                <div class="modal-content">
+                    <button class="modal-btn modal-close"><i class="close-medium"></i></button>
+                    <div class="modal-header">
+                        <h3 class="modal-title">Upload a profile image</h3>
+                    </div>
+                    <div class="modal-body">
+                        <p>How to upload or change your profile picture:</p>
+                        <ol>
+                            <li>Click the <strong>Choose file</strong> button.</li>
+                            <li><strong>Select a file</strong> to upload as your picture. It must be smaller than 700k
+                                and in JPG, GIF, or PNG format (no animated GIFs).
+                            </li>
+                            <li>Click <strong>Save changes</strong> at the bottom of the page to see a thumbnail.</li>
+                        </ol>
+                    </div>
+                    <div class="modal-footer">
+                    <span class="satisfaction-prompt">
+                      <span id="satisfaction_question">Was this helpful?</span>
+                      <span style="display: none;" id="satisfaction_feedback">Thanks for the feedback!</span>
+                    </span>
+
+                        <div id="satisfaction_buttons">
+                            <button id="helpful_button" class="btn">Yes</button>
+                            <button id="not_helpful_button" class="btn">No</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<p>When pressing this button the dialog will popup:</p>
+<button id="buttonThree" data-dojo-type="dijit.form.Button" type="button">Show me!
+    <script type="dojo/method" data-dojo-event="onClick" data-dojo-args="evt">
+        dijit.byId("formDialog").show();
+    </script>
+</button>
 <div id="global-tweet-dialog" class="modal-container">
     <div class="close-modal-background-target"></div>
     <div class="modal draggable">

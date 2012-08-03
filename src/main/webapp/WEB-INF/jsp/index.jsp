@@ -184,7 +184,7 @@
                 <div class="front-welcome">
                     <div class="front-welcome-text">
                       <h1>Welcome to DiCon.</h1>
-                      <p>Find out what’s happening, right now, with the people and organizations you care about.</p>
+                      <p>Find out what's happening, right now, with the people and organizations you care about.</p>
                     </div>
                 </div>
           
@@ -193,7 +193,7 @@
                 <form action="/sign_in" class="signin" method="post">
                   <div class="placeholding-input username">
  		    
-                    <input class="text-input email-input" name="email" title="Username or email" autocomplete="on" type="text" placeholder="Username or email">
+                    <input class="text-input email-input" name="email" title="Email" autocomplete="on" type="text" placeholder="Email">
 
 
                      
@@ -246,7 +246,7 @@
                     
                   </div>
                   <div class="placeholding-input">
-                    <input class="text-input email-input" autocomplete="off" name="email" type="text" placeholder="email">
+                    <input class="text-input email-input" autocomplete="off" name="email" type="text" placeholder="Email">
                    
                   </div>
                   <div class="placeholding-input">
