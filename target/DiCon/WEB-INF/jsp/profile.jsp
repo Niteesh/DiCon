@@ -192,11 +192,14 @@ function getFollowerList() {
                                 console.log("followers = " + response.length);
 
 
+
                             },
                             error: function() {
                                 console.log("Error fetching followers.");
                             }
                         });
+
+
 
             });
 }
@@ -208,9 +211,11 @@ require(["dojo/_base/xhr", "dojo/on", "dojo/dom", "dojo/query", "dojo/dom-constr
         query("#global-nav-search").addClass("focus");
         query("#search-query").addClass("focus");
 
+
         if (this.value != "")
             dom.byId("search-results-container").style.display = "block";
     });
+
 
     on(dom.byId("search-query"), "blur", function() {
         query("#global-nav-search").removeClass("focus");
@@ -667,8 +672,12 @@ require(["dojo/_base/xhr", "dojo/on", "dojo/dom", "dojo/query", "dojo/dom-constr
     <div class="module profile-nav">
         <ul class="js-nav-links">
             <li class="active">
+<<<<<<< HEAD
                 <a class="list-link" href="#" data-nav="profile"
                    onclick="refreshTweets();tweetRefreshTimer = setInterval(refreshTweets, 5000);">Tweets<i
+=======
+                <a class="list-link" href="#" data-nav="profile" onclick="getTweetsVissible()">Tweets<i
+>>>>>>> a130f6cf099e1e7ce5589b33166d88949f6f48b4
                         class="chev-right"></i></a>
             </li>
             <li class="">

@@ -26,8 +26,10 @@ public class UserController {
 
 
     @RequestMapping("/")
-    public String index() {
-        return "index";
+    public ModelAndView index() {
+        ModelAndView mv = new ModelAndView("/index");
+        mv.addObject("messageVissibility", "hidden");
+        return mv;
     }
 
 
@@ -67,12 +69,14 @@ public class UserController {
             userID = twitterUser.authanticateUser(email, password);
 
             if (userID == 0) {
-                mv.addObject("message", "Invalid " + userID + " password ." + TwitterUser.getMD5(password));
+                mv.addObject("message", "Invalid password.");
+
                 return mv;
             }
 
         } catch (EmptyResultDataAccessException e) {
-            mv.addObject("message", "email not registered yet....");
+            mv.addObject("message", "No account with this email exists.");
+            mv.addObject("messageVissibility", "");
             return mv;
         }
         session.setAttribute("email", email);

@@ -32,7 +32,7 @@ public class Admirer extends User {
 
     public Admirer(ResultSet resultSet) throws SQLException {
         super(resultSet);
-        status = "following";//todo call appropriate function
+        status = resultSet.getString("status");
 
     }
 

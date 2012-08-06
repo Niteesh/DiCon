@@ -31,8 +31,11 @@ public class DAO {
     }
 
 
-    public List<Map<String, Object>> getFollowersList(int user_id, int login_id) {
-        return db.queryForList(" select details.user_id, fullname, dp, status From twitter.details details INNER JOIN (select f2.follower_id as user_id, CASE WHEN  f3.follower_id = ? AND f3.stop_time IS NULL THEN 'following' ELSE 'not-following' END as status FROM twitter.follows f2 inner join twitter.follows f3 on f2.follower_id = f3.following_id WHERE f2.following_id= ?  AND f2.stop_time IS NULL) as follow ON details.user_id = follow.user_id;", user_id, login_id);
+    public List<Map<String,Object>> getFollowersList(int user_id, int login_id){
+        return db.queryForList(" select details.user_id, fullname, dp, status From twitter.details details" +
+                " INNER JOIN (select f2.follower_id as user_id, CASE WHEN  f3.follower_id= ? THEN 'following' ELSE 'not-following' END as status " +
+                "from twitter.follows f2 inner join twitter.follows f3 on f2.follower_id = f3.following_id WHERE f2.following_id= ?  AND f2.stop_time IS NULL  AND f3.stop_time IS NULL) as follow  " +
+                "ON details.user_id = follow.user_id;", user_id, login_id);
     }
 
     public Integer getFollowerCount(int user_id) {
@@ -41,9 +44,10 @@ public class DAO {
 
 
     public List<Map<String, Object>> getFollowingList(int user_id, int login_id) {
-
-        return db.queryForList(" select details.user_id, fullname, dp, status From twitter.details details INNER JOIN (select f2.following_id as user_id, CASE WHEN  f3.follower_id= ?  AND f3.stop_time IS NULL THEN 'following' ELSE 'not-following' END as status FROM twitter.follows f2 inner join twitter.follows f3 on f2.following_id = f3.following_id WHERE f2.follower_id= ? AND f2.stop_time IS NULL) as follow ON details.user_id = follow.user_id;", user_id, login_id);
-
+        return db.queryForList(" select details.user_id, fullname, dp, status From twitter.details details" +
+                " INNER JOIN (select f2.following_id as user_id, CASE WHEN  f3.follower_id= ?   THEN 'following' ELSE 'not-following' END as status " +
+                "from twitter.follows f2 inner join twitter.follows f3 on f2.following_id = f3.following_id WHERE f2.follower_id= ? AND f2.stop_time IS NULL AND f3.stop_time IS NULL) as follow  " +
+                "ON details.user_id = follow.user_id;", user_id, login_id);
     }
 
     public Integer getFollowingCount(int user_id) {
