@@ -52,11 +52,11 @@ public class DAO {
 
 
     public List<Map<String, Object>> getPostsByUser(int user_id, int latest_tweet_id) {
-        return db.queryForList("SELECT D.fullname,D.dp,T.text,date_part('days',now()-T.timestamp) as days,date_part('hours',now()-T.timestamp) as hours,date_part('minutes',now()-T.timestamp) as minutes,T.tweet_id,T.user_id FROM twitter.tweets T INNER JOIN twitter.details D ON T.user_id = D.user_id WHERE T.user_id = ? AND T.tweet_id > ? ORDER BY T.timestamp ASC;", user_id, latest_tweet_id);
+        return db.queryForList("SELECT D.fullname,D.dp,T.text,(now()-T.timestamp) as timestamp,T.tweet_id,T.user_id FROM twitter.tweets T INNER JOIN twitter.details D ON T.user_id = D.user_id WHERE T.user_id = ? AND T.tweet_id > ? ORDER BY T.timestamp ASC;", user_id, latest_tweet_id);
     }
 
     public List<Map<String, Object>> getNewsFeed(int user_id, int latest_feed_id) {
-        return db.queryForList("SELECT DISTINCT D.fullname,D.dp,T.text,T.timestamp,T.tweet_id,T.user_id FROM twitter.tweets T INNER JOIN twitter.follows  F ON T.user_id = F.following_id INNER JOIN twitter.details D on T.user_id = D.user_id AND (T.timestamp BETWEEN F.start_time AND F.stop_time OR (F.stop_time IS NULL AND T.timestamp >= F.start_time)) WHERE F.follower_id = ? AND tweet_id > ? ORDER BY T.timestamp ASC;", user_id, latest_feed_id);
+        return db.queryForList("SELECT DISTINCT D.fullname,D.dp,T.text,(now()-T.timestamp) as timestamp,T.tweet_id,T.user_id FROM twitter.tweets T INNER JOIN twitter.follows  F ON T.user_id = F.following_id INNER JOIN twitter.details D on T.user_id = D.user_id AND (T.timestamp BETWEEN F.start_time AND F.stop_time OR (F.stop_time IS NULL AND T.timestamp >= F.start_time)) WHERE F.follower_id = ? AND tweet_id > ? ORDER BY timestamp DESC;", user_id, latest_feed_id);
     }
 
     public int newUser(String email, String password, String fullname, String description, String phone, String dp) {

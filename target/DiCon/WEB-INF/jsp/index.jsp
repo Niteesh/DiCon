@@ -184,7 +184,7 @@
                 <div class="front-welcome">
                     <div class="front-welcome-text">
                       <h1>Welcome to DiCon.</h1>
-                      <p>Find out what’s happening, right now, with the people and organizations you care about.</p>
+                      <p>Find out what's happening, right now, with the people and organizations you care about.</p>
                     </div>
                 </div>
           

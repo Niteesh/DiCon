@@ -10,7 +10,7 @@
 
 <script>document.domain = 'twitter.com'</script>
 
-<title>${profile_name} (${user_id}) on Twitter</title>
+<title>${profile_name} (${user_id}) on DiCon</title>
 
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
@@ -20,23 +20,18 @@
 <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/t1_core.css" type="text/css" media="screen">
 
 <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/t1_more.css" type="text/css" media="screen">
+<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/dojo/1.7.1/dijit/themes/claro/claro.css">
 <script type="text/javascript" src='${pageContext.request.contextPath}/static/js/ejs_production.js'></script>
 <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/dojo/1.7.2/dojo/dojo.js"
-        data-dojo-config="async: true"></script>
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
+        data-dojo-config="async: true, parseOnLoad: true"></script>
+<script type = "text/javascript" src = "http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js" ></script>
 
 
 <script type="text/javascript">
 var latest_tweet_id = 0;
 refreshTweets();
-
 var tweetRefreshTimer = setInterval(refreshTweets, 5000);
 
-dojo.require("dijit.form.Button");
-dojo.require("dijit.Dialog");
-dojo.require("dijit.form.TextBox");
-dojo.require("dijit.form.DateTextBox");
-dojo.require("dijit.form.TimeTextBox");
 
 function refreshTweets() {
 
@@ -54,7 +49,7 @@ function refreshTweets() {
                             },
                             load: function(response) {
                                 for (var i in response) {
-                                    response[i]["timestamp"] = makeTimestamp(response[i]["days"], response[i]["hours"], response[i]["minutes"]);
+                                    response[i]["timestamp_readable"] = makeTimestamp(response[i]["timestamp"]);
                                     var newTweet = new EJS({url: '${pageContext.request.contextPath}/static/ejs/tweet.ejs'}).render(response[i]);
                                     domConstruct.place(newTweet, dom.byId("stream-list"), "first");
                                     latest_tweet_id = response[i]["tweet_id"];
@@ -74,36 +69,16 @@ function refreshTweets() {
             });
 }
 
-function makeTimestamp(days, hours, minutes) {
-    var str = "";
-    if (days != 0)
-        str += days + " days ";
-    if (hours != 0)
-        str += hours + " hours ";
-    if (minutes != 0)
-        str += minutes + " minutes ";
-    if (days + hours + minutes == 0)
-        str += "a few seconds ";
-    str += "ago";
-    return str;
+function makeTimestamp(timestamp) {
+    if(timestamp["days"]!=0)
+        return timestamp["days"]+" days ago";
+    else if(timestamp["hours"]!=0)
+        return timestamp["hours"]+" hours ago";
+    else if(timestamp["minutes"]!=0)
+        return timestamp["minutes"]+" minutes ago";
+    else return "a few seconds ago";
 }
-function convertTimeIntoDifference(timediff) {
-    if (timediff < 60) {
-        return "a few seconds ago";
-    }
-    else if (timediff < 3600) {
-        timediff = parseInt(timediff / 60);
-        return timediff + "minutes ago";
-    }
-    else if (timediff < 3600 * 24) {
-        timediff = parseInt(timediff / 3600);
-        return timediff + "hours ago";
-    }
-    else {
-        timediff = parseInt(timediff / 3600 * 24);
-        return timediff + "days ago";
-    }
-}
+
 function hasClass(el, name) {
     return new RegExp('(\\s|^)' + name + '(\\s|$)').test(el.className);
 }
@@ -151,7 +126,7 @@ function triggerFollow(btn) {
                                     addClass(btn.parentNode, "following");
                                 }
                                 else if (btn.id == "edit-button") {
-
+                                    dijit.byId("formDialog").show();
                                 }
                             }
                         });
@@ -159,8 +134,6 @@ function triggerFollow(btn) {
 }
 
 function getFollowingList() {
-
-
     require(["dojo/_base/xhr", "dojo/dom", "dojo/dom-construct", "dojo/_base/array", "dojo/NodeList-dom", "dojo/domReady!"],
             function(xhr, dom, domConstruct) {
                 clearInterval(tweetRefreshTimer);
@@ -1206,8 +1179,8 @@ require(["dojo/_base/xhr", "dojo/on", "dojo/dom", "dojo/query", "dojo/dom-constr
         </div>
     </div>
 </div>
-<div class="content-main" data-dojo-type="dijit.Dialog" id="formDialog" title="Form Dialog"
-     execute="alert('submitted w/args:\n' + dojo.toJson(arguments[0], true));">
+<div class="content-main" data-dojo-type="dijit.Dialog" id="formDialog" title="Edit Profile Details"
+     execute="alert('submitted w/args:\n' + dojo.toJson(arguments, true));">
     <div class="content-header">
         <div class="header-inner">
             <h2>Profile</h2>
@@ -1216,8 +1189,7 @@ require(["dojo/_base/xhr", "dojo/on", "dojo/dom", "dojo/query", "dojo/dom-constr
         </div>
     </div>
     <div class="content-inner no-stream-end">
-        <form id="profile-form" class="form-horizontal" enctype="multipart/form-data" method="POST"
-              action="https://twitter.com/settings/profile">
+        <div id="profile-form" class="form-horizontal">
             <div id="settings-alert-box" class="alert" style="display: none;">
                 <i id="settings-alert-close" class="close"></i>
             </div>
@@ -1229,7 +1201,7 @@ require(["dojo/_base/xhr", "dojo/on", "dojo/dom", "dojo/query", "dojo/dom-constr
                 <div class="controls">
                     <div class="uploader-avatar clearfix">
                         <img class="avatar size73" id="avatar_preview"
-                             src="https://twimg0-a.akamaihd.net/sticky/default_profile_images/default_profile_2_bigger.png">
+                             src="data:image/jpeg;base64,${profile_dp}">
 
                         <div class="uploader-tools">
                             <div class="photo-selector">
@@ -1259,7 +1231,7 @@ require(["dojo/_base/xhr", "dojo/on", "dojo/dom", "dojo/query", "dojo/dom-constr
                 <label class="control-label" for="user_name">Name</label>
 
                 <div class="controls">
-                    <input id="user_name" maxlength="20" name="user[name]" value="Harishchandra Reddy" type="text">
+                    <input id="user_name" maxlength="20" name="user[name]" value="${profile_name}" type="text">
 
                     <p>Enter your real name, so people you know can recognize you.</p>
                 </div>
@@ -1277,7 +1249,8 @@ require(["dojo/_base/xhr", "dojo/on", "dojo/dom", "dojo/query", "dojo/dom-constr
                 <label class="control-label" for="user_url">Website</label>
 
                 <div class="controls">
-                    <input id="user_url" name="user[url]" rel="http://" size="30" value="http://" type="text">
+                    <input id="user_url" data-dojo-type="dijit.form.TextBox" name="url" rel="http://" size="30"
+                           value="http://" type="text">
 
                     <p>Have a homepage or a blog? Put the address here.</p>
 
@@ -1291,8 +1264,8 @@ require(["dojo/_base/xhr", "dojo/on", "dojo/dom", "dojo/query", "dojo/dom-constr
                 <label class="control-label" for="user_description">Bio</label>
 
                 <div class="controls">
-                    <textarea class="input-xlarge" id="user_description" maxlength="160" name="user[description]">DotA,
-                        WoW:Wotlk , AoE2, CS1.6. Nuff said.</textarea>
+                    <textarea class="input-xlarge" id="user_description" maxlength="160"
+                              name="user[description]">${profile_description}</textarea>
 
                     <p>About yourself in fewer than <strong>160</strong> characters.</p>
                 </div>
@@ -1313,9 +1286,11 @@ require(["dojo/_base/xhr", "dojo/on", "dojo/dom", "dojo/query", "dojo/dom-constr
             </div>
             <hr>
             <div class="form-actions">
-                <button id="settings_save" class="btn primary-btn" type="submit">Save changes</button>
+                <button id="settings_save" class="btn primary-btn" data-dojo-type="dijit.form.Button" type="submit"
+                        data-dojo-props="onClick:function(){return dijit.byId('formDialog');}">Save changes
+                </button>
             </div>
-        </form>
+        </div>
 
         <div id="in_product_help_dialog" class="modal-container modal-profile-image-help">
             <div class="close-modal-background-target"></div>
@@ -1352,12 +1327,7 @@ require(["dojo/_base/xhr", "dojo/on", "dojo/dom", "dojo/query", "dojo/dom-constr
 
     </div>
 </div>
-<p>When pressing this button the dialog will popup:</p>
-<button id="buttonThree" data-dojo-type="dijit.form.Button" type="button">Show me!
-    <script type="dojo/method" data-dojo-event="onClick" data-dojo-args="evt">
-        dijit.byId("formDialog").show();
-    </script>
-</button>
+
 <div id="global-tweet-dialog" class="modal-container">
     <div class="close-modal-background-target"></div>
     <div class="modal draggable">
@@ -1887,6 +1857,8 @@ require(["dojo/_base/xhr", "dojo/on", "dojo/dom", "dojo/query", "dojo/dom-constr
             });
 </script>
 <script></script>
-
+<script>
+    require(["dojo/parser", "dijit/form/Button", "dijit/Dialog", "dijit/form/TextBox", "dojo/domReady!"]);
+</script>
 </body>
 </html>

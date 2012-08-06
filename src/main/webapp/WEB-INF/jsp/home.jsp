@@ -152,6 +152,7 @@
                                 },
                                 load: function(response) {
                                     for (var i in response) {
+                                        response[i]["timestamp_readable"] = makeTimestamp(response[i]["timestamp"]);
                                         var newFeed = new EJS({url: '${pageContext.request.contextPath}/static/ejs/tweet.ejs'}).render(response[i]);
                                         domConstruct.place(newFeed, dom.byId("stream-list"), "first");
                                         latest_feed_id = response[i]["tweet_id"];
@@ -168,6 +169,16 @@
                             });
 
                 });
+    }
+
+    function makeTimestamp(timestamp) {
+        if (timestamp["days"] != 0)
+            return timestamp["days"] + " days ago";
+        else if (timestamp["hours"] != 0)
+            return timestamp["hours"] + " hours ago";
+        else if (timestamp["minutes"] != 0)
+            return timestamp["minutes"] + " minutes ago";
+        else return "a few seconds ago";
     }
 </script>
 

@@ -31,7 +31,7 @@ public class User {
         this.user_id = resultSet.getInt("user_id");
         this.name = resultSet.getString("fullname");
 
-        this.displayPicture = resultSet.getString("dp_url");
+        this.displayPicture = resultSet.getString("dp");
         this.description = resultSet.getString("description");
 
     }
