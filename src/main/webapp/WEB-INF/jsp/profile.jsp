@@ -66,6 +66,13 @@
                 });
     }
 
+
+    function getFollowerListVissible(){
+            document.getElementById("tweets").style.display = "none";
+            document.getElementById("following").style.display = "none";
+            document.getElementById("follower").style.display = "block";
+    }
+
     function getFollowerList() {
         document.getElementById("tweets").style.display = "none";
         document.getElementById("following").style.display = "none";
@@ -110,10 +117,15 @@
     refreshTweets();
     setInterval(refreshTweets, 5000);
 
-    function refreshTweets() {
+    function getTweetsVissible(){
         document.getElementById("tweets").style.display = "block";
         document.getElementById("following").style.display = "none";
-        document.getElementById("follower").style.display = "none"
+        document.getElementById("follower").style.display = "none" ;
+        refreshTweets();
+    }
+
+    function refreshTweets() {
+
         require(["dojo/_base/xhr", "dojo/dom", "dojo/dom-construct", "dojo/_base/array", "dojo/NodeList-dom", "dojo/domReady!"],
                 function(xhr, dom, domConstruct) {
 
@@ -698,7 +710,7 @@
     <div class="module profile-nav">
         <ul class="js-nav-links">
             <li class="active">
-                <a class="list-link" href="#" data-nav="profile" onclick="refreshTweets()">Tweets<i
+                <a class="list-link" href="#" data-nav="profile" onclick="getTweetsVissible()">Tweets<i
                         class="chev-right"></i></a>
             </li>
             <li class="">

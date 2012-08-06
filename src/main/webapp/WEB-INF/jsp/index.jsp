@@ -59,6 +59,7 @@
     <label class="password js-password">
 
       <input class="js-password-field" value="" name="password" type="password" placeholder="Password">
+
     </label>
   </fieldset>
   <fieldset class="subchck">
@@ -167,6 +168,7 @@
     </div>
     <div id="page-outer">
             <div class="front-container " id="front-container">
+
             <noscript>
               <div class="front-warning">
                 <h3>DiCon.com makes heavy use of JavaScript</h3>
@@ -179,8 +181,16 @@
               <p>Please enable cookies in your browser preferences before signing in.</p>
             </div>
                                                                          l
-          
+
             <div class="front-card">
+                <div class="alert-messages ${messageVissibility}" id="message-drawer">
+                      <div class="message ">
+                          <div class="message-inside">
+                                <span class="message-text"><font color="red">${message}</font></span>
+                                <a class="dismiss" href="#">&times;</a>
+                          </div>
+                      </div>
+                </div>
                 <div class="front-welcome">
                     <div class="front-welcome-text">
                       <h1>Welcome to DiCon.</h1>
@@ -207,7 +217,7 @@
                             
                             <input class="text-input flex-table-input" name="password" title="Password" type="password" placeholder="Password">
 
-
+                             <div display="block" style="possition : absolute; left: 100px"> wrong password </div>
                             
                           </div>
                         </td>
@@ -239,7 +249,7 @@
                 <h2><strong>New to DiCon?</strong> Sign up</h2>
           
                 <form action="/sign_up" class="signup" method="post">
-                <font color="red">${message}</font>
+
                   <div class="placeholding-input">
 
                     <input class="text-input" autocomplete="off" name="fullname" maxlength="20" type="text" placeholder="Full name">

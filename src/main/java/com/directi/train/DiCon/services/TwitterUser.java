@@ -45,16 +45,14 @@ public class TwitterUser {
         return null;
     }
 
-   public Integer authanticateUser(String email, String password){
-       try {
+   public Integer authanticateUser(String email, String password) throws EmptyResultDataAccessException {
+
            Map<String, Object> userData = dao.getLoginDetails(email,password);
            if(userData.get("password").toString().trim().equals(getMD5(password).trim())){
 
                return Integer.valueOf(userData.get("user_id").toString());    //db.queryForMap("select fullname from public.userdata where uid=?;",userData.get("uid")).get("fullname").toString();//
            }
-       }catch (EmptyResultDataAccessException e) {
-           return 0;
-       }
+
 
         return 0;
    }
@@ -65,8 +63,9 @@ public class TwitterUser {
          return i==0 ? false :true;
     }
 
-    public void addUser(String fullname, String email, String password) {
+    public Integer addUser(String fullname, String email, String password) {
         dao.newUser(email,password,fullname,"","","");
+        return dao.matchPassword(email, password) ;
     }
 
     public void removeUser(String email) {

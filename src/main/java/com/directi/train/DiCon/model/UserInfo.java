@@ -1,5 +1,7 @@
 package com.directi.train.DiCon.model;
 
+import org.springframework.jdbc.core.RowMapper;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -12,6 +14,14 @@ import java.sql.SQLException;
  */
 public class UserInfo extends User {
     String phone;
+
+
+    public static final RowMapper<UserInfo> rowMapper = new RowMapper<UserInfo>() {
+        @Override
+        public UserInfo mapRow(ResultSet resultSet, int i) throws SQLException {
+            return new UserInfo(resultSet);
+        }
+    };
 
     public UserInfo(ResultSet resultSet) throws SQLException {
         super(resultSet);

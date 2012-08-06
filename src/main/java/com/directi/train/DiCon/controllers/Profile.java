@@ -1,6 +1,7 @@
 package com.directi.train.DiCon.controllers;
 
 import com.directi.train.DiCon.services.DAO;
+import com.directi.train.DiCon.services.ImageHandler;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -8,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import sun.misc.BASE64Encoder;
+
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
@@ -101,7 +103,20 @@ public class Profile {
 
     @RequestMapping(value="editsubmit", method=RequestMethod.POST)
     public String submitEdit(HttpSession session,@RequestParam CommonsMultipartFile file,@PathVariable("userID") Integer userID) throws IOException {
-        dao.updateDP(userID,new BASE64Encoder().encode(file.getBytes()));
+        String fileNameToLowerCase = file.getOriginalFilename().toLowerCase();
+        String fileExtension = fileNameToLowerCase.substring(fileNameToLowerCase.indexOf(".")+1,fileNameToLowerCase.length());
+        System.out.println("file extension =" + fileExtension);
+
+        ImageHandler imageHandler = new ImageHandler();
+
+
+
+
+
+
+
+
+        dao.updateDP(userID,new BASE64Encoder().encode(imageHandler.resizeImage(file.getBytes(),fileExtension,128)));
         return ("editpopup");
     }
 

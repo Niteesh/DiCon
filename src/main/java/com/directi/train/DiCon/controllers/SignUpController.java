@@ -45,15 +45,22 @@ public class SignUpController {
          else{
             try{
                 if(!twitterUser.isUserExist(email)){
-                    twitterUser.addUser(fullName, email, password);
-                    mv.addObject("message", "you are Done...");
+                    Integer userID =  twitterUser.addUser(fullName, email, password);
+                    if(userID != -1){
+                        session.setAttribute("email", email);
+                        session.setAttribute("userID", userID);
+                        mv.setViewName("redirect:/home");
+                        return mv;
+                    } else {
+                        mv.addObject("message", "Oops faced some error.. Please try again later");
+                    }
                 }
                 else
                 {
                     mv.addObject("message","user with this email already exist already exist");
                 }
             }catch(DataAccessException e){
-                mv.addObject("message", "There is some problem with our database...");
+                mv.addObject("message", "Oops faced some error.. Please try again later");
             }
         }
         mv.setViewName("/index");
