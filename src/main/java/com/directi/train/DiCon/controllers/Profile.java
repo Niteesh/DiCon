@@ -2,7 +2,6 @@ package com.directi.train.DiCon.controllers;
 
 import com.directi.train.DiCon.services.DAO;
 import com.directi.train.DiCon.services.ImageHandler;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +28,6 @@ public class Profile {
     @RequestMapping
     public ModelAndView profilePage(@PathVariable("userID") Integer userID, HttpSession session) {
 
-        ObjectMapper mapper = new ObjectMapper();
 
         ModelAndView mv = new ModelAndView("profile");
         mv.addObject("user_id", userID);
@@ -103,6 +101,8 @@ public class Profile {
 
     @RequestMapping(value="editsubmit", method=RequestMethod.POST)
     public String submitEdit(HttpSession session,@RequestParam CommonsMultipartFile file,@PathVariable("userID") Integer userID) throws IOException {
+
+
         String fileNameToLowerCase = file.getOriginalFilename().toLowerCase();
         String fileExtension = fileNameToLowerCase.substring(fileNameToLowerCase.indexOf(".")+1,fileNameToLowerCase.length());
         System.out.println("file extension =" + fileExtension);

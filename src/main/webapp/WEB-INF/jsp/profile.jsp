@@ -96,18 +96,18 @@ function removeClass(el, name) {
 function triggerFollow(btn,id) {
     var triggerURL;
     if (btn.id == "following-button") {
-        triggerURL = "id/unfollow";
+        triggerURL = "/unfollow";
     }
     else if (btn.id == "not-following-button") {
-        triggerURL = "id/follow";
+        triggerURL = "/follow";
     }
     else if (btn.id == "edit-button") {
-        triggerURL = "id/edit";
+        triggerURL = "/edit";
     }
     require(["dojo/_base/xhr", "dojo/domReady!"],
             function(xhr) {
                 xhr.get({
-                            url: triggerURL,
+                            url: id+triggerURL,
                             load: function(response) {
                                 console.log("followed = " + response);
                             },
@@ -153,7 +153,6 @@ function getFollowingList() {
                                     domConstruct.place(followingItem, dom.byId("stream-list-following"), "first");
                                 }
                                 console.log("following = " + response.length);
-
 
                             },
                             error: function() {

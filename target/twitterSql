@@ -1,8 +1,0 @@
-﻿
-
-CREATE SEQUENCE serial START 101;
-
-CREATE TABLE user 
-(uid integer  NOT NULL DEFAULT nextval('serial') PRIMARY KEY ,
-email varchar(30) NOT NULL UNIQUE,
-password CHAR(128));

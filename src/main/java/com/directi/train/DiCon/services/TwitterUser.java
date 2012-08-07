@@ -64,7 +64,7 @@ public class TwitterUser {
     }
 
     public Integer addUser(String fullname, String email, String password) {
-        dao.newUser(email,password,fullname,"","","");
+        dao.newUser(email,password,fullname);
         return dao.matchPassword(email, password) ;
     }
 

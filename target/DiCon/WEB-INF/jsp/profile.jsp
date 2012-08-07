@@ -93,21 +93,21 @@ function removeClass(el, name) {
     }
 }
 
-function triggerFollow(btn) {
+function triggerFollow(btn,id) {
     var triggerURL;
     if (btn.id == "following-button") {
-        triggerURL = "${user_id}/unfollow";
+        triggerURL = "/unfollow";
     }
     else if (btn.id == "not-following-button") {
-        triggerURL = "${user_id}/follow";
+        triggerURL = "/follow";
     }
     else if (btn.id == "edit-button") {
-        triggerURL = "${user_id}/edit";
+        triggerURL = "/edit";
     }
     require(["dojo/_base/xhr", "dojo/domReady!"],
             function(xhr) {
                 xhr.get({
-                            url: triggerURL,
+                            url: id+triggerURL,
                             load: function(response) {
                                 console.log("followed = " + response);
                             },
@@ -153,7 +153,6 @@ function getFollowingList() {
                                     domConstruct.place(followingItem, dom.byId("stream-list-following"), "first");
                                 }
                                 console.log("following = " + response.length);
-
 
                             },
                             error: function() {
@@ -562,7 +561,7 @@ require(["dojo/_base/xhr", "dojo/on", "dojo/dom", "dojo/query", "dojo/dom-constr
             <div class="user-actions btn-group ${profile_status} including" data-user-id="51376979"
                  data-screen-name="${user_id}" data-name="${profile_name}" data-protected="false">
 
-                <button onclick="triggerFollow(this);" id="${profile_status}-button"
+                <button onclick="triggerFollow(this,${user_id});" id="${profile_status}-button"
                         class="js-follow-btn follow-button btn" type="button">
                     <span class="button-text follow-text">Follow</span>
                     <span class="button-text following-text">Following</span>
