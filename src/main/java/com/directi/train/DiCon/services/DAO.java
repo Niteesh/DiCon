@@ -35,7 +35,7 @@ public class DAO {
         return db.queryForList(" select details.user_id, fullname, dp, status From twitter.details details" +
                 " INNER JOIN (select f2.follower_id as user_id, CASE WHEN  f3.follower_id= ? THEN 'following' ELSE 'not-following' END as status " +
                 "from twitter.follows f2 inner join twitter.follows f3 on f2.follower_id = f3.following_id WHERE f2.following_id= ?  AND f2.stop_time IS NULL  AND f3.stop_time IS NULL) as follow  " +
-                "ON details.user_id = follow.user_id;", user_id, login_id);
+                "ON details.user_id = follow.user_id;", login_id, user_id);
     }
 
     public Integer getFollowerCount(int user_id) {
@@ -47,7 +47,7 @@ public class DAO {
         return db.queryForList(" select details.user_id, fullname, dp, status From twitter.details details" +
                 " INNER JOIN (select f2.following_id as user_id, CASE WHEN  f3.follower_id= ?   THEN 'following' ELSE 'not-following' END as status " +
                 "from twitter.follows f2 inner join twitter.follows f3 on f2.following_id = f3.following_id WHERE f2.follower_id= ? AND f2.stop_time IS NULL AND f3.stop_time IS NULL) as follow  " +
-                "ON details.user_id = follow.user_id;", user_id, login_id);
+                "ON details.user_id = follow.user_id;", login_id, user_id);
     }
 
     public Integer getFollowingCount(int user_id) {
@@ -60,7 +60,7 @@ public class DAO {
     }
 
     public List<Map<String, Object>> getNewsFeed(int user_id, int latest_feed_id) {
-        return db.queryForList("SELECT DISTINCT D.fullname,D.dp,T.text,(now()-T.timestamp) as timestamp,T.tweet_id,T.user_id FROM twitter.tweets T INNER JOIN twitter.follows  F ON T.user_id = F.following_id INNER JOIN twitter.details D on T.user_id = D.user_id AND (T.timestamp BETWEEN F.start_time AND F.stop_time OR (F.stop_time IS NULL AND T.timestamp >= F.start_time)) WHERE F.follower_id = ? AND tweet_id > ? ORDER BY timestamp DESC;", user_id, latest_feed_id);
+        return db.queryForList("SELECT DISTINCT D.fullname,D.dp,T.text,(now()-T.timestamp) as timestamp,T.tweet_id,T.user_id FROM twitter.tweets T INNER JOIN twitter.follows  F ON T.user_id = F.following_id OR T.user_id=? INNER JOIN twitter.details D on T.user_id = D.user_id  WHERE F.follower_id = ?  AND (T.user_id=? OR T.timestamp BETWEEN F.start_time AND F.stop_time OR (F.stop_time IS NULL AND T.timestamp >= F.start_time)) AND tweet_id > ?  ORDER BY timestamp DESC;", user_id, user_id, user_id, latest_feed_id);
     }
 
     public int newUser(String email, String password, String fullname, String description, String phone, String dp) {

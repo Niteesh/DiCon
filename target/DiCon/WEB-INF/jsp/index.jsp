@@ -183,7 +183,7 @@
                                                                          l
 
             <div class="front-card">
-                <div class="alert-messages ${messageVissibility}" id="message-drawer">
+                <div class="alert-messages ${messageVisibility}" id="message-drawer">
                       <div class="message ">
                           <div class="message-inside">
                                 <span class="message-text"><font color="red">${message}</font></span>

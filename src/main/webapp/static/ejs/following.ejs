@@ -6,7 +6,7 @@
 
 
     <div class="js-follow-combo follow-combo btn-group js-actionable-user <%=status%>" data-user-id="442611027" data-screen-name="<%=fullname%>">
-  <a class="follow-btn btn js-combo-btn js-recommended-item">
+  <a onclick="triggerFollow(this,<%=user_id%>);" id="<%=status%>-button" class="follow-btn btn js-combo-btn js-recommended-item">
     <div class="js-action-follow follow-text action-text" data-user-id="442611027">
       <i class="follow"></i>
       Follow

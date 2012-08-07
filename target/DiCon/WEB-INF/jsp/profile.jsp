@@ -2,7 +2,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-
+                                                                           git
 <html lang="en">
 <head>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
@@ -145,9 +145,7 @@ function getFollowingList() {
                             url: "${user_id}/following",
                             handleAs: "json",
                             headers: { "Accept": "application/json"},
-                            content: {
-                                latest_tweet_id : latest_tweet_id
-                            },
+
                             load: function(response) {
                                 domConstruct.empty(dom.byId("stream-list-following"));
                                 for (var i in response) {
@@ -179,9 +177,6 @@ function getFollowerList() {
                             url: "${user_id}/follower",
                             handleAs: "json",
                             headers: { "Accept": "application/json"},
-                            content: {
-                                latest_tweet_id : latest_tweet_id
-                            },
                             load: function(response) {
                                 domConstruct.empty(dom.byId("stream-list-follower"));
                                 for (var i in response) {
@@ -672,12 +667,10 @@ require(["dojo/_base/xhr", "dojo/on", "dojo/dom", "dojo/query", "dojo/dom-constr
     <div class="module profile-nav">
         <ul class="js-nav-links">
             <li class="active">
-<<<<<<< HEAD
+
                 <a class="list-link" href="#" data-nav="profile"
                    onclick="refreshTweets();tweetRefreshTimer = setInterval(refreshTweets, 5000);">Tweets<i
-=======
-                <a class="list-link" href="#" data-nav="profile" onclick="getTweetsVissible()">Tweets<i
->>>>>>> a130f6cf099e1e7ce5589b33166d88949f6f48b4
+
                         class="chev-right"></i></a>
             </li>
             <li class="">
@@ -950,7 +943,7 @@ require(["dojo/_base/xhr", "dojo/on", "dojo/dom", "dojo/query", "dojo/dom-constr
 <div id="follower" style="display: none">
     <div class="content-header">
         <div class="header-inner">
-            <h2 class="js-timeline-title">Following
+            <h2 class="js-timeline-title">Followers
             </h2>
         </div>
     </div>
@@ -1189,7 +1182,7 @@ require(["dojo/_base/xhr", "dojo/on", "dojo/dom", "dojo/query", "dojo/dom-constr
     </div>
 </div>
 <div class="content-main" data-dojo-type="dijit.Dialog" id="formDialog" title="Edit Profile Details"
-     execute="alert('submitted w/args:\n' + dojo.toJson(arguments, true));">
+     execute="alert('submitted w/args:\n' + dojo.toJson(arguments[0], true));">
     <div class="content-header">
         <div class="header-inner">
             <h2>Profile</h2>
@@ -1240,7 +1233,7 @@ require(["dojo/_base/xhr", "dojo/on", "dojo/dom", "dojo/query", "dojo/dom-constr
                 <label class="control-label" for="user_name">Name</label>
 
                 <div class="controls">
-                    <input id="user_name" maxlength="20" name="user[name]" value="${profile_name}" type="text">
+                    <input id="user_name" data-dojo-type="dijit.form.TextBox" maxlength="20" name="fullname" value="${profile_name}" type="text">
 
                     <p>Enter your real name, so people you know can recognize you.</p>
                 </div>
@@ -1258,7 +1251,7 @@ require(["dojo/_base/xhr", "dojo/on", "dojo/dom", "dojo/query", "dojo/dom-constr
                 <label class="control-label" for="user_url">Website</label>
 
                 <div class="controls">
-                    <input id="user_url" data-dojo-type="dijit.form.TextBox" name="url" rel="http://" size="30"
+                    <input id="user_url" name="url" rel="http://" size="30"
                            value="http://" type="text">
 
                     <p>Have a homepage or a blog? Put the address here.</p>
@@ -1273,8 +1266,8 @@ require(["dojo/_base/xhr", "dojo/on", "dojo/dom", "dojo/query", "dojo/dom-constr
                 <label class="control-label" for="user_description">Bio</label>
 
                 <div class="controls">
-                    <textarea class="input-xlarge" id="user_description" maxlength="160"
-                              name="user[description]">${profile_description}</textarea>
+                    <textarea data-dojo-type="dijit.form.TextBox" class="input-xlarge" id="user_description" maxlength="160"
+                              name="description">${profile_description}</textarea>
 
                     <p>About yourself in fewer than <strong>160</strong> characters.</p>
                 </div>
