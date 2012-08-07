@@ -41,9 +41,7 @@
                                 url: "${user_id}/following",
                                 handleAs: "json",
                                 headers: { "Accept": "application/json"},
-                                content: {
-                                    latest_tweet_id : latest_tweet_id
-                                },
+
                                 load: function(response) {
 
                                     for (var i in response) {
@@ -56,7 +54,7 @@
 
                                 },
                                 error: function() {
-                                    console.log("Error fetching json.");
+                                    console.log("Error fetching json for following.");
                                 },
                                 handle: function() {
                                     console.log("latest tweet id = " + latest_tweet_id);

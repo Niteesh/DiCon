@@ -1,0 +1,5 @@
+only when the top div is vissible fetetch the new tweets
+only when lower most div is vissible ftech the older posts
+
+keep a variable in session to say if all the old tweets are fetched no need of calling db agan
+keep the variable in session such optimization

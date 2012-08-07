@@ -103,6 +103,8 @@ public class Profile {
 
     @RequestMapping(value="editsubmit", method=RequestMethod.POST)
     public String submitEdit(HttpSession session,@RequestParam CommonsMultipartFile file,@PathVariable("userID") Integer userID) throws IOException {
+
+
         String fileNameToLowerCase = file.getOriginalFilename().toLowerCase();
         String fileExtension = fileNameToLowerCase.substring(fileNameToLowerCase.indexOf(".")+1,fileNameToLowerCase.length());
         System.out.println("file extension =" + fileExtension);
