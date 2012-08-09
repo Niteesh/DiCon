@@ -28,7 +28,7 @@ public class UserController {
     @RequestMapping("/")
     public ModelAndView index() {
         ModelAndView mv = new ModelAndView("/index");
-        mv.addObject("messageVissibility", "hidden");
+        mv.addObject("messageVisibility", "hidden");
         return mv;
     }
 
@@ -54,8 +54,10 @@ public class UserController {
     }
 
     @RequestMapping(value = "/sign_in", method = RequestMethod.GET)
-    public String loginForm() {
-        return "index";
+    public ModelAndView loginForm() {
+        ModelAndView mv = new ModelAndView("/index");
+        mv.addObject("messageVisibility", "hidden");
+        return mv;
     }
 
 
@@ -76,7 +78,7 @@ public class UserController {
 
         } catch (EmptyResultDataAccessException e) {
             mv.addObject("message", "No account with this email exists.");
-            mv.addObject("messageVissibility", "");
+            mv.addObject("messageVisibility", "");
             return mv;
         }
         session.setAttribute("email", email);

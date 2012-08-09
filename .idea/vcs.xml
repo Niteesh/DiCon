@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+<<<<<<< HEAD
+  <component name="ClearCaseSharedConfig">
+    <option name="myUseUcmModel" value="true" />
+  </component>
+  <component name="VcsDirectoryMappings">
+=======
   <component name="VcsDirectoryMappings">
     <mapping directory="" vcs="svn" />
+>>>>>>> d1dc9d977389ff734310abfedc055c821927cb44
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
   </component>
 </project>

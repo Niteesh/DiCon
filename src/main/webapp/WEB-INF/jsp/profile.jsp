@@ -93,21 +93,21 @@ function removeClass(el, name) {
     }
 }
 
-function triggerFollow(btn) {
+function triggerFollow(btn,id) {
     var triggerURL;
     if (btn.id == "following-button") {
-        triggerURL = "${user_id}/unfollow";
+        triggerURL = "/unfollow";
     }
     else if (btn.id == "not-following-button") {
-        triggerURL = "${user_id}/follow";
+        triggerURL = "/follow";
     }
     else if (btn.id == "edit-button") {
-        triggerURL = "${user_id}/edit";
+        triggerURL = "/edit";
     }
     require(["dojo/_base/xhr", "dojo/domReady!"],
             function(xhr) {
                 xhr.get({
-                            url: triggerURL,
+                            url: id+triggerURL,
                             load: function(response) {
                                 console.log("followed = " + response);
                             },
@@ -176,7 +176,6 @@ function getFollowerList() {
                             url: "${user_id}/follower",
                             handleAs: "json",
                             headers: { "Accept": "application/json"},
-
                             load: function(response) {
                                 domConstruct.empty(dom.byId("stream-list-follower"));
                                 for (var i in response) {
@@ -614,7 +613,7 @@ function retweet(tweet_id){
             <div class="user-actions btn-group ${profile_status} including" data-user-id="51376979"
                  data-screen-name="${user_id}" data-name="${profile_name}" data-protected="false">
 
-                <button onclick="triggerFollow(this);" id="${profile_status}-button"
+                <button onclick="triggerFollow(this,${user_id});" id="${profile_status}-button"
                         class="js-follow-btn follow-button btn" type="button">
                     <span class="button-text follow-text">Follow</span>
                     <span class="button-text following-text">Following</span>
@@ -915,7 +914,7 @@ function retweet(tweet_id){
 <div id="follower" style="display: none">
     <div class="content-header">
         <div class="header-inner">
-            <h2 class="js-timeline-title">Following
+            <h2 class="js-timeline-title">Followers
             </h2>
         </div>
     </div>
@@ -1154,7 +1153,7 @@ function retweet(tweet_id){
     </div>
 </div>
 <div class="content-main" data-dojo-type="dijit.Dialog" id="formDialog" title="Edit Profile Details"
-     execute="alert('submitted w/args:\n' + dojo.toJson(arguments, true));">
+     execute="alert('submitted w/args:\n' + dojo.toJson(arguments[0], true));">
     <div class="content-header">
         <div class="header-inner">
             <h2>Profile</h2>
@@ -1205,7 +1204,7 @@ function retweet(tweet_id){
                 <label class="control-label" for="user_name">Name</label>
 
                 <div class="controls">
-                    <input id="user_name" maxlength="20" name="user[name]" value="${profile_name}" type="text">
+                    <input id="user_name" data-dojo-type="dijit.form.TextBox" maxlength="20" name="fullname" value="${profile_name}" type="text">
 
                     <p>Enter your real name, so people you know can recognize you.</p>
                 </div>
@@ -1223,7 +1222,7 @@ function retweet(tweet_id){
                 <label class="control-label" for="user_url">Website</label>
 
                 <div class="controls">
-                    <input id="user_url" data-dojo-type="dijit.form.TextBox" name="url" rel="http://" size="30"
+                    <input id="user_url" name="url" rel="http://" size="30"
                            value="http://" type="text">
 
                     <p>Have a homepage or a blog? Put the address here.</p>
@@ -1238,8 +1237,8 @@ function retweet(tweet_id){
                 <label class="control-label" for="user_description">Bio</label>
 
                 <div class="controls">
-                    <textarea class="input-xlarge" id="user_description" maxlength="160"
-                              name="user[description]">${profile_description}</textarea>
+                    <textarea data-dojo-type="dijit.form.TextBox" class="input-xlarge" id="user_description" maxlength="160"
+                              name="description">${profile_description}</textarea>
 
                     <p>About yourself in fewer than <strong>160</strong> characters.</p>
                 </div>

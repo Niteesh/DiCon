@@ -12,7 +12,6 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
     private final ThreadLocal<Integer> userID;
 
 
-
     @Autowired
     public AuthInterceptor(@Qualifier(value = "userID") ThreadLocal<Integer> userID) {
         this.userID = userID;
@@ -23,13 +22,17 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
             throws Exception {
 
         HttpSession session = request.getSession(false);
-        if(request.getRequestURI().equals("/")||request.getRequestURI().equals("/sign_in")||request.getRequestURI().equals("/sign_up")){
-//            if(session!=null){
-//                response.sendRedirect("home");
-//                return false;
-//            }
+        if (request.getRequestURI().equals("/sign_in") || request.getRequestURI().equals("/")) {
+            if (session != null && session.getAttribute("email") != null) {
+                response.sendRedirect("/home");
+                return false;
+            }
             return true;
         }
+        if (request.getRequestURI().equals("/sign_up")) {
+            return true;
+        }
+
         if (session != null) {
             String email = (String) session.getAttribute("email");
             if (email != null) {
