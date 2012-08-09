@@ -160,6 +160,9 @@ function refreshTweets() {
                                     response.reverse();
                                 }
                                 for (var i in response) {
+                                    if(response[i]["user_id"]==${user_id} && response[0]["tweet_id"] == latest_tweet_id){
+                                        dom.byId("profile-tweet-count").innerHTML =parseInt(dom.byId("profile-tweet-count").innerHTML)+1;
+                                    }
                                     response[i]["timestamp_readable"] = makeTimestamp(response[i]["timestamp"]);
                                     var newTweet = new EJS({url: '${pageContext.request.contextPath}/static/ejs/tweet.ejs'}).render(response[i]);
                                     domConstruct.place(newTweet, dom.byId("stream-list"), position);
@@ -752,7 +755,7 @@ function retweet(tweet_id){
             <ul class="stats js-mini-profile-stats">
                 <li><a href="#" data-element-term="tweet_stats"
                        onclick="refreshTweets();tweetRefreshTimer = setInterval(refreshTweets, 5000);"
-                       data-nav="profile"><strong>${profile_tweetCount}</strong> Tweets</a></li>
+                       data-nav="profile"><strong id="profile-tweet-count">${profile_tweetCount}</strong> Tweets</a></li>
                 <li><a href="#" data-element-term="following_stats" onclick="getFollowingList()"
                        data-nav="following"><strong>${profile_following}</strong> Following</a></li>
                 <li><a href="#" data-element-term="follower_stats" onclick="getFollowerList()"

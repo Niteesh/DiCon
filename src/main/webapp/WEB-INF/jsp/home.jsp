@@ -119,6 +119,7 @@
                                     query("#tweet-button").addClass("disabled");
                                     query("#tweet-button").removeClass("primary-btn");
                                     query("#new-tweet-textarea-container").addClass("condensed");
+                                    query(".tweet-button-container")[0].style.display = "none";
                                 },
                                 error: function() {
                                     console.log("Error sending tweets.");
@@ -165,7 +166,7 @@
         var position;
         if (newOrOldFlag == 0) return;
         require(["dojo/fx","dojo/_base/xhr", "dojo/dom", "dojo/dom-construct", "dojo/_base/array", "dojo/NodeList-dom", "dojo/domReady!"],
-                function(fx,xhr, dom, domConstruct) {
+                function(fx, xhr, dom, domConstruct) {
 
                     xhr.get({
                                 url: "/${current_user_id}/newsfeed",
@@ -189,10 +190,14 @@
                                         response.reverse();
                                     }
                                     for (var i in response) {
+                                        if (response[i]["user_id"] ==${current_user_id} && response[0]["tweet_id"] == latest_feed_id) {
+                                            dom.byId("home-tweet-count").innerHTML = parseInt(dom.byId("home-tweet-count").innerHTML) + 1;
+                                        }
                                         response[i]["timestamp_readable"] = makeTimestamp(response[i]["timestamp"]);
                                         var newFeed = new EJS({url: '${pageContext.request.contextPath}/static/ejs/tweet.ejs'}).render(response[i]);
                                         domConstruct.place(newFeed, dom.byId("stream-list"), position);
-                                        fx.wipeIn({ node: dom.byId("stream-item-"+response[i]["tweet_id"]) }).play();
+                                        fx.wipeIn({ node: dom.byId("stream-item-" + response[i]["tweet_id"]) }).play();
+
                                     }
                                     console.log("new feeds = " + response.length);
 
@@ -447,15 +452,11 @@
 
         <div class="js-mini-profile-stats-container">
             <ul class="stats js-mini-profile-stats">
-                <li><a href="https://twitter.com/niteesh3k" data-element-term="tweet_stats" data-nav="profile">
-
-
-                    <strong>${home_tweetCount}</strong> Tweets
-
-                </a></li>
-                <li><a href="https://twitter.com/#%21/following" data-element-term="following_stats"
+                <li><a href="/${current_user_id}" data-element-term="tweet_stats"
+                       data-nav="profile"><strong id="home-tweet-count">${home_tweetCount}</strong> Tweets</a></li>
+                <li><a href="" data-element-term="following_stats"
                        data-nav="following"><strong>${home_followingCount}</strong> Following</a></li>
-                <li><a href="https://twitter.com/#%21/followers" data-element-term="follower_stats"
+                <li><a href="" data-element-term="follower_stats"
                        data-nav="followers"><strong>${home_followerCount}</strong> Followers</a></li>
             </ul>
         </div>

@@ -96,8 +96,8 @@ public class Profile {
     @RequestMapping(value = "edit", method = RequestMethod.POST)
     public ModelAndView submitEdit(HttpSession session, @RequestParam CommonsMultipartFile dp, @RequestParam String fullname, @RequestParam String description, @RequestParam String location, @PathVariable("userID") Integer userID) throws IOException {
 
-        if(userID !=  session.getAttribute("userID")){
-            return  "home";
+        if(!userID.equals(session.getAttribute("userID"))){
+            return  new ModelAndView("redirect:/");
         }
 
         String fileNameToLowerCase = dp.getOriginalFilename().toLowerCase();
@@ -111,13 +111,13 @@ public class Profile {
 
     @RequestMapping(value = "following", method = RequestMethod.GET)
     @ResponseBody
-    public List<Admirer> getFollowingList(HttpSession session, @PathVariable("userID") Integer userID) {
+    public List<Map<String, Object>> getFollowingList(HttpSession session, @PathVariable("userID") Integer userID) {
         return dao.getFollowingList(userID, (Integer) session.getAttribute("userID"));
     }
 
     @RequestMapping(value = "follower", method = RequestMethod.GET)
     @ResponseBody
-    public List<Admirer> getFollowerList(HttpSession session, @PathVariable("userID") Integer userID) {
+    public List<Map<String, Object>> getFollowerList(HttpSession session, @PathVariable("userID") Integer userID) {
         return dao.getFollowersList(userID, (Integer) session.getAttribute("userID"));
     }
 
