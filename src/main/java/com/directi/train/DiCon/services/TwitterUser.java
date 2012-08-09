@@ -2,7 +2,6 @@ package com.directi.train.DiCon.services;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.security.MessageDigest;
@@ -45,7 +44,7 @@ public class TwitterUser {
         return null;
     }
 
-   public Integer authanticateUser(String email, String password) throws EmptyResultDataAccessException {
+   public Integer authanticateUser(String email, String password)  {
 
            Map<String, Object> userData = dao.getLoginDetails(email,password);
            if(userData.get("password").toString().trim().equals(getMD5(password).trim())){

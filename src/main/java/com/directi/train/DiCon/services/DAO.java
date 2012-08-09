@@ -1,5 +1,6 @@
 package com.directi.train.DiCon.services;
 
+import com.directi.train.DiCon.model.Admirer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
@@ -31,12 +32,11 @@ public class DAO {
     }
 
 
-    public List<Map<String, Object>> getFollowersList(int user_id, int login_id) {
-
-        return db.queryForList(" select details.user_id, fullname, dp, description,CASE WHEN follow.status = 0 Then 'not-following' else 'following' end as status From twitter.details details" +
-                " INNER JOIN (select f1.follower_id as user_id, max(CASE WHEN f2.follower_id= ? AND f2.stop_time IS NULL THEN 1 ELSE 0 END ) as status " +
-                "from twitter.follows f1 inner join twitter.follows f2 on f1.follower_id = f2.following_id WHERE f1.following_id=? AND f1.stop_time IS NULL GROUP BY f1.follower_id) as follow  " +
-                "ON details.user_id = follow.user_id;", login_id, user_id);
+    public List<Admirer> getFollowersList(int user_id, int login_id){
+        return db.query(" select details.user_id, fullname, dp, description,CASE WHEN follow.status = 0 Then 'not-following' else 'following' end as status From twitter.details details" +
+                " INNER JOIN (select f1.follower_id as user_id, max(CASE WHEN  f2.follower_id= ?   THEN 1 ELSE 0 END ) as status " +
+                "from twitter.follows f1 inner join twitter.follows f2 on f1.follower_id = f2.following_id WHERE f1.follower_id= ? AND f1.stop_time IS NULL AND f2.stop_time IS NULL GROUP BY f1.follower_id) as follow  " +
+                "ON details.user_id = follow.user_id;", Admirer.rowMapper, login_id, user_id);
     }
 
     public Integer getFollowerCount(int user_id) {
@@ -44,13 +44,11 @@ public class DAO {
     }
 
 
-    public List<Map<String, Object>> getFollowingList(int user_id, int login_id) {
-
-        return db.queryForList(" select details.user_id, fullname, dp, description,CASE WHEN follow.status = 0 Then 'not-following' else 'following' end as status From twitter.details details" +
-                " INNER JOIN (select f1.following_id as user_id, max(CASE WHEN  f2.follower_id= ?  AND f2.stop_time IS NULL  THEN 1 ELSE 0 END ) as status " +
-                "from twitter.follows f1 inner join twitter.follows f2 on f1.following_id = f2.following_id WHERE f1.follower_id= ? AND f1.stop_time IS NULL GROUP BY f1.following_id) as follow  " +
-                "ON details.user_id = follow.user_id;", login_id, user_id);
-
+    public List<Admirer> getFollowingList(int user_id, int login_id){
+        return db.query(" select details.user_id, fullname, dp, description,CASE WHEN follow.status = 0 Then 'not-following' else 'following' end as status From twitter.details details" +
+                " INNER JOIN (select f1.following_id as user_id, max(CASE WHEN  f2.follower_id= ?   THEN 1 ELSE 0 END ) as status " +
+                "from twitter.follows f1 inner join twitter.follows f2 on f1.following_id = f2.following_id WHERE f1.follower_id= ? AND f1.stop_time IS NULL AND f2.stop_time IS NULL GROUP BY f1.following_id) as follow  " +
+                "ON details.user_id = follow.user_id;", Admirer.rowMapper, login_id, user_id);
     }
 
     public Integer getFollowingCount(int user_id) {
@@ -138,5 +136,27 @@ public class DAO {
 
     public String getDP(Integer following_id) {
         return db.queryForObject("SELECT dp FROM twitter.details WHERE user_id = ?;", String.class, following_id);
+    }
+
+
+    public List<Map<String,Object>> getSimilarPpl(Integer userID){
+        return db.queryForList("SELECT fullname, dp, details.user_id FROM twitter.details details INNER JOIN " +
+                                    "(SELECT f2.follower_id as user_id, count(f2.follower_id) as score " +
+                                    "FROM  twitter.follows f1 INNER JOIN " +
+                                    "  twitter.follows f2 ON f1.following_id = f2.following_id " +
+                                    "WHERE " +
+                                    "  f1.follower_id = ? and f2.follower_id <> ? and f1.stop_time is null and f2.stop_time is null " +
+                                    "group by f2.follower_id " +
+                                    "order by score DESC LIMIT 5) as similarppl ON " +
+                            "similarppl.user_id = details.user_id;",userID, userID);
+    }
+
+
+    public int upDateRetweet(Integer user_id, Integer tweet_id){
+
+        return db.update(" Insert into twitter.tweets (user_id, text) " +
+                "select ?,'via<a href=\"/'||d.user_id ||'\"> '|| d.fullname ||' : </a> '|| retweet.text as text from twitter.details d INNER JOIN " +
+                " (select  user_id,text, tweet_id from twitter.tweets t where tweet_id = ?) as retweet " +
+                "ON retweet.user_id = d.user_id;",user_id, tweet_id) ;
     }
 }

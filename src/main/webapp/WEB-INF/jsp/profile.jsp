@@ -2,7 +2,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-git
 <html lang="en">
 <head>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
@@ -90,7 +89,7 @@ require(["dojo/_base/xhr", "dojo/on", "dojo/dom", "dojo/query", "dojo/dom-constr
 
 refreshTweets();
 var tweetRefreshTimer = setInterval(refreshTweets, 5000);
-
+getSimilarPeople();
 
 window.onscroll = function(ev) {
     if (document.documentElement.scrollTop) {
@@ -322,7 +321,114 @@ function getFollowerList() {
             });
 }
 
+require(["dojo/_base/xhr", "dojo/on", "dojo/dom", "dojo/query", "dojo/dom-construct", "dojo/_base/array", "dojo/NodeList-dom", "dojo/domReady!"], function(xhr, on, dom, query, domConstruct) {
+    var hide_searchresults_timeout;
+    on(dom.byId("search-query"), "focus", function() {
+        clearTimeout(hide_searchresults_timeout);
+        query("#global-nav-search").addClass("focus");
+        query("#search-query").addClass("focus");
 
+
+        if (this.value != "")
+            dom.byId("search-results-container").style.display = "block";
+    });
+
+
+    on(dom.byId("search-query"), "blur", function() {
+        query("#global-nav-search").removeClass("focus");
+        query("#search-query").removeClass("focus");
+        hide_searchresults_timeout = setTimeout(function() {
+            dom.byId("search-results-container").style.display = "none"
+        }, 1000);
+    });
+
+    on(dom.byId("search-query"), "keyup", function() {
+        if (this.value != "")
+            searchQuery(this.value);
+        else {
+            domConstruct.empty(dom.byId("results-list"));
+            dom.byId("search-results-container").style.display = "none";
+        }
+    });
+
+    function searchQuery(search_string) {
+        xhr.post({
+                    url: "search.json",
+                    handleAs: "json",
+                    content: {
+                        search_string : search_string
+                    },
+                    load: function(response) {
+                        if (response.length == 0)
+                            dom.byId("search-results-container").style.display = "none";
+                        else
+                            dom.byId("search-results-container").style.display = "block";
+                        domConstruct.empty(dom.byId("results-list"));
+                        for (var i in response) {
+                            var result = new EJS({url: '${pageContext.request.contextPath}/static/ejs/searchResult.ejs'}).render(response[i]);
+                            domConstruct.place(result, dom.byId("results-list"));
+                        }
+                    },
+                    error: function() {
+                        console.log("Error fetching search results.");
+                    }
+                });
+    }
+
+});
+
+function getSimilarPeople() {
+
+    require(["dojo/_base/xhr", "dojo/dom", "dojo/dom-construct", "dojo/_base/array", "dojo/NodeList-dom", "dojo/domReady!"],
+            function(xhr, dom, domConstruct) {
+
+                xhr.get({
+                            url: "${user_id}/similar_ppl",
+                            handleAs: "json",
+                            headers: { "Accept": "application/json"},
+
+                            load: function(response) {
+                                for (var i in response) {
+
+                                    var similarUser = new EJS({url: '${pageContext.request.contextPath}/static/ejs/similarppl.ejs'}).render(response[i]);
+                                    domConstruct.place(similarUser, dom.byId("wtf"), "first");
+
+                                }
+                                console.log("similar ppl = " + response.length);
+
+                            },
+                            error: function() {
+                                console.log("Error fetching similar ppl");
+                            },
+
+                        });
+            });
+}
+
+
+function retweet(tweet_id){
+ require(["dojo/_base/xhr", "dojo/on", "dojo/dom", "dojo/query", "dojo/NodeList-dom", "dojo/domReady!"],
+      function(xhr, on, dom, query) {
+
+
+          console.log("retweeting "+tweet_id);
+          xhr.post({
+              url: "${user_id}/retweet",
+              handleAs: "json",
+              content: {
+                  tweet_id : tweet_id
+              },
+              load: function(response) {
+                  console.log("Successfully tweeted : " + response["success"]);
+              },
+
+              error: function() {
+                  console.log("Error sending retweets.");
+              }
+          });
+
+      });
+ }
 </script>
 
 
@@ -863,93 +969,13 @@ function getFollowerList() {
         </ul>
 
         <div class="flex-module">
-            <div style="opacity: 1;" class="dashboard-user-recommendations flex-module-inner" data-section-id="wtf">
-                <div class="js-account-summary account-summary js-actionable-user account-summary-small"
-                     data-user-id="57879889" data-feedback-token="2">
-                    <div class="content">
-                        <a class="account-group js-recommend-link js-user-profile-link user-thumb"
-                           href="https://twitter.com/Minissha_Lamba" data-user-id="57879889">
+            <div style="opacity: 1;" id="wtf" class="dashboard-user-recommendations flex-module-inner" data-section-id="wtf">
 
-                            <img class="avatar js-action-profile-avatar size32"
-                                 src="${user_id}_files/mini_profile_pic_normal.jpg" alt="Minissha Lamba">
-        <span class="account-group-inner js-action-profile-name" data-user-id="57879889">
-          <b class="fullname">Minissha Lamba</b>
-          <span>‏</span>
-          
-          <span class="username"><s>@</s><span class="js-username">Minissha_Lamba</span></span>
-        </span>
-                        </a>
 
-                        <small class="metadata social-context">
-                        </small>
-  
-        <span class="user-actions not-following" data-user-id="57879889">
-        <a href="#" class="follow-link">
-            <span class="link-text follow-text">Follow</span>
-            <span class="link-text unfollow-text">Unfollow</span>
-            <span class="link-text cancel-text">Cancel</span>
-        </a>
-      </span>
-                    </div>
-                </div>
+             <!-- similar ppl here -->
 
-                <div class="js-account-summary account-summary js-actionable-user account-summary-small"
-                     data-user-id="102594253" data-feedback-token="2">
-                    <div class="content">
-                        <a class="account-group js-recommend-link js-user-profile-link user-thumb"
-                           href="https://twitter.com/mbhandarkar268" data-user-id="102594253">
 
-                            <img class="avatar js-action-profile-avatar size32"
-                                 src="${user_id}_files/mbhandarkar268_normal.jpg" alt="Madhur Bhandarkar">
-        <span class="account-group-inner js-action-profile-name" data-user-id="102594253">
-          <b class="fullname">Madhur Bhandarkar</b>
-          <span>‏</span>
-          
-          <span class="username"><s>@</s><span class="js-username">mbhandarkar268</span></span>
-        </span>
-                        </a>
 
-                        <small class="metadata social-context">
-                        </small>
-  
-        <span class="user-actions not-following" data-user-id="102594253">
-        <a href="#" class="follow-link">
-            <span class="link-text follow-text">Follow</span>
-            <span class="link-text unfollow-text">Unfollow</span>
-            <span class="link-text cancel-text">Cancel</span>
-        </a>
-      </span>
-                    </div>
-                </div>
-
-                <div class="js-account-summary account-summary js-actionable-user account-summary-small"
-                     data-user-id="125095065" data-feedback-token="1">
-                    <div class="content">
-                        <a class="account-group js-recommend-link js-user-profile-link user-thumb"
-                           href="https://twitter.com/rohiniyer" data-user-id="125095065">
-
-                            <img class="avatar js-action-profile-avatar size32" src="${user_id}_files/Ro.jpg"
-                                 alt="rohini iyer">
-        <span class="account-group-inner js-action-profile-name" data-user-id="125095065">
-          <b class="fullname">rohini iyer</b>
-          <span>‏</span>
-          
-          <span class="username"><s>@</s><span class="js-username">rohiniyer</span></span>
-        </span>
-                        </a>
-
-                        <small class="metadata social-context">
-                        </small>
-  
-        <span class="user-actions not-following" data-user-id="125095065">
-        <a href="#" class="follow-link">
-            <span class="link-text follow-text">Follow</span>
-            <span class="link-text unfollow-text">Unfollow</span>
-            <span class="link-text cancel-text">Cancel</span>
-        </a>
-      </span>
-                    </div>
-                </div>
 
             </div>
         </div>

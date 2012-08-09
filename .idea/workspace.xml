@@ -15,46 +15,30 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f5457114-8d5e-44c9-b2cb-68727837a0e7" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__aopalliance_aopalliance_1_0.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__asm_asm_3_3_1.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__cglib_cglib_2_2_2.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_google_collections_google_collections_1_0.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__commons_dbcp_commons_dbcp_1_4.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__commons_fileupload_commons_fileupload_1_2_2.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__commons_io_commons_io_1_3_2.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__commons_logging_commons_logging_1_1_1.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__commons_pool_commons_pool_1_5_4.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__javax_servlet_jstl_1_2.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__javax_servlet_servlet_api_2_5.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_spring_aop_3_0_5_RELEASE.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_spring_asm_3_0_5_RELEASE.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_spring_beans_3_0_5_RELEASE.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_spring_context_3_0_5_RELEASE.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_spring_context_support_3_0_5_RELEASE.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_spring_core_3_0_5_RELEASE.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_spring_expression_3_0_5_RELEASE.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_spring_jdbc_3_0_5_RELEASE.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_spring_tx_3_0_5_RELEASE.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_spring_web_3_0_5_RELEASE.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_spring_webmvc_3_0_5_RELEASE.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__postgresql_postgresql_8_4_701_jdbc4.xml" />
-      <change type="DELETED" beforePath="C:\Users\ramayyagari.r\test\DiCon\.idea\libraries\Maven__org_codehaus_jackson_jackson_mapper_asl_1_5_3.xml" afterPath="" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/directi/train/DiCon/controllers/APIAuthInterceptor.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/directi/train/DiCon/services/XSSHandler.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/webapp/static/ejs/similarppl.ejs" />
+      <change type="DELETED" beforePath="C:\Users\ramayyagari.r\test\DiCon\src\main\java\com\directi\train\DiCon\services\UserStore.java" afterPath="" />
       <change type="DELETED" beforePath="C:\Users\ramayyagari.r\test\DiCon\src\main\webapp\WEB-INF\jsp\index1.jsp" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\ramayyagari.r\test\DiCon\src\main\webapp\static\ejs\follower.ejs" afterPath="" />
       <change type="DELETED" beforePath="C:\Users\ramayyagari.r\test\DiCon\src\main\webapp\static\ejs\tweets.ejs" afterPath="" />
       <change type="DELETED" beforePath="C:\Users\ramayyagari.r\test\DiCon\src\main\webapp\static\resources\default_profile_female.jpg" afterPath="" />
       <change type="DELETED" beforePath="C:\Users\ramayyagari.r\test\DiCon\src\main\webapp\static\resources\default_profile_male.jpg" afterPath="" />
       <change type="DELETED" beforePath="C:\Users\ramayyagari.r\test\DiCon\src\main\webapp\static\resources\twitter_web_sprite_bgs.png" afterPath="" />
       <change type="DELETED" beforePath="C:\Users\ramayyagari.r\test\DiCon\src\main\webapp\static\resources\twitter_web_sprite_icons.png" afterPath="" />
-      <change type="MOVED" beforePath="C:\Users\ramayyagari.r\test\DiCon\src\main\webapp\static\ejs\following.ejs" afterPath="$PROJECT_DIR$/src/main/webapp/static/ejs/userListItem.ejs" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pom.xml" afterPath="$PROJECT_DIR$/pom.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/Main.iml" afterPath="$PROJECT_DIR$/src/main/Main.iml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/directi/train/DiCon/AppConfig.java" afterPath="$PROJECT_DIR$/src/main/java/com/directi/train/DiCon/AppConfig.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/directi/train/DiCon/controllers/Profile.java" afterPath="$PROJECT_DIR$/src/main/java/com/directi/train/DiCon/controllers/Profile.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/directi/train/DiCon/controllers/SignUpController.java" afterPath="$PROJECT_DIR$/src/main/java/com/directi/train/DiCon/controllers/SignUpController.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/directi/train/DiCon/model/Tweets.java" afterPath="$PROJECT_DIR$/src/main/java/com/directi/train/DiCon/model/Tweets.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/directi/train/DiCon/model/User.java" afterPath="$PROJECT_DIR$/src/main/java/com/directi/train/DiCon/model/User.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/directi/train/DiCon/services/DAO.java" afterPath="$PROJECT_DIR$/src/main/java/com/directi/train/DiCon/services/DAO.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/home.jsp" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/home.jsp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/directi/train/DiCon/services/TwitterUser.java" afterPath="$PROJECT_DIR$/src/main/java/com/directi/train/DiCon/services/TwitterUser.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/index.jsp" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/index.jsp" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/profile.jsp" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/profile.jsp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/test.jsp" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/test.jsp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/web.xml" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/web.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/webapp/static/ejs/tweet.ejs" afterPath="$PROJECT_DIR$/src/main/webapp/static/ejs/tweet.ejs" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/webapp/static/ejs/userListItem.ejs" afterPath="$PROJECT_DIR$/src/main/webapp/static/ejs/userListItem.ejs" />
     </list>
     <ignored path="DiCon.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -113,37 +97,19 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="todo-issues.txt" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="todo-issues.txt" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/todo-issues.txt">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="4" column="0" selection-start="145" selection-end="145" vertical-scroll-proportion="0.11221122">
+            <state line="4" column="0" selection-start="145" selection-end="145" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="profile.jsp" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/profile.jsp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="1312" column="84" selection-start="62277" selection-end="62277" vertical-scroll-proportion="-4.529412">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Profile.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/directi/train/DiCon/controllers/Profile.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="66" column="54" selection-start="2288" selection-end="2288" vertical-scroll-proportion="-23.4">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="DAO.java" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="DAO.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/directi/train/DiCon/services/DAO.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="109" column="12" selection-start="6563" selection-end="6563" vertical-scroll-proportion="0.0">
+            <state line="16" column="26" selection-start="441" selection-end="441" vertical-scroll-proportion="0.25801012">
               <folding />
             </state>
           </provider>
@@ -184,10 +150,10 @@
         <option value="$PROJECT_DIR$/src/main/webapp/static/ejs/tweet.ejs" />
         <option value="$PROJECT_DIR$/pom.xml" />
         <option value="$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/home.jsp" />
+        <option value="$PROJECT_DIR$/todo-issues.txt" />
+        <option value="$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/profile.jsp" />
         <option value="$PROJECT_DIR$/src/main/java/com/directi/train/DiCon/controllers/Profile.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/directi/train/DiCon/services/DAO.java" />
-        <option value="$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/profile.jsp" />
-        <option value="$PROJECT_DIR$/todo-issues.txt" />
       </list>
     </option>
   </component>
@@ -808,10 +774,6 @@
   <component name="XDebuggerManager">
     <breakpoint-manager />
   </component>
-  <component name="antWorkspaceConfiguration">
-    <option name="IS_AUTOSCROLL_TO_SOURCE" value="false" />
-    <option name="FILTER_TARGETS" value="false" />
-  </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/src/main/webapp/static/js/core2.js">
       <provider selected="true" editor-type-id="text-editor">
@@ -881,30 +843,30 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/directi/train/DiCon/services/DAO.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="109" column="12" selection-start="6563" selection-end="6563" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/directi/train/DiCon/controllers/Profile.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="66" column="54" selection-start="2288" selection-end="2288" vertical-scroll-proportion="-23.4">
+        <state line="101" column="15" selection-start="4147" selection-end="4147" vertical-scroll-proportion="-0.52640843">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/profile.jsp">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="1312" column="84" selection-start="62277" selection-end="62277" vertical-scroll-proportion="-4.529412">
+        <state line="404" column="0" selection-start="17100" selection-end="17100" vertical-scroll-proportion="-1.3726938">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/todo-issues.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="4" column="0" selection-start="145" selection-end="145" vertical-scroll-proportion="0.11221122">
+        <state line="4" column="0" selection-start="145" selection-end="145" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/directi/train/DiCon/services/DAO.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="16" column="26" selection-start="441" selection-end="441" vertical-scroll-proportion="0.25801012">
           <folding />
         </state>
       </provider>
