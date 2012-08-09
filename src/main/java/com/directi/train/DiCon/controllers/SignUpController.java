@@ -1,6 +1,7 @@
 package com.directi.train.DiCon.controllers;
 
 import com.directi.train.DiCon.services.TwitterUser;
+import com.directi.train.DiCon.services.XSSHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Controller;
@@ -37,6 +38,10 @@ public class SignUpController {
                               HttpSession session) {
 
         ModelAndView mv = new ModelAndView("/index");
+
+        XSSHandler xssHandler = new XSSHandler();
+        fullName = xssHandler.makeXSSSafe(fullName);
+
 
         if(!TwitterUser.isValidEmail(email)) {
             mv.addObject("message", "invalid email...");

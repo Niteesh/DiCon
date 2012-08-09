@@ -54,7 +54,7 @@
                   <fieldset class="textbox">
     <label class="username js-username">
 
-      <input class="js-username-field email-input" name="email" autocomplete="on" type="text" placeholder="email">
+      <input class="js-username-field email-input" name="email" autocomplete="on" type="email" placeholder="email">
     </label>
     <label class="password js-password">
 
@@ -203,7 +203,7 @@
                 <form action="/sign_in" class="signin" method="post">
                   <div class="placeholding-input username">
  		    
-                    <input class="text-input email-input" name="email" title="Email" autocomplete="on" type="text" placeholder="Email">
+                    <input class="text-input email-input" name="email" title="Email" autocomplete="on" type="email" placeholder="Email">
 
 
                      
@@ -256,7 +256,7 @@
                     
                   </div>
                   <div class="placeholding-input">
-                    <input class="text-input email-input" autocomplete="off" name="email" type="text" placeholder="Email">
+                    <input class="text-input email-input" autocomplete="off" name="email" type="email" placeholder="Email">
                    
                   </div>
                   <div class="placeholding-input">

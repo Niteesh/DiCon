@@ -12,10 +12,12 @@ import java.sql.Time;
  * Date: 31/7/12
  * Time: 12:28 PM
  * To change this template use File | Settings | File Templates.
+ *  D.fullname,D.dp,T.text,(now()-T.timestamp) as timestamp,T.tweet_id,T.user_id
  */
 public class Tweets {
     private String userName;
     private Integer user_id;
+    private Integer tweet_id;
     private String tweet ;
     private Time timeStamp;
 
@@ -30,9 +32,17 @@ public class Tweets {
     public Tweets(ResultSet resultSet) throws SQLException {
         this.userName = resultSet.getString("fullname");
         this.user_id = resultSet.getInt("user_id");
-        this.tweet = resultSet.getString("tweet");
+        this.tweet = resultSet.getString("text");
         this.timeStamp = resultSet.getTime("timestamp");
+        this.tweet_id = resultSet.getInt("tweet_id");
+    }
 
+    public Integer getTweet_id() {
+        return tweet_id;
+    }
+
+    public void setTweet_id(Integer tweet_id) {
+        this.tweet_id = tweet_id;
     }
 
     public String getUserName() {

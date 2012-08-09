@@ -14,9 +14,9 @@ import java.sql.SQLException;
  */
 public class User {
     private Integer user_id;
-    private String name;
+    private String fullname;
 
-    private String displayPicture;
+    private byte[] dp;
     private String description;
 
     public static final RowMapper<User> rowMapper = new RowMapper<User>() {
@@ -29,9 +29,9 @@ public class User {
 
     public User(ResultSet resultSet) throws SQLException {
         this.user_id = resultSet.getInt("user_id");
-        this.name = resultSet.getString("fullname");
+        this.fullname = resultSet.getString("fullname");
 
-        this.displayPicture = resultSet.getString("dp");
+        this.dp = resultSet.getBytes("dp");
         this.description = resultSet.getString("description");
 
     }
@@ -41,13 +41,13 @@ public class User {
         this.user_id = user_id;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setFullName(String name) {
+        this.fullname = name;
     }
 
 
-    public void setDisplayPicture(String displayPicture) {
-        this.displayPicture = displayPicture;
+    public void setDp(byte[] displayPicture) {
+        this.dp = displayPicture;
     }
 
     public void setDescription(String description) {
@@ -63,12 +63,12 @@ public class User {
         return user_id;
     }
 
-    public String getName() {
-        return name;
+    public String getFullname() {
+        return fullname;
     }
 
 
-    public String getDisplayPicture() {
-        return displayPicture;
+    public byte[] getDp() {
+        return dp;
     }
 }

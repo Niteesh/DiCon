@@ -1,7 +1,9 @@
 package com.directi.train.DiCon.controllers;
 
+import com.directi.train.DiCon.model.Admirer;
 import com.directi.train.DiCon.services.DAO;
 import com.directi.train.DiCon.services.ImageHandler;
+import com.directi.train.DiCon.services.XSSHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -71,7 +73,10 @@ public class Profile {
     @RequestMapping(value = "tweets/new", method = RequestMethod.POST)
     @ResponseBody
     public String postTweet(HttpSession session, @RequestParam String tweet_text) {
-        return "{ success : " + dao.newTweet((Integer) session.getAttribute("userID"), tweet_text) + ", tweet_text : \"" + tweet_text + "\", user_id:\"" + (Integer) session.getAttribute("userID") + "\"}";
+        XSSHandler xssHandler = new XSSHandler();
+        String tweetText = xssHandler.makeXSSSafe(tweet_text);
+
+        return "{ success : " + dao.newTweet((Integer) session.getAttribute("userID"), tweetText) + ", tweet_text : \"" + tweet_text + "\", user_id:\"" + (Integer) session.getAttribute("userID") + "\"}";
     }
 
     @RequestMapping(value = "tweets/fetch", method = RequestMethod.GET)
@@ -102,6 +107,10 @@ public class Profile {
     @RequestMapping(value="editsubmit", method=RequestMethod.POST)
     public String submitEdit(HttpSession session,@RequestParam CommonsMultipartFile file,@PathVariable("userID") Integer userID) throws IOException {
 
+        if(userID !=  session.getAttribute("userID")){
+            return  "home";
+        }
+
 
         String fileNameToLowerCase = file.getOriginalFilename().toLowerCase();
         String fileExtension = fileNameToLowerCase.substring(fileNameToLowerCase.indexOf(".")+1,fileNameToLowerCase.length());
@@ -114,13 +123,13 @@ public class Profile {
 
     @RequestMapping(value = "following", method = RequestMethod.GET)
     @ResponseBody
-    public List<Map<String, Object>> getFollowingList(HttpSession session, @PathVariable("userID") Integer userID) {
+    public List<Admirer> getFollowingList(HttpSession session, @PathVariable("userID") Integer userID) {
         return dao.getFollowingList(userID, (Integer) session.getAttribute("userID"));
     }
 
     @RequestMapping(value = "follower", method = RequestMethod.GET)
     @ResponseBody
-    public List<Map<String, Object>> getFollowerList(HttpSession session, @PathVariable("userID") Integer userID) {
+    public List<Admirer> getFollowerList(HttpSession session, @PathVariable("userID") Integer userID) {
         return dao.getFollowersList(userID, (Integer) session.getAttribute("userID"));
     }
 
@@ -129,5 +138,21 @@ public class Profile {
         ModelAndView mv = new ModelAndView("test");
         return mv;
     }
+
+    @RequestMapping(value = "similar_ppl", method = RequestMethod.GET)
+    @ResponseBody
+    public List<Map<String,Object>> similarPpl(@PathVariable("userID") Integer userID){
+        return dao.getSimilarPpl(userID);
+    }
+
+    @RequestMapping(value = "retweet", method = RequestMethod.POST)
+    @ResponseBody
+    public String reTweet(HttpSession session, @RequestParam("tweet_id") Integer tweet_id){
+        return "{ success : " +  dao.upDateRetweet((Integer) session.getAttribute("userID"),tweet_id)+"}";
+
+
+    }
+
+
 }
 

@@ -37,7 +37,7 @@
             </div>
 
 
-            <p class="js-tweet-text"><%=text%></p>
+            <p id="tweet-text_<%=tweet_id%>" class="js-tweet-text"><%=text%></p>
 
 
             <div class="stream-item-footer">
@@ -56,12 +56,12 @@
                         </a>
                     </li>
                     <li class="action-rt-container">
-                        <a class="with-icn js-toggle-rt" data-modal="tweet-retweet" href="#">
+                        <a class="with-icn js-toggle-rt" data-modal="tweet-retweet" href="javascript:retweet(<%=tweet_id%>);" id ="retweet-button">
                             <i class="sm-rt"></i>
 
 
-                            <b><span class="undo-retweet" title="Undo retweet">Retweeted</span><span class="retweet"
-                                                                                                     title="Retweet">Retweet</span></b>
+                            <b><span class="undo-retweet" title="Undo retweet">Retweeted</span>
+                            <span class="retweet" title="Retweet">Retweet</span></b>
                         </a>
                     </li>
                     <li class="action-del-container">
