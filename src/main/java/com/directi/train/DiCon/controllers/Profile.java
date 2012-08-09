@@ -30,7 +30,6 @@ public class Profile {
 
 
         ModelAndView mv = new ModelAndView("profile");
-        mv.addObject("user_id", userID);
         Map<String, Object> userDetails = dao.getDetails(userID);
         int followerCount = dao.getFollowerCount(userID);
         int followingCount = dao.getFollowingCount(userID);
@@ -38,6 +37,7 @@ public class Profile {
         String status = dao.getUsersStatus(userID, (Integer) session.getAttribute("userID"));
 
 
+        mv.addObject("user_id", userID);
         mv.addObject("profile_name", userDetails.get("fullname"));
         mv.addObject("profile_phone", userDetails.get("phone"));
         mv.addObject("profile_following", followingCount);
@@ -76,39 +76,25 @@ public class Profile {
 
     @RequestMapping(value = "tweets/fetch", method = RequestMethod.GET)
     @ResponseBody
-    public List<Map<String, Object>> fetchNewTweets(HttpSession session, @PathVariable("userID") Integer userID, @RequestParam String latest_tweet_id) {
-
-        return dao.getPostsByUser(userID, Integer.parseInt(latest_tweet_id));
-
+    public List<Map<String, Object>> fetchNewTweets(HttpSession session, @PathVariable("userID") Integer userID, @RequestParam Integer latest_tweet_id, @RequestParam Integer oldest_tweet_id, @RequestParam Integer newOrOldFlag) {
+        return dao.getPostsByUser(userID, latest_tweet_id, oldest_tweet_id, newOrOldFlag);
     }
 
     @RequestMapping(value = "newsfeed", method = RequestMethod.GET)
     @ResponseBody
-    public List<Map<String, Object>> newsFeed(HttpSession session, @PathVariable("userID") Integer userID, @RequestParam String latest_feed_id) {
-
-        return dao.getNewsFeed(userID, Integer.parseInt(latest_feed_id));
-
+    public List<Map<String, Object>> newsFeed(HttpSession session, @PathVariable("userID") Integer userID, @RequestParam Integer latest_feed_id, @RequestParam Integer oldest_feed_id, @RequestParam Integer newOrOldFlag) {
+        return dao.getNewsFeed(userID, latest_feed_id, oldest_feed_id, newOrOldFlag);
     }
 
 
-    @RequestMapping(value = "edit", method = RequestMethod.GET)
-    public ModelAndView editPopup(@PathVariable("userID") Integer userID) {
-        ModelAndView mv = new ModelAndView("editpopup");
-        mv.addObject("current_user_id", userID);
-        return mv;
-    }
-
-
-    @RequestMapping(value="editsubmit", method=RequestMethod.POST)
-    public String submitEdit(HttpSession session,@RequestParam CommonsMultipartFile file,@PathVariable("userID") Integer userID) throws IOException {
-
-
-        String fileNameToLowerCase = file.getOriginalFilename().toLowerCase();
-        String fileExtension = fileNameToLowerCase.substring(fileNameToLowerCase.indexOf(".")+1,fileNameToLowerCase.length());
+    @RequestMapping(value = "edit", method = RequestMethod.POST)
+    public ModelAndView submitEdit(HttpSession session, @RequestParam CommonsMultipartFile dp, @RequestParam String fullname, @RequestParam String description, @RequestParam String location, @PathVariable("userID") Integer userID) throws IOException {
+        String fileNameToLowerCase = dp.getOriginalFilename().toLowerCase();
+        String fileExtension = fileNameToLowerCase.substring(fileNameToLowerCase.indexOf(".") + 1, fileNameToLowerCase.length());
         System.out.println("file extension =" + fileExtension);
         ImageHandler imageHandler = new ImageHandler();
-        dao.updateDP(userID,new BASE64Encoder().encode(imageHandler.resizeImage(file.getBytes(),fileExtension,128)));
-        return ("editpopup");
+        dao.updateDetails(userID,fullname,description,location, new BASE64Encoder().encode(imageHandler.resizeImage(dp.getBytes(), fileExtension, 128)));
+        return new ModelAndView("redirect:/"+userID);
     }
 
 

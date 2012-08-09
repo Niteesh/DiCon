@@ -76,7 +76,7 @@
 
         function searchQuery(search_string) {
             xhr.post({
-                        url: "search.json",
+                        url: "/search.json",
                         handleAs: "json",
                         content: {
                             search_string : search_string
@@ -106,7 +106,7 @@
 
                 on(dom.byId("tweet-button"), "click", function() {
                     xhr.post({
-                                url: "${current_user_id}/tweets/new",
+                                url: "/${current_user_id}/tweets/new",
                                 handleAs: "json",
                                 content: {
                                     tweet_text : dom.byId("new-tweet-textarea").value.split("\n").join(" ")
@@ -137,25 +137,62 @@
 
 
     var latest_feed_id = 0;
+    var oldest_feed_id = -1;
+    var newOrOldFlag = 2;
+
     refreshFeed();
     setInterval(refreshFeed, 5000);
+
+    window.onscroll = function(ev) {
+        if (document.documentElement.scrollTop) {
+            scrollCursor = document.documentElement.scrollTop;
+        }
+        else {
+            scrollCursor = document.body.scrollTop;
+        }
+        if (scrollCursor <= 57)
+            newOrOldFlag = 2;
+        else if (document.body.parentNode.scrollHeight == scrollCursor + window.innerHeight) {
+
+            newOrOldFlag = 1;
+            refreshFeed();
+        }
+        else
+            newOrOldFlag = 0;
+    };
+
     function refreshFeed() {
-        require(["dojo/_base/xhr", "dojo/dom", "dojo/dom-construct", "dojo/_base/array", "dojo/NodeList-dom", "dojo/domReady!"],
-                function(xhr, dom, domConstruct) {
+        var position;
+        if (newOrOldFlag == 0) return;
+        require(["dojo/fx","dojo/_base/xhr", "dojo/dom", "dojo/dom-construct", "dojo/_base/array", "dojo/NodeList-dom", "dojo/domReady!"],
+                function(fx,xhr, dom, domConstruct) {
 
                     xhr.get({
-                                url: "${current_user_id}/newsfeed",
+                                url: "/${current_user_id}/newsfeed",
                                 handleAs: "json",
                                 headers: { "Accept": "application/json"},
                                 content: {
-                                    latest_feed_id : latest_feed_id
+                                    latest_feed_id : latest_feed_id,
+                                    oldest_feed_id : oldest_feed_id,
+                                    newOrOldFlag : newOrOldFlag
                                 },
                                 load: function(response) {
+                                    if (response.length > 0 && response[0]["tweet_id"] > latest_feed_id)
+                                        latest_feed_id = response[0]["tweet_id"];
+                                    if (response.length > 0 && (oldest_feed_id == -1 || response[response.length - 1]["tweet_id"] < oldest_feed_id))
+                                        oldest_feed_id = response[response.length - 1]["tweet_id"];
+                                    if (newOrOldFlag == 1) {
+                                        position = "last";
+                                    }
+                                    else {
+                                        position = "first";
+                                        response.reverse();
+                                    }
                                     for (var i in response) {
                                         response[i]["timestamp_readable"] = makeTimestamp(response[i]["timestamp"]);
                                         var newFeed = new EJS({url: '${pageContext.request.contextPath}/static/ejs/tweet.ejs'}).render(response[i]);
-                                        domConstruct.place(newFeed, dom.byId("stream-list"), "first");
-                                        latest_feed_id = response[i]["tweet_id"];
+                                        domConstruct.place(newFeed, dom.byId("stream-list"), position);
+                                        fx.wipeIn({ node: dom.byId("stream-item-"+response[i]["tweet_id"]) }).play();
                                     }
                                     console.log("new feeds = " + response.length);
 
@@ -164,7 +201,11 @@
                                     console.log("Error fetching json for newsfeeds.");
                                 },
                                 handle: function() {
-                                    console.log("latest feed id  = " + latest_feed_id);
+                                    console.log("latest feed id = " + latest_feed_id);
+                                    console.log("oldest feed id = " + oldest_feed_id);
+                                    console.log("new or old flag = " + newOrOldFlag);
+                                    if (newOrOldFlag == 1)
+                                        newOrOldFlag = 0;
                                 }
                             });
 
