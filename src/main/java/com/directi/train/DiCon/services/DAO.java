@@ -32,10 +32,10 @@ public class DAO {
 
 
     public List<Map<String, Object>> getFollowersList(int user_id, int login_id) {
-        return db.queryForList(" select details.user_id, fullname, dp, description,CASE WHEN follow.status = 0 Then 'not-following' else 'following' end as status From twitter.details details" +
+        return db.queryForList(" select details.user_id, fullname, dp, description,CASE WHEN details.user_id= ? THEN 'hidden' WHEN follow.status = 0 Then 'not-following'  else 'following' end as status From twitter.details details" +
                 " INNER JOIN (select f1.follower_id as user_id, max(CASE WHEN  f2.follower_id= ?   THEN 1 ELSE 0 END ) as status " +
                 "from twitter.follows f1 inner join twitter.follows f2 on f1.follower_id = f2.following_id WHERE f1.following_id= ? AND f1.stop_time IS NULL AND f2.stop_time IS NULL GROUP BY f1.follower_id) as follow  " +
-                "ON details.user_id = follow.user_id;", login_id, user_id);
+                "ON details.user_id = follow.user_id;", login_id, login_id, user_id);
     }
 
     public Integer getFollowerCount(int user_id) {
@@ -44,10 +44,10 @@ public class DAO {
 
 
     public List<Map<String, Object>> getFollowingList(int user_id, int login_id) {
-        return db.queryForList(" select details.user_id, fullname, dp, description,CASE WHEN follow.status = 0 Then 'not-following' else 'following' end as status From twitter.details details" +
+        return db.queryForList(" select details.user_id, fullname, dp, description,CASE WHEN details.user_id= ? THEN 'hidden' WHEN follow.status = 0 Then 'not-following' else 'following' end as status From twitter.details details" +
                 " INNER JOIN (select f1.following_id as user_id, max(CASE WHEN  f2.follower_id= ?   THEN 1 ELSE 0 END ) as status " +
                 "from twitter.follows f1 inner join twitter.follows f2 on f1.following_id = f2.following_id WHERE f1.follower_id= ? AND f1.stop_time IS NULL AND f2.stop_time IS NULL GROUP BY f1.following_id) as follow  " +
-                "ON details.user_id = follow.user_id;", login_id, user_id);
+                "ON details.user_id = follow.user_id;",login_id, login_id, user_id);
     }
 
     public Integer getFollowingCount(int user_id) {

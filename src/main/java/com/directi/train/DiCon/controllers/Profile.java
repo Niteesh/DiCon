@@ -98,6 +98,7 @@ public class Profile {
     @RequestMapping(value = "edit", method = RequestMethod.POST)
     public ModelAndView submitEdit(HttpSession session, @RequestParam CommonsMultipartFile dp, @RequestParam String fullname, @RequestParam String description, @RequestParam String location, @PathVariable("userID") Integer userID) throws IOException {
 
+
         if(!userID.equals(session.getAttribute("userID"))){
             return  new ModelAndView("redirect:/");
         }
