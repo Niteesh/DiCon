@@ -16,7 +16,7 @@
         <mvc:interceptor>
             <mvc:mapping path="/**"/>
 
-            <bean class="com.directi.train.DiCon.controllers.AuthInterceptor"/>
+            <bean class="com.directi.train.DiCon.controllers.APIAuthInterceptor"/>
         </mvc:interceptor>
     </mvc:interceptors>
 

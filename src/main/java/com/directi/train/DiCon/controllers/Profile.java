@@ -1,6 +1,5 @@
 package com.directi.train.DiCon.controllers;
 
-import com.directi.train.DiCon.model.Admirer;
 import com.directi.train.DiCon.services.DAO;
 import com.directi.train.DiCon.services.ImageHandler;
 import com.directi.train.DiCon.services.XSSHandler;
@@ -88,6 +87,7 @@ public class Profile {
     @RequestMapping(value = "newsfeed", method = RequestMethod.GET)
     @ResponseBody
     public List<Map<String, Object>> newsFeed(HttpSession session, @PathVariable("userID") Integer userID, @RequestParam Integer latest_feed_id, @RequestParam Integer oldest_feed_id, @RequestParam Integer newOrOldFlag) {
+
         return dao.getNewsFeed(userID, latest_feed_id, oldest_feed_id, newOrOldFlag);
     }
 

@@ -109,7 +109,8 @@
                                 url: "/${current_user_id}/tweets/new",
                                 handleAs: "json",
                                 content: {
-                                    tweet_text : dom.byId("new-tweet-textarea").value.split("\n").join(" ")
+                                    tweet_text : dom.byId("new-tweet-textarea").value.split("\n").join(" "),
+                                    auth_token : "${auth_token}"
                                 },
                                 load: function(response) {
                                     console.log("Successfully tweeted : " + response["tweet_text"]);

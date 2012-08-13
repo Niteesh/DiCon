@@ -158,4 +158,16 @@ public class DAO {
                 " (select  user_id,text, tweet_id from twitter.tweets t where tweet_id = ?) as retweet " +
                 "ON retweet.user_id = d.user_id;", user_id, tweet_id);
     }
+
+    public Integer getUidForToken(String token){
+        return db.queryForInt("select user_id from twitter.token where token = ?", token) ;
+    }
+
+    public int newToken(Integer userID, String token) {
+        return db.update("INSERT INTO twitter.token (user_id, token) values(?,?)",userID, token);
+    }
+
+    public int deleteToken(String token) {
+        return db.update("DELETE FROM twitter.token where token = ? ", token);
+    }
 }
