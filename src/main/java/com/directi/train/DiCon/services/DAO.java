@@ -146,13 +146,12 @@ public class DAO {
                 "WHERE " +
                 "  f1.follower_id = ? and f2.follower_id <> ? and f1.stop_time is null and f2.stop_time is null " +
                 "group by f2.follower_id " +
-                "order by score DESC LIMIT 5) as similarppl ON " +
+                "order by score DESC LIMIT 10) as similarppl ON " +
                 "similarppl.user_id = details.user_id;", userID, userID);
     }
 
 
     public int upDateRetweet(Integer user_id, Integer tweet_id) {
-
         return db.update(" Insert into twitter.tweets (user_id, text) " +
                 "select ?,'via<a href=\"/'||d.user_id ||'\"> '|| d.fullname ||' : </a> '|| retweet.text as text from twitter.details d INNER JOIN " +
                 " (select  user_id,text, tweet_id from twitter.tweets t where tweet_id = ?) as retweet " +
@@ -169,5 +168,14 @@ public class DAO {
 
     public int deleteToken(String token) {
         return db.update("DELETE FROM twitter.token where token = ? ", token);
+    }
+
+    public List<Map<String, Object>> getFollowSuggestions(Integer userID) {
+        return db.queryForList("select dp,fullname,user_id from twitter.details where user_id in (select f2.following_id as suggested_id from twitter.follows f2 where f2.follower_id in (select f1.following_id from twitter.follows f1 where f1.follower_id=? and f1.stop_time is null)  and f2.following_id not in (select f3.following_id from twitter.follows f3 where f3.follower_id=?) and f2.following_id<>? and f2.stop_time is null group by f2.following_id order by count(1) desc limit 10);", userID, userID, userID);
+    }
+
+
+    public List<Map<String, Object>> getTrendingNow() {
+        return db.queryForList("select fullname,user_id from twitter.details where user_id in (select following_id as trend_id from twitter.follows where start_time > now()-time '01:00' and stop_time is null group by following_id order by count(1) desc limit 10);");
     }
 }

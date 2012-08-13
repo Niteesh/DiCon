@@ -7,7 +7,8 @@
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
 
-<script>document.domain = 'twitter.com'</script>
+<script>
+document.domain = 'twitter.com'</script>
 
 <title>${profile_name} (${user_id}) on DiCon</title>
 
@@ -39,7 +40,7 @@ require(["dojo/_base/xhr", "dojo/on", "dojo/dom", "dojo/query", "dojo/dom-constr
         query("#search-query").addClass("focus");
 
 
-        if (this.value != "")
+        if (this.value != "" && dom.byId("results-list").childNodes.length > 0)
             dom.byId("search-results-container").style.display = "block";
     });
 
@@ -89,6 +90,7 @@ require(["dojo/_base/xhr", "dojo/on", "dojo/dom", "dojo/query", "dojo/dom-constr
 
 refreshTweets();
 var tweetRefreshTimer = setInterval(refreshTweets, 5000);
+var currentTab = "tweets-tab";
 getSimilarPeople();
 
 window.onscroll = function(ev) {
@@ -134,10 +136,7 @@ function refreshTweets() {
 
     require(["dojo/fx","dojo/_base/xhr", "dojo/dom", "dojo/dom-construct", "dojo/_base/array", "dojo/NodeList-dom", "dojo/domReady!"],
             function(fx, xhr, dom, domConstruct) {
-                dom.byId("tweets-tab").style.display = "block";
-                dom.byId("following-tab").style.display = "none";
-                dom.byId("follower-tab").style.display = "none";
-                dom.byId("edit-details-tab").style.display = "none";
+                transitionTabs("tweets-tab");
                 xhr.get({
                             url: "/${user_id}/tweets/fetch",
                             handleAs: "json",
@@ -160,8 +159,8 @@ function refreshTweets() {
                                     response.reverse();
                                 }
                                 for (var i in response) {
-                                    if(response[i]["user_id"]==${user_id} && response[0]["tweet_id"] == latest_tweet_id){
-                                        dom.byId("profile-tweet-count").innerHTML =parseInt(dom.byId("profile-tweet-count").innerHTML)+1;
+                                    if (response[i]["user_id"] ==${user_id} && response[0]["tweet_id"] == latest_tweet_id) {
+                                        dom.byId("profile-tweet-count").innerHTML = parseInt(dom.byId("profile-tweet-count").innerHTML) + 1;
                                     }
                                     response[i]["timestamp_readable"] = makeTimestamp(response[i]["timestamp"]);
                                     var newTweet = new EJS({url: '${pageContext.request.contextPath}/static/ejs/tweet.ejs'}).render(response[i]);
@@ -226,7 +225,7 @@ function triggerFollow(btn, id) {
     require(["dojo/_base/xhr", "dojo/domReady!"],
             function(xhr) {
                 xhr.get({
-                            url: "/"+id + triggerURL,
+                            url: "/" + id + triggerURL,
                             load: function(response) {
                                 console.log("followed = " + response);
                             },
@@ -252,10 +251,7 @@ function triggerFollow(btn, id) {
 function editDetails() {
     require(["dojo/dom","dojo/domReady!"], function(dom) {
         clearInterval(tweetRefreshTimer);
-        dom.byId("edit-details-tab").style.display = "block";
-        dom.byId("tweets-tab").style.display = "none";
-        dom.byId("following-tab").style.display = "none";
-        dom.byId("follower-tab").style.display = "none";
+        transitionTabs("edit-details-tab");
     });
 }
 
@@ -263,10 +259,7 @@ function getFollowingList() {
     require(["dojo/_base/xhr", "dojo/dom", "dojo/dom-construct", "dojo/_base/array", "dojo/NodeList-dom", "dojo/domReady!"],
             function(xhr, dom, domConstruct) {
                 clearInterval(tweetRefreshTimer);
-                dom.byId("tweets-tab").style.display = "none";
-                dom.byId("following-tab").style.display = "block";
-                dom.byId("follower-tab").style.display = "none";
-                dom.byId("edit-details-tab").style.display = "none";
+                transitionTabs("following-tab");
 
                 xhr.get({
                             url: "/${user_id}/following",
@@ -277,7 +270,7 @@ function getFollowingList() {
                                 domConstruct.empty(dom.byId("stream-list-following"));
                                 for (var i in response) {
                                     var followingItem = new EJS({url: '${pageContext.request.contextPath}/static/ejs/userListItem.ejs'}).render(response[i]);
-                                    domConstruct.place(followingItem, dom.byId("stream-list-following"), "first");
+                                    domConstruct.place(followingItem, dom.byId("stream-list-following"), "last");
                                 }
                                 console.log("following = " + response.length);
 
@@ -294,11 +287,7 @@ function getFollowerList() {
     require([ "dojo/_base/xhr", "dojo/dom", "dojo/dom-construct", "dojo/_base/array", "dojo/NodeList-dom", "dojo/domReady!"],
             function(xhr, dom, domConstruct) {
                 clearInterval(tweetRefreshTimer);
-                dom.byId("tweets-tab").style.display = "none";
-                dom.byId("following-tab").style.display = "none";
-                dom.byId("follower-tab").style.display = "block";
-                dom.byId("edit-details-tab").style.display = "none";
-
+                transitionTabs("follower-tab");
 
                 xhr.get({
                             url: "/${user_id}/follower",
@@ -308,7 +297,7 @@ function getFollowerList() {
                                 domConstruct.empty(dom.byId("stream-list-follower"));
                                 for (var i in response) {
                                     var followerItem = new EJS({url: '${pageContext.request.contextPath}/static/ejs/userListItem.ejs'}).render(response[i]);
-                                    domConstruct.place(followerItem, dom.byId("stream-list-follower"), "first");
+                                    domConstruct.place(followerItem, dom.byId("stream-list-follower"), "last");
 
                                 }
                                 console.log("followers = " + response.length);
@@ -324,6 +313,35 @@ function getFollowerList() {
             });
 }
 
+function transitionTabs(destTab) {
+    if(currentTab==destTab) return;
+    require(["dojo/dom","dojo/fx","dojo/_base/fx","dojo/on","dojo/domReady!"], function(dom, fx, basefx, on) {
+        var anim2 = fx.combine([
+            fx.slideTo({ node: dom.byId(destTab),left:"0",duration:"500"}),
+            basefx.fadeIn({ node: dom.byId(destTab),duration:"500" })
+        ]);
+
+        var anim = fx.combine([
+            fx.slideTo({ node: dom.byId(currentTab),left:"200",duration:"500"}),
+            basefx.fadeOut({ node: dom.byId(currentTab),duration:"500",onEnd:function() {
+                        dom.byId(currentTab).style.display = "none";
+                        dom.byId(destTab).style.display = "block";
+                        currentTab = destTab;
+                        anim2.play();
+                    } })
+        ]);
+
+        anim.play();
+    });
+}
+
+function highlightTab(selectedOption) {
+    require(["dojo/query","dojo/domReady!"],function(query){
+        query(".profile-sidebar-item").removeClass("active");
+        addClass(selectedOption.parentNode,"active");
+    });
+}
+
 require(["dojo/_base/xhr", "dojo/on", "dojo/dom", "dojo/query", "dojo/dom-construct", "dojo/_base/array", "dojo/NodeList-dom", "dojo/domReady!"], function(xhr, on, dom, query, domConstruct) {
     var hide_searchresults_timeout;
     on(dom.byId("search-query"), "focus", function() {
@@ -331,8 +349,7 @@ require(["dojo/_base/xhr", "dojo/on", "dojo/dom", "dojo/query", "dojo/dom-constr
         query("#global-nav-search").addClass("focus");
         query("#search-query").addClass("focus");
 
-
-        if (this.value != "")
+        if (this.value != "" && dom.byId("results-list").childNodes.length != 0)
             dom.byId("search-results-container").style.display = "block";
     });
 
@@ -356,7 +373,7 @@ require(["dojo/_base/xhr", "dojo/on", "dojo/dom", "dojo/query", "dojo/dom-constr
 
     function searchQuery(search_string) {
         xhr.post({
-                    url: "search.json",
+                    url: "/search.json",
                     handleAs: "json",
                     content: {
                         search_string : search_string
@@ -386,7 +403,7 @@ function getSimilarPeople() {
             function(xhr, dom, domConstruct) {
 
                 xhr.get({
-                            url: "${user_id}/similar_ppl",
+                            url: "/${user_id}/similar_ppl",
                             handleAs: "json",
                             headers: { "Accept": "application/json"},
 
@@ -394,7 +411,7 @@ function getSimilarPeople() {
                                 for (var i in response) {
 
                                     var similarUser = new EJS({url: '${pageContext.request.contextPath}/static/ejs/similarppl.ejs'}).render(response[i]);
-                                    domConstruct.place(similarUser, dom.byId("wtf"), "first");
+                                    domConstruct.place(similarUser, dom.byId("wtf"), "last");
 
                                 }
                                 console.log("similar ppl = " + response.length);
@@ -402,36 +419,36 @@ function getSimilarPeople() {
                             },
                             error: function() {
                                 console.log("Error fetching similar ppl");
-                            },
+                            }
 
                         });
             });
 }
 
 
-function retweet(tweet_id){
- require(["dojo/_base/xhr", "dojo/on", "dojo/dom", "dojo/query", "dojo/NodeList-dom", "dojo/domReady!"],
-      function(xhr, on, dom, query) {
+function retweet(tweet_id) {
+    require(["dojo/_base/xhr", "dojo/on", "dojo/dom", "dojo/query", "dojo/NodeList-dom", "dojo/domReady!"],
+            function(xhr, on, dom, query) {
 
 
-          console.log("retweeting "+tweet_id);
-          xhr.post({
-              url: "${user_id}/retweet",
-              handleAs: "json",
-              content: {
-                  tweet_id : tweet_id
-              },
-              load: function(response) {
-                  console.log("Successfully tweeted : " + response["success"]);
-              },
+                console.log("retweeting " + tweet_id);
+                xhr.post({
+                            url: "${user_id}/retweet",
+                            handleAs: "json",
+                            content: {
+                                tweet_id : tweet_id
+                            },
+                            load: function(response) {
+                                console.log("Successfully tweeted : " + response["success"]);
+                            },
 
-              error: function() {
-                  console.log("Error sending retweets.");
-              }
-          });
+                            error: function() {
+                                console.log("Error sending retweets.");
+                            }
+                        });
 
-      });
- }
+            });
+}
 </script>
 
 
@@ -755,7 +772,8 @@ function retweet(tweet_id){
             <ul class="stats js-mini-profile-stats">
                 <li><a href="#" data-element-term="tweet_stats"
                        onclick="refreshTweets();tweetRefreshTimer = setInterval(refreshTweets, 5000);"
-                       data-nav="profile"><strong id="profile-tweet-count">${profile_tweetCount}</strong> Tweets</a></li>
+                       data-nav="profile"><strong id="profile-tweet-count">${profile_tweetCount}</strong> Tweets</a>
+                </li>
                 <li><a href="#" data-element-term="following_stats" onclick="getFollowingList()"
                        data-nav="following"><strong>${profile_following}</strong> Following</a></li>
                 <li><a href="#" data-element-term="follower_stats" onclick="getFollowerList()"
@@ -842,118 +860,23 @@ function retweet(tweet_id){
 <div class="component">
     <div class="module profile-nav">
         <ul class="js-nav-links">
-            <li class="active">
+            <li class="active profile-sidebar-item">
 
                 <a class="list-link" href="#" data-nav="profile"
-                   onclick="refreshTweets();tweetRefreshTimer = setInterval(refreshTweets, 5000);">Tweets<i
+                   onclick="highlightTab(this);refreshTweets();tweetRefreshTimer = setInterval(refreshTweets, 5000);">Tweets<i
 
                         class="chev-right"></i></a>
             </li>
-            <li class="">
-                <a class="list-link" href="#" data-nav="following" onclick="getFollowingList()">Following<i
+            <li class="profile-sidebar-item">
+                <a class="list-link" href="#" data-nav="following" onclick="highlightTab(this);getFollowingList()">Following<i
                         class="chev-right"></i></a>
             </li>
-            <li class="">
-                <a class="list-link" href="#" data-nav="followers" onclick="getFollowerList()">Followers<i
+            <li class="profile-sidebar-item">
+                <a class="list-link" href="#" data-nav="followers" onclick="highlightTab(this);getFollowerList()">Followers<i
                         class="chev-right"></i></a>
             </li>
-            <li class="">
-                <a class="list-link" href="https://twitter.com/#%21/${user_id}/favorites" data-nav="favorites">Favorites<i
-                        class="chev-right"></i></a>
-            </li>
-            <li class="">
-                <a class="list-link" href="https://twitter.com/${user_id}/lists" data-nav="all_lists">Lists<i
-                        class="chev-right"></i></a>
-            </li>
-            <li class="media-thumbnails recent_photos ">
-                <a href="https://twitter.com/#%21/${user_id}/media/grid" class="list-link">
-                    <div class="media-header">
-                        Recent images
-                        <i class="chev-right"></i>
-                    </div>
-                    <div class="media-row">
-                        <div class="media-row-content">
-                            <span data-resolved-url-small="//instagr.am/p/NZHX79QhbG/media/?size=t"
-                                  data-load-status="loaded"
-                                  data-href="/#!/${user_id}/media/slideshow?url=http%3A%2F%2Finstagr.am%2Fp%2FNZHX79QhbG%2F"
-                                  data-url="http://instagr.am/p/NZHX79QhbG/" class="media-thumbnail"><img
-                                    style="position: absolute; height: 66px; width: 66px; left: 0px; top: 0px;"
-                                    src="${user_id}_files/a_002.jpeg"></span>
-                            <span data-resolved-url-small="//instagr.am/p/NZGhjfwhaZ/media/?size=t"
-                                  data-load-status="loaded"
-                                  data-href="/#!/${user_id}/media/slideshow?url=http%3A%2F%2Finstagr.am%2Fp%2FNZGhjfwhaZ%2F"
-                                  data-url="http://instagr.am/p/NZGhjfwhaZ/" class="media-thumbnail"><img
-                                    style="position: absolute; height: 66px; width: 66px; left: 0px; top: 0px;"
-                                    src="${user_id}_files/a_003.jpeg"></span>
-                            <span data-resolved-url-small="//instagr.am/p/NTNamhQhSq/media/?size=t"
-                                  data-load-status="loaded"
-                                  data-href="/#!/${user_id}/media/slideshow?url=http%3A%2F%2Finstagr.am%2Fp%2FNTNamhQhSq%2F"
-                                  data-url="http://instagr.am/p/NTNamhQhSq/" class="media-thumbnail"><img
-                                    style="position: absolute; height: 66px; width: 66px; left: 0px; top: 0px;"
-                                    src="${user_id}_files/a.jpeg"></span>
-                            <span data-resolved-url-small="//instagr.am/p/NRcTT6QheA/media/?size=t"
-                                  data-load-status="loaded"
-                                  data-href="/#!/${user_id}/media/slideshow?url=http%3A%2F%2Finstagr.am%2Fp%2FNRcTT6QheA%2F"
-                                  data-url="http://instagr.am/p/NRcTT6QheA/" class="media-thumbnail"><img
-                                    style="position: absolute; height: 66px; width: 66px; left: 0px; top: 0px;"
-                                    src="${user_id}_files/a_004.jpeg"></span>
-                            <span data-load-status="not-loaded"
-                                  data-href="/#!/${user_id}/media/slideshow?url=http%3A%2F%2Finstagr.am%2Fp%2FNQ7CNIQhXN%2F"
-                                  data-url="http://instagr.am/p/NQ7CNIQhXN/" class="media-thumbnail"></span>
-                            <span data-load-status="not-loaded"
-                                  data-href="/#!/${user_id}/media/slideshow?url=http%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DH9ZTP2k0DRc"
-                                  data-url="http://www.youtube.com/watch?v=H9ZTP2k0DRc" class="media-thumbnail"></span>
-                            <span data-load-status="not-loaded"
-                                  data-href="/#!/${user_id}/media/slideshow?url=http%3A%2F%2Fm.tmi.me%2Ftn6n5"
-                                  data-url="http://m.tmi.me/tn6n5" class="media-thumbnail"></span>
-                            <span data-load-status="not-loaded"
-                                  data-href="/#!/${user_id}/media/slideshow?url=http%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DhrbKp5N74zE"
-                                  data-url="http://www.youtube.com/watch?v=hrbKp5N74zE" class="media-thumbnail"></span>
-                            <span data-load-status="not-loaded"
-                                  data-href="/#!/${user_id}/media/slideshow?url=http%3A%2F%2Flockerz.com%2Fs%2F223610427"
-                                  data-url="http://lockerz.com/s/223610427" class="media-thumbnail"></span>
-                            <span data-load-status="not-loaded"
-                                  data-href="/#!/${user_id}/media/slideshow?url=http%3A%2F%2Fyoutu.be%2FLj5_FhLaaQQ"
-                                  data-url="http://youtu.be/Lj5_FhLaaQQ" class="media-thumbnail"></span>
-                            <span data-load-status="not-loaded"
-                                  data-href="/#!/${user_id}/media/slideshow?url=http%3A%2F%2Flockerz.com%2Fs%2F220926344"
-                                  data-url="http://lockerz.com/s/220926344" class="media-thumbnail"></span>
-                            <span data-load-status="not-loaded"
-                                  data-href="/#!/${user_id}/media/slideshow?url=pic.twitter.com%2FEEb5kcvn"
-                                  data-url="https://p.twimg.com/AwjxpXsCEAA-Yh2.jpg:thumb"
-                                  data-resolved-url-small="https://p.twimg.com/AwjxpXsCEAA-Yh2.jpg:thumb"
-                                  class="media-thumbnail"></span>
-                            <span data-load-status="not-loaded"
-                                  data-href="/#!/${user_id}/media/slideshow?url=http%3A%2F%2Finstagr.am%2Fp%2FMbl0wbLVUU%2F"
-                                  data-url="http://instagr.am/p/Mbl0wbLVUU/" class="media-thumbnail"></span>
-                            <span data-load-status="not-loaded"
-                                  data-href="/#!/${user_id}/media/slideshow?url=http%3A%2F%2Flockerz.com%2Fs%2F220185150"
-                                  data-url="http://lockerz.com/s/220185150" class="media-thumbnail"></span>
-                            <span data-load-status="not-loaded"
-                                  data-href="/#!/${user_id}/media/slideshow?url=http%3A%2F%2Flockerz.com%2Fs%2F217734041"
-                                  data-url="http://lockerz.com/s/217734041" class="media-thumbnail"></span>
-                            <span data-load-status="not-loaded"
-                                  data-href="/#!/${user_id}/media/slideshow?url=http%3A%2F%2Finstagr.am%2Fp%2FL8G1j9rVSm%2F"
-                                  data-url="http://instagr.am/p/L8G1j9rVSm/" class="media-thumbnail"></span>
-                            <span data-load-status="not-loaded"
-                                  data-href="/#!/${user_id}/media/slideshow?url=http%3A%2F%2Finstagr.am%2Fp%2FLnyNAErVUK%2F"
-                                  data-url="http://instagr.am/p/LnyNAErVUK/" class="media-thumbnail"></span>
-                            <span data-load-status="not-loaded"
-                                  data-href="/#!/${user_id}/media/slideshow?url=http%3A%2F%2Finstagr.am%2Fp%2FLn4icErVXr%2F"
-                                  data-url="http://instagr.am/p/Ln4icErVXr/" class="media-thumbnail"></span>
-                            <span data-load-status="not-loaded"
-                                  data-href="/#!/${user_id}/media/slideshow?url=http%3A%2F%2Finstagr.am%2Fp%2FLn4U2MLVXh%2F"
-                                  data-url="http://instagr.am/p/Ln4U2MLVXh/" class="media-thumbnail"></span>
-                            <span data-load-status="not-loaded"
-                                  data-href="/#!/${user_id}/media/slideshow?url=http%3A%2F%2Finstagr.am%2Fp%2FLn5v8KSdNF%2F"
-                                  data-url="http://instagr.am/p/Ln5v8KSdNF/" class="media-thumbnail"></span>
-                            <span data-load-status="not-loaded"
-                                  data-href="/#!/${user_id}/media/slideshow?url=http%3A%2F%2Finstagr.am%2Fp%2FLlSqw7whUV%2F"
-                                  data-url="http://instagr.am/p/LlSqw7whUV/" class="media-thumbnail"></span>
-                        </div>
-                    </div>
-                </a>
-            </li>
+
+
         </ul>
     </div>
 </div>
@@ -964,20 +887,19 @@ function retweet(tweet_id){
 
         <ul>
             <li class="js-sidenav-link" data-name="similarTo">
-                <a class="list-link" href="https://twitter.com/similar_to/${user_id}">
+                <p class="list-link" style="background-color:#f9f9f9" >
                     Similar to ${profile_name}
-                    <i class="chev-right"></i>
-                </a>
+
+                </p>
             </li>
         </ul>
 
         <div class="flex-module">
-            <div style="opacity: 1;" id="wtf" class="dashboard-user-recommendations flex-module-inner" data-section-id="wtf">
+            <div style="opacity: 1;" id="wtf" class="dashboard-user-recommendations flex-module-inner"
+                 data-section-id="wtf">
 
 
-             <!-- similar ppl here -->
-
-
+                <!-- similar ppl here -->
 
 
             </div>
@@ -1010,7 +932,7 @@ function retweet(tweet_id){
 </div>
 <div class="component" id="suggested-users"></div>
 <div class="content-main" id="timeline">      <!-- ----------------------------------- -->
-<div id="tweets-tab">
+<div id="tweets-tab" style="position:relative;">
     <div class="content-header">
         <div class="header-inner">
             <h2 class="js-timeline-title">Tweets
@@ -1025,7 +947,7 @@ function retweet(tweet_id){
 </div>
 
 
-<div id="following-tab" style="display: none">
+<div id="following-tab" style="position:relative;opacity:0;left:200px;display:none;">
     <div class="content-header">
         <div class="header-inner">
             <h2 class="js-timeline-title">Following
@@ -1036,7 +958,7 @@ function retweet(tweet_id){
     </ul>
 </div>
 
-<div id="follower-tab" style="display: none">
+<div id="follower-tab" style="position:relative;opacity:0;left:200px;display:none;">
     <div class="content-header">
         <div class="header-inner">
             <h2 class="js-timeline-title">Followers
@@ -1277,7 +1199,7 @@ function retweet(tweet_id){
         </div>
     </div>
 </div>
-<div class="content-main" id="edit-details-tab" style="display:none">
+<div class="content-main" id="edit-details-tab" style="position:relative;opacity:0;left:200px;display:none;">
     <div class="content-header">
         <div class="header-inner">
             <h2>Profile</h2>

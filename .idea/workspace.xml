@@ -15,20 +15,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f5457114-8d5e-44c9-b2cb-68727837a0e7" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/dicon.iml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/directi/train/DiCon/controllers/TokenController.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/directi/train/DiCon/services/Tokenizer.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/directi/train/DiCon/controllers/TrendController.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/webapp/static/ejs/trend.ejs" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/modules.xml" afterPath="$PROJECT_DIR$/.idea/modules.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/directi/train/DiCon/AppConfig.java" afterPath="$PROJECT_DIR$/src/main/java/com/directi/train/DiCon/AppConfig.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/directi/train/DiCon/controllers/APIAuthInterceptor.java" afterPath="$PROJECT_DIR$/src/main/java/com/directi/train/DiCon/controllers/APIAuthInterceptor.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/directi/train/DiCon/controllers/AuthInterceptor.java" afterPath="$PROJECT_DIR$/src/main/java/com/directi/train/DiCon/controllers/AuthInterceptor.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/directi/train/DiCon/controllers/Profile.java" afterPath="$PROJECT_DIR$/src/main/java/com/directi/train/DiCon/controllers/Profile.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/directi/train/DiCon/controllers/UserController.java" afterPath="$PROJECT_DIR$/src/main/java/com/directi/train/DiCon/controllers/UserController.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/directi/train/DiCon/services/DAO.java" afterPath="$PROJECT_DIR$/src/main/java/com/directi/train/DiCon/services/DAO.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/directi/train/DiCon/services/TwitterUser.java" afterPath="$PROJECT_DIR$/src/main/java/com/directi/train/DiCon/services/TwitterUser.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/dispatcher-servlet.xml" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/dispatcher-servlet.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/home.jsp" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/home.jsp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/profile.jsp" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/profile.jsp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/webapp/static/ejs/tweet.ejs" afterPath="$PROJECT_DIR$/src/main/webapp/static/ejs/tweet.ejs" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/todo-issues.txt" afterPath="$PROJECT_DIR$/todo-issues.txt" />
     </list>
     <ignored path="DiCon.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -95,10 +91,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="APIAuthInterceptor.java" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="APIAuthInterceptor.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/directi/train/DiCon/controllers/APIAuthInterceptor.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="68" column="12" selection-start="2470" selection-end="2470" vertical-scroll-proportion="0.7481032">
+            <state line="70" column="0" selection-start="2524" selection-end="2525" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -134,7 +130,7 @@
       <file leaf-file-name="home.jsp" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/home.jsp">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="195" column="55" selection-start="8894" selection-end="8894" vertical-scroll-proportion="-20.76">
+            <state line="184" column="30" selection-start="7727" selection-end="7727" vertical-scroll-proportion="330.8">
               <folding />
             </state>
           </provider>
@@ -149,10 +145,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="DAO.java" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="DAO.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/directi/train/DiCon/services/DAO.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="170" column="67" selection-start="9754" selection-end="9754" vertical-scroll-proportion="0.0">
+            <state line="171" column="4" selection-start="9772" selection-end="9772" vertical-scroll-proportion="4.3421054">
               <folding />
             </state>
           </provider>
@@ -161,7 +157,7 @@
       <file leaf-file-name="Profile.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/directi/train/DiCon/controllers/Profile.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="88" column="113" selection-start="3487" selection-end="3487" vertical-scroll-proportion="0.0">
+            <state line="90" column="113" selection-start="3542" selection-end="3542" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -198,13 +194,13 @@
         <option value="$PROJECT_DIR$/src/main/java/com/directi/train/DiCon/controllers/AuthInterceptor.java" />
         <option value="$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/index.jsp" />
         <option value="$PROJECT_DIR$/src/main/java/com/directi/train/DiCon/controllers/TokenController.java" />
-        <option value="$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/home.jsp" />
         <option value="$PROJECT_DIR$/src/main/java/com/directi/train/DiCon/services/Tokenizer.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/directi/train/DiCon/controllers/UserController.java" />
         <option value="$PROJECT_DIR$/src/main/webapp/WEB-INF/dispatcher-servlet.xml" />
-        <option value="$PROJECT_DIR$/src/main/java/com/directi/train/DiCon/services/DAO.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/directi/train/DiCon/controllers/APIAuthInterceptor.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/directi/train/DiCon/controllers/Profile.java" />
+        <option value="$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/home.jsp" />
+        <option value="$PROJECT_DIR$/src/main/java/com/directi/train/DiCon/services/DAO.java" />
       </list>
     </option>
   </component>
@@ -912,13 +908,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/directi/train/DiCon/services/DAO.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="170" column="67" selection-start="9754" selection-end="9754" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/directi/train/DiCon/controllers/AuthInterceptor.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="24" column="44" selection-start="918" selection-end="918" vertical-scroll-proportion="0.0">
@@ -926,23 +915,30 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/home.jsp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="195" column="55" selection-start="8894" selection-end="8894" vertical-scroll-proportion="-20.76">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/directi/train/DiCon/controllers/Profile.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="88" column="113" selection-start="3487" selection-end="3487" vertical-scroll-proportion="0.0">
+        <state line="90" column="113" selection-start="3542" selection-end="3542" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/directi/train/DiCon/controllers/APIAuthInterceptor.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="68" column="12" selection-start="2470" selection-end="2470" vertical-scroll-proportion="0.7481032">
+        <state line="70" column="0" selection-start="2524" selection-end="2525" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/home.jsp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="184" column="30" selection-start="7727" selection-end="7727" vertical-scroll-proportion="330.8">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/directi/train/DiCon/services/DAO.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="171" column="4" selection-start="9772" selection-end="9772" vertical-scroll-proportion="4.3421054">
           <folding />
         </state>
       </provider>

@@ -22,211 +22,292 @@
 <script src="//ajax.googleapis.com/ajax/libs/dojo/1.7.2/dojo/dojo.js" data-dojo-config="async: true"></script>
 <script type="text/javascript" src='${pageContext.request.contextPath}/static/js/ejs_production.js'></script>
 <script type="text/javascript">
-    require(["dojo/_base/xhr", "dojo/on", "dojo/dom", "dojo/query", "dojo/dom-construct", "dojo/_base/array", "dojo/NodeList-dom", "dojo/domReady!"], function(xhr, on, dom, query, domConstruct) {
+require(["dojo/_base/xhr", "dojo/on", "dojo/dom", "dojo/query", "dojo/dom-construct", "dojo/_base/array", "dojo/NodeList-dom", "dojo/domReady!"], function(xhr, on, dom, query, domConstruct) {
 
-        on(dom.byId("new-tweet-textarea"), "blur", function() {
-            if (dom.byId("new-tweet-textarea").value == "") {
-                query(".tweet-button-container")[0].style.display = "none";
-                query("#new-tweet-textarea-container").addClass("condensed");
-            }
-        });
-
-        on(dom.byId("new-tweet-textarea"), "focus", function() {
-            query(".tweet-button-container")[0].style.display = "block";
-            query("#new-tweet-textarea-container").removeClass("condensed");
-        });
-
-        on(dom.byId("new-tweet-textarea"), "keyup", function() {
-            query(".tweet-counter")[0].value = 140 - dom.byId("new-tweet-textarea").value.length;
-            if (dom.byId("new-tweet-textarea").value == "" || query(".tweet-counter")[0].value < 0) {
-                query("#tweet-button").addClass("disabled");
-                query("#tweet-button").removeClass("primary-btn");
-            }
-            else {
-                query("#tweet-button").addClass("primary-btn");
-                query("#tweet-button").removeClass("disabled");
-            }
-        });
-        var hide_searchresults_timeout;
-        on(dom.byId("search-query"), "focus", function() {
-            clearTimeout(hide_searchresults_timeout);
-            query("#global-nav-search").addClass("focus");
-            query("#search-query").addClass("focus");
-
-            if (this.value != "")
-                dom.byId("search-results-container").style.display = "block";
-        });
-
-        on(dom.byId("search-query"), "blur", function() {
-            query("#global-nav-search").removeClass("focus");
-            query("#search-query").removeClass("focus");
-            hide_searchresults_timeout = setTimeout(function() {
-                dom.byId("search-results-container").style.display = "none"
-            }, 1000);
-        });
-
-        on(dom.byId("search-query"), "keyup", function() {
-            if (this.value != "")
-                searchQuery(this.value);
-            else {
-                domConstruct.empty(dom.byId("results-list"));
-                dom.byId("search-results-container").style.display = "none";
-            }
-        });
-
-        function searchQuery(search_string) {
-            xhr.post({
-                        url: "/search.json",
-                        handleAs: "json",
-                        content: {
-                            search_string : search_string
-                        },
-                        load: function(response) {
-                            if (response.length == 0)
-                                dom.byId("search-results-container").style.display = "none";
-                            else
-                                dom.byId("search-results-container").style.display = "block";
-                            domConstruct.empty(dom.byId("results-list"));
-                            for (var i in response) {
-                                var result = new EJS({url: '${pageContext.request.contextPath}/static/ejs/searchResult.ejs'}).render(response[i]);
-                                domConstruct.place(result, dom.byId("results-list"));
-                            }
-                        },
-                        error: function() {
-                            console.log("Error fetching search results.");
-                        }
-                    });
+    on(dom.byId("new-tweet-textarea"), "blur", function() {
+        if (dom.byId("new-tweet-textarea").value == "") {
+            query(".tweet-button-container")[0].style.display = "none";
+            query("#new-tweet-textarea-container").addClass("condensed");
         }
-
     });
 
+    on(dom.byId("new-tweet-textarea"), "focus", function() {
+        query(".tweet-button-container")[0].style.display = "block";
+        query("#new-tweet-textarea-container").removeClass("condensed");
+    });
 
-    require(["dojo/_base/xhr", "dojo/on", "dojo/dom", "dojo/query", "dojo/NodeList-dom", "dojo/domReady!"],
-            function(xhr, on, dom, query) {
+    on(dom.byId("new-tweet-textarea"), "keyup", function() {
+        query(".tweet-counter")[0].value = 140 - dom.byId("new-tweet-textarea").value.length;
+        if (dom.byId("new-tweet-textarea").value == "" || query(".tweet-counter")[0].value < 0) {
+            query("#tweet-button").addClass("disabled");
+            query("#tweet-button").removeClass("primary-btn");
+        }
+        else {
+            query("#tweet-button").addClass("primary-btn");
+            query("#tweet-button").removeClass("disabled");
+        }
+    });
+    var hide_searchresults_timeout;
+    on(dom.byId("search-query"), "focus", function() {
+        clearTimeout(hide_searchresults_timeout);
+        query("#global-nav-search").addClass("focus");
+        query("#search-query").addClass("focus");
 
-                on(dom.byId("tweet-button"), "click", function() {
-                    xhr.post({
-                                url: "/${current_user_id}/tweets/new",
-                                handleAs: "json",
-                                content: {
-                                    tweet_text : dom.byId("new-tweet-textarea").value.split("\n").join(" "),
-                                    auth_token : "${auth_token}"
-                                },
-                                load: function(response) {
-                                    console.log("Successfully tweeted : " + response["tweet_text"]);
-                                },
-                                handle: function() {
-                                    dom.byId("new-tweet-textarea").value = "";
-                                    query("#tweet-button").addClass("disabled");
-                                    query("#tweet-button").removeClass("primary-btn");
-                                    query("#new-tweet-textarea-container").addClass("condensed");
-                                    query(".tweet-button-container")[0].style.display = "none";
-                                },
-                                error: function() {
-                                    console.log("Error sending tweets.");
-                                }
-                            });
+        if (this.value != "")
+            dom.byId("search-results-container").style.display = "block";
+    });
+
+    on(dom.byId("search-query"), "blur", function() {
+        query("#global-nav-search").removeClass("focus");
+        query("#search-query").removeClass("focus");
+        hide_searchresults_timeout = setTimeout(function() {
+            dom.byId("search-results-container").style.display = "none"
+        }, 1000);
+    });
+
+    on(dom.byId("search-query"), "keyup", function() {
+        if (this.value != "")
+            searchQuery(this.value);
+        else {
+            domConstruct.empty(dom.byId("results-list"));
+            dom.byId("search-results-container").style.display = "none";
+        }
+    });
+
+    function searchQuery(search_string) {
+        xhr.post({
+                    url: "/search.json",
+                    handleAs: "json",
+                    content: {
+                        search_string : search_string
+                    },
+                    load: function(response) {
+                        if (response.length == 0)
+                            dom.byId("search-results-container").style.display = "none";
+                        else
+                            dom.byId("search-results-container").style.display = "block";
+                        domConstruct.empty(dom.byId("results-list"));
+                        for (var i in response) {
+                            var result = new EJS({url: '${pageContext.request.contextPath}/static/ejs/searchResult.ejs'}).render(response[i]);
+                            domConstruct.place(result, dom.byId("results-list"));
+                        }
+                    },
+                    error: function() {
+                        console.log("Error fetching search results.");
+                    }
                 });
+    }
+
+});
 
 
+require(["dojo/_base/xhr", "dojo/on", "dojo/dom", "dojo/query", "dojo/NodeList-dom", "dojo/domReady!"],
+        function(xhr, on, dom, query) {
+
+            on(dom.byId("tweet-button"), "click", function() {
+                xhr.post({
+                            url: "/${current_user_id}/tweets/new",
+                            handleAs: "json",
+                            content: {
+                                tweet_text : dom.byId("new-tweet-textarea").value.split("\n").join(" ")
+                            },
+                            load: function(response) {
+                                console.log("Successfully tweeted : " + response["tweet_text"]);
+                            },
+                            handle: function() {
+                                dom.byId("new-tweet-textarea").value = "";
+                                query("#tweet-button").addClass("disabled");
+                                query("#tweet-button").removeClass("primary-btn");
+                                query("#new-tweet-textarea-container").addClass("condensed");
+                                query(".tweet-button-container")[0].style.display = "none";
+                            },
+                            error: function() {
+                                console.log("Error sending tweets.");
+                            }
+                        });
             });
 
 
-</script>
+        });
 
 
-<script type="text/javascript">
 
+var latest_feed_id = 0;
+var oldest_feed_id = -1;
+var newOrOldFlag = 2;
 
-    var latest_feed_id = 0;
-    var oldest_feed_id = -1;
-    var newOrOldFlag = 2;
+refreshFeed();
+setInterval(refreshFeed, 5000);
+setInterval(updateTimestamps, 60000);
+getFollowSuggestions();
+getTrends();
 
-    refreshFeed();
-    setInterval(refreshFeed, 5000);
+window.onscroll = function(ev) {
+    if (document.documentElement.scrollTop) {
+        scrollCursor = document.documentElement.scrollTop;
+    }
+    else {
+        scrollCursor = document.body.scrollTop;
+    }
+    if (scrollCursor <= 57)
+        newOrOldFlag = 2;
+    else if (document.body.parentNode.scrollHeight == scrollCursor + window.innerHeight) {
 
-    window.onscroll = function(ev) {
-        if (document.documentElement.scrollTop) {
-            scrollCursor = document.documentElement.scrollTop;
-        }
-        else {
-            scrollCursor = document.body.scrollTop;
-        }
-        if (scrollCursor <= 57)
-            newOrOldFlag = 2;
-        else if (document.body.parentNode.scrollHeight == scrollCursor + window.innerHeight) {
+        newOrOldFlag = 1;
+        refreshFeed();
+    }
+    else
+        newOrOldFlag = 0;
+};
 
-            newOrOldFlag = 1;
-            refreshFeed();
-        }
-        else
-            newOrOldFlag = 0;
-    };
+function refreshFeed() {
+    var position;
+    if (newOrOldFlag == 0) return;
+    require(["dojo/fx","dojo/_base/xhr", "dojo/dom", "dojo/dom-construct", "dojo/_base/array", "dojo/NodeList-dom", "dojo/domReady!"],
+            function(fx, xhr, dom, domConstruct) {
 
-    function refreshFeed() {
-        var position;
-        if (newOrOldFlag == 0) return;
-        require(["dojo/fx","dojo/_base/xhr", "dojo/dom", "dojo/dom-construct", "dojo/_base/array", "dojo/NodeList-dom", "dojo/domReady!"],
-                function(fx, xhr, dom, domConstruct) {
-
-                    xhr.get({
-                                url: "/${current_user_id}/newsfeed",
-                                handleAs: "json",
-                                headers: { "Accept": "application/json"},
-                                content: {
-                                    latest_feed_id : latest_feed_id,
-                                    oldest_feed_id : oldest_feed_id,
-                                    newOrOldFlag : newOrOldFlag
-                                },
-                                load: function(response) {
-                                    if (response.length > 0 && response[0]["tweet_id"] > latest_feed_id)
-                                        latest_feed_id = response[0]["tweet_id"];
-                                    if (response.length > 0 && (oldest_feed_id == -1 || response[response.length - 1]["tweet_id"] < oldest_feed_id))
-                                        oldest_feed_id = response[response.length - 1]["tweet_id"];
-                                    if (newOrOldFlag == 1) {
-                                        position = "last";
-                                    }
-                                    else {
-                                        position = "first";
-                                        response.reverse();
-                                    }
-                                    for (var i in response) {
-                                        if (response[i]["user_id"] ==${current_user_id} && response[0]["tweet_id"] == latest_feed_id) {
-                                            dom.byId("home-tweet-count").innerHTML = parseInt(dom.byId("home-tweet-count").innerHTML) + 1;
-                                        }
-                                        response[i]["timestamp_readable"] = makeTimestamp(response[i]["timestamp"]);
-                                        var newFeed = new EJS({url: '${pageContext.request.contextPath}/static/ejs/tweet.ejs'}).render(response[i]);
-                                        domConstruct.place(newFeed, dom.byId("stream-list"), position);
-                                        fx.wipeIn({ node: dom.byId("stream-item-" + response[i]["tweet_id"]) }).play();
-
-                                    }
-                                    console.log("new feeds = " + response.length);
-
-                                },
-                                error: function() {
-                                    console.log("Error fetching json for newsfeeds.");
-                                },
-                                handle: function() {
-                                    console.log("latest feed id = " + latest_feed_id);
-                                    console.log("oldest feed id = " + oldest_feed_id);
-                                    console.log("new or old flag = " + newOrOldFlag);
-                                    if (newOrOldFlag == 1)
-                                        newOrOldFlag = 0;
+                xhr.get({
+                            url: "/${current_user_id}/newsfeed",
+                            handleAs: "json",
+                            headers: { "Accept": "application/json"},
+                            content: {
+                                latest_feed_id : latest_feed_id,
+                                oldest_feed_id : oldest_feed_id,
+                                newOrOldFlag : newOrOldFlag
+                            },
+                            load: function(response) {
+                                if (response.length > 0 && response[0]["tweet_id"] > latest_feed_id)
+                                    latest_feed_id = response[0]["tweet_id"];
+                                if (response.length > 0 && (oldest_feed_id == -1 || response[response.length - 1]["tweet_id"] < oldest_feed_id))
+                                    oldest_feed_id = response[response.length - 1]["tweet_id"];
+                                if (newOrOldFlag == 1) {
+                                    position = "last";
                                 }
-                            });
+                                else {
+                                    position = "first";
+                                    response.reverse();
+                                }
+                                for (var i in response) {
+                                    if (response[i]["user_id"] ==${current_user_id} && response[0]["tweet_id"] == latest_feed_id) {
+                                        dom.byId("home-tweet-count").innerHTML = parseInt(dom.byId("home-tweet-count").innerHTML) + 1;
+                                    }
+                                    response[i]["timestamp_readable"] = makeTimestamp(response[i]["timestamp"]["days"], response[i]["timestamp"]["hours"], response[i]["timestamp"]["minutes"]);
+                                    var newFeed = new EJS({url: '${pageContext.request.contextPath}/static/ejs/tweet.ejs'}).render(response[i]);
+                                    domConstruct.place(newFeed, dom.byId("stream-list"), position);
+                                    fx.wipeIn({ node: dom.byId("stream-item-" + response[i]["tweet_id"]) }).play();
 
-                });
-    }
+                                }
+                                console.log("new feeds = " + response.length);
 
-    function makeTimestamp(timestamp) {
-        if (timestamp["days"] != 0)
-            return timestamp["days"] + " days ago";
-        else if (timestamp["hours"] != 0)
-            return timestamp["hours"] + " hours ago";
-        else if (timestamp["minutes"] != 0)
-            return timestamp["minutes"] + " minutes ago";
-        else return "a few seconds ago";
-    }
+                            },
+                            error: function() {
+                                console.log("Error fetching json for newsfeeds.");
+                            },
+                            handle: function() {
+                                console.log("latest feed id = " + latest_feed_id);
+                                console.log("oldest feed id = " + oldest_feed_id);
+                                console.log("new or old flag = " + newOrOldFlag);
+                                if (newOrOldFlag == 1)
+                                    newOrOldFlag = 0;
+                            }
+                        });
+
+            });
+}
+
+function makeTimestamp(days, hours, minutes) {
+    if (days > 1)
+        return days + " days ago";
+    else if (days == 1)
+        return "1 day ago";
+    else if (hours > 1)
+        return hours + " hours ago";
+    else if (hours == 1)
+        return "1 hour ago";
+    else if (minutes > 1)
+        return minutes + " minutes ago";
+    else if (minutes == 1)
+        return "1 minute ago";
+    else return "a few seconds ago";
+}
+
+function updateTimestamps() {
+   require(["dojo/query","dojo/domReady!"], function(query) {
+        var list = query(".js-short-timestamp");
+        for (var i = 0; i < list.length; i++) {
+            list[i].setAttribute("minutes", parseInt(list[i].getAttribute("minutes")) + 1);
+
+            if (parseInt(list[i].getAttribute("minutes")) == 60) {
+                list[i].setAttribute("minutes", 0);
+                list[i].setAttribute("hours", parseInt(list[i].getAttribute("hours")) + 1);
+            }
+            if (parseInt(list[i].getAttribute("hours")) == 24) {
+                list[i].setAttribute("hours", 0);
+                list[i].setAttribute("days", parseInt(list[i].getAttribute("days")) + 1);
+            }
+            list[i].innerHTML = makeTimestamp(list[i].getAttribute("days"), list[i].getAttribute("hours"), list[i].getAttribute("minutes"));
+        }
+    });
+
+
+}
+function getFollowSuggestions() {
+
+    require(["dojo/_base/xhr", "dojo/dom", "dojo/dom-construct", "dojo/_base/array", "dojo/NodeList-dom", "dojo/domReady!"],
+            function(xhr, dom, domConstruct) {
+
+                xhr.get({
+                            url: "/${current_user_id}/follow_suggestions",
+                            handleAs: "json",
+                            headers: { "Accept": "application/json"},
+
+                            load: function(response) {
+                                domConstruct.empty(dom.byId("wtf"));
+                                for (var i in response) {
+
+                                    var followSuggestion = new EJS({url: '${pageContext.request.contextPath}/static/ejs/similarppl.ejs'}).render(response[i]);
+                                    domConstruct.place(followSuggestion, dom.byId("wtf"), "last");
+
+                                }
+                                console.log("follow suggestions = " + response.length);
+
+                            },
+                            error: function() {
+                                console.log("Error fetching follow suggestions.");
+                            }
+
+                        });
+            });
+}
+
+function getTrends() {
+
+    require(["dojo/_base/xhr", "dojo/dom", "dojo/dom-construct", "dojo/_base/array", "dojo/NodeList-dom", "dojo/domReady!"],
+            function(xhr, dom, domConstruct) {
+
+                xhr.get({
+                            url: "/trends",
+                            handleAs: "json",
+                            headers: { "Accept": "application/json"},
+
+                            load: function(response) {
+                                domConstruct.empty(dom.byId("trend-list"));
+                                for (var i in response) {
+
+                                    var trendItem = new EJS({url: '${pageContext.request.contextPath}/static/ejs/trend.ejs'}).render(response[i]);
+                                    domConstruct.place(trendItem, dom.byId("trend-list"), "last");
+
+                                }
+                                console.log("trends = " + response.length);
+
+                            },
+                            error: function() {
+                                console.log("Error fetching trends.");
+                            }
+
+                        });
+            });
+}
 </script>
 
 
@@ -429,61 +510,64 @@
 </div>
 
 <div id="page-outer">
-<div id="page-container" class="wrapper home-container">
-<div class="new-js-banners"></div>
-<div id="page-node-home">
-<div class="dashboard">
-    <div data-component-term="promptbird_dashboard_placeholder" id="js-promptbird-dashboard-narrow-hook"
-         class="component"></div>
-    <div data-component-term="mini_home_profile" class="module mini-profile component">
+    <div id="page-container" class="wrapper home-container">
+        <div class="new-js-banners"></div>
+        <div id="page-node-home">
+            <div class="dashboard">
+                <div data-component-term="promptbird_dashboard_placeholder" id="js-promptbird-dashboard-narrow-hook"
+                     class="component"></div>
+                <div data-component-term="mini_home_profile" class="module mini-profile component">
 
-        <div class="flex-module profile-summary js-profile-summary">
-            <a href="/${current_user_id}" class="account-summary account-summary-small" data-nav="profile">
-                <div class="content">
-                    <div class="account-group js-mini-current-user" data-user-id="612622708"
-                         data-screen-name="niteesh3k">
-                        <img class="avatar size32" src="data:image/jpeg;base64,${current_user_dp}"
-                             alt="${current_user_fullname}"
-                             data-user-id="612622708">
-                        <b class="fullname">${current_user_fullname}</b>
-                        <small class="metadata">View my profile page</small>
-                    </div>
-                </div>
-            </a></div>
+                    <div class="flex-module profile-summary js-profile-summary">
+                        <a href="/${current_user_id}" class="account-summary account-summary-small" data-nav="profile">
+                            <div class="content">
+                                <div class="account-group js-mini-current-user" data-user-id="612622708"
+                                     data-screen-name="niteesh3k">
+                                    <img class="avatar size32" src="data:image/jpeg;base64,${current_user_dp}"
+                                         alt="${current_user_fullname}"
+                                         data-user-id="612622708">
+                                    <b class="fullname">${current_user_fullname}</b>
+                                    <small class="metadata">View my profile page</small>
+                                </div>
+                            </div>
+                        </a></div>
 
-        <div class="js-mini-profile-stats-container">
-            <ul class="stats js-mini-profile-stats">
-                <li><a href="/${current_user_id}" data-element-term="tweet_stats"
-                       data-nav="profile"><strong id="home-tweet-count">${home_tweetCount}</strong> Tweets</a></li>
-                <li><a href="" data-element-term="following_stats"
-                       data-nav="following"><strong>${home_followingCount}</strong> Following</a></li>
-                <li><a href="" data-element-term="follower_stats"
-                       data-nav="followers"><strong>${home_followerCount}</strong> Followers</a></li>
-            </ul>
-        </div>
+                    <div class="js-mini-profile-stats-container">
+                        <ul class="stats js-mini-profile-stats">
+                            <li><a href="/${current_user_id}" data-element-term="tweet_stats"
+                                   data-nav="profile"><strong id="home-tweet-count">${home_tweetCount}</strong>
+                                Tweets</a></li>
+                            <li><a href="" data-element-term="following_stats"
+                                   data-nav="following"><strong>${home_followingCount}</strong> Following</a></li>
+                            <li><a href="" data-element-term="follower_stats"
+                                   data-nav="followers"><strong>${home_followerCount}</strong> Followers</a></li>
+                        </ul>
+                    </div>
 
-        <div class="tweet-box tweet-user">
-            <div id="new-tweet-textarea-container" class="tweet-box condensed">
-                <div class="text-area">
-                    <div class="text-area-editor twttr-editor"><textarea
-                            style="width: 258px; height: 75px; overflow: hidden;" id="new-tweet-textarea"
-                            placeholder="Compose new Tweet..."
-                            class="twitter-anywhere-tweet-box-editor" id="new-tweet-box"></textarea>
-                        <ul style="width: 274px; top: 31px; left: 0px; visibility: hidden;"
-                            class="autocomplete-container"></ul>
-                        <div style="display: none; font-family: &quot;Helvetica Neue&quot;,Arial,sans-serif; font-size: 13px; font-weight: 400; line-height: 18px; padding: 6px 8px 5px; white-space: pre-wrap; width: 258px; word-wrap: break-word;"></div>
-                    </div>
-                </div>
-                <div class="tweet-button-container">
-                    <div class="turkey-control">
-                        <div class="turkey-add-action">
-                            <div class="turkey"></div>
-                            <div class="swf"></div>
-                        </div>
-                        <form method="post" action="https://upload.twitter.com/1/statuses/update_with_media.iframe"
-                              enctype="multipart/form-data" class="turkey-selected-files" target="tweetbox_1"></form>
-                        <iframe class="turkey-post-target" name="tweetbox_1"></iframe>
-                    </div>
+                    <div class="tweet-box tweet-user">
+                        <div id="new-tweet-textarea-container" class="tweet-box condensed">
+                            <div class="text-area">
+                                <div class="text-area-editor twttr-editor"><textarea
+                                        style="width: 258px; height: 75px; overflow: hidden;" id="new-tweet-textarea"
+                                        placeholder="Compose new Tweet..."
+                                        class="twitter-anywhere-tweet-box-editor" id="new-tweet-box"></textarea>
+                                    <ul style="width: 274px; top: 31px; left: 0px; visibility: hidden;"
+                                        class="autocomplete-container"></ul>
+                                    <div style="display: none; font-family: &quot;Helvetica Neue&quot;,Arial,sans-serif; font-size: 13px; font-weight: 400; line-height: 18px; padding: 6px 8px 5px; white-space: pre-wrap; width: 258px; word-wrap: break-word;"></div>
+                                </div>
+                            </div>
+                            <div class="tweet-button-container">
+                                <div class="turkey-control">
+                                    <div class="turkey-add-action">
+                                        <div class="turkey"></div>
+                                        <div class="swf"></div>
+                                    </div>
+                                    <form method="post"
+                                          action="https://upload.twitter.com/1/statuses/update_with_media.iframe"
+                                          enctype="multipart/form-data" class="turkey-selected-files"
+                                          target="tweetbox_1"></form>
+                                    <iframe class="turkey-post-target" name="tweetbox_1"></iframe>
+                                </div>
       <span class="geo-control">
   <a href="#" class="geo-location">
       <span original-title="" class="geo-icon">&nbsp;</span>
@@ -491,155 +575,127 @@
   </a>
 </span>
 
-                    <div class="tweet-button-sub-container">
-                        <img src="DiCon_Home_Files/spinner.gif" class="tweet-spinner" style="display: none;">
-                        <span style="opacity: 0;" class="tweetbox-counter-tipsy"></span>
-                        <input class="tweet-counter"
-                               value="140"
-                               disabled="disabled">
-                        <a href="#" class="tweet-button btn disabled" id="tweet-button">Tweet</a></div>
+                                <div class="tweet-button-sub-container">
+                                    <img src="DiCon_Home_Files/spinner.gif" class="tweet-spinner"
+                                         style="display: none;">
+                                    <span style="opacity: 0;" class="tweetbox-counter-tipsy"></span>
+                                    <input class="tweet-counter"
+                                           value="140"
+                                           disabled="disabled">
+                                    <a href="#" class="tweet-button btn disabled" id="tweet-button">Tweet</a></div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
-    </div>
-    <div data-component-term="japanese_ad" style="display: none;" class="component"></div>
-    <div data-component-term="user_recommendations" class="component">
-        <div class="module wtf-module js-wtf-module has-content">
+                <div data-component-term="japanese_ad" style="display: none;" class="component"></div>
+                <div data-component-term="user_recommendations" class="component">
+                    <div class="module wtf-module js-wtf-module has-content">
 
-            <div class="flex-module">
+                        <div class="flex-module">
 
-                <div class="flex-module-header">
-                    <h3>Who to follow</h3>
-                    <small><a class="js-refresh-suggestions" href="#">Refresh</a></small>
-                    <small class="view-all"><a href="https://twitter.com/#%21/who_to_follow/suggestions"
-                                               data-element-term="view_all_link">View all</a></small>
+                            <div class="flex-module-header">
+                                <h3>Who to follow</h3>
+                                <small><a style="float:right;" class="js-refresh-suggestions" href="#"
+                                          onclick="getFollowSuggestions();">Refresh</a></small>
+
+                            </div>
+
+                            <div id="wtf"
+                                 class="js-recommended-followers dashboard-user-recommendations flex-module-inner"
+                                 data-section-id="wtf">
+                            </div>
+
+
+                        </div>
+                    </div>
                 </div>
+                <div data-component-term="trends" style="display: block;" class="module trends  component">
+                    <div class="flex-module trends-inner">
+                        <div class="flex-module-header">
 
-                <div class="js-recommended-followers dashboard-user-recommendations flex-module-inner"
-                     data-section-id="wtf">
-                    <div class="js-account-summary account-summary js-actionable-user promoted-account js-profile-popup-actionable"
-                         data-user-id="14117843" data-feedback-token="38" data-impression-id="4a6fd52ccc9360bb">
-                        <div class="dismiss js-action-dismiss"><i class="close"></i></div>
-                        <div class="content">
-                            <a class="account-group js-recommend-link js-user-profile-link user-thumb"
-                               href="https://twitter.com/SamsungMobileUS" data-user-id="14117843">
-
-                                <img class="avatar js-action-profile-avatar "
-                                     src="DiCon_Home_Files/SMUSA_Twitter_profile_normal.jpg" alt="Samsung Mobile US">
-      <span class="account-group-inner js-action-profile-name" data-user-id="14117843">
-        <b class="fullname">Follow Suggestion 1</b>
-          <span class="username"><s>@</s><span class="js-username">followusername</span></span>
-      </span>
-                            </a>
-
-                            <small class="metadata social-context">
-
+                            <h3>
+                                <span woeid="1" class="js-trend-location">Trends</span>
+                            </h3>
+                            <small><a style="float:right;" class="js-refresh-trends" href="#" onclick="getTrends();">Refresh</a>
                             </small>
 
-
-      <span class="js-follow-state follow-state">
-        <a href="#" class="js-action-follow js-link" data-user-id="14117843">Follow</a>
-
-      </span>
+                        </div>
+                        <div class="flex-module-inner">
+                            <ul id="trend-list" class="trend-items js-trends">
+                            </ul>
                         </div>
                     </div>
-
-
                 </div>
-
-
-            </div>
-        </div>
-    </div>
-    <div data-component-term="trends" style="display: block;" class="module trends  component">
-        <div class="flex-module trends-inner">
-            <div class="flex-module-header">
-
-                <h3>
-                    <span woeid="1" class="js-trend-location">Trends</span>
-                </h3>
-
-            </div>
-            <div class="flex-module-inner">
-                <ul class="trend-items js-trends">
-                    <li class="js-trend-item  " data-trend-name="#MyLastWordsBeforeIDie">
-                        <a href="https://twitter.com/#%21/search/%23MyLastWordsBeforeIDie"
-                           data-query-source="trend_click">NEW TRENDS</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
-    <div data-component-term="footer" class="component">
-        <div class="module site-footer ">
-            <div class="flex-module">
-                <div class="flex-module-inner js-items-container">
-                    <ul class="clearfix">
-                        <li class="copyright">&#169; 2012 DiCon</li>
-                        <li><a href="https://twitter.com/about">About</a></li>
-                        <li><a href="https://support.twitter.com/">Help</a></li>
-                        <li><a href="https://twitter.com/tos">Terms</a></li>
-                        <li><a href="https://twitter.com/privacy">Privacy</a></li>
-                        <li><a href="http://blog.twitter.com/">Blog</a></li>
-                        <li><a href="http://status.twitter.com/">Status</a></li>
-                        <li><a href="https://twitter.com/download">Apps</a></li>
-                        <li><a href="https://twitter.com/about/resources">Resources</a></li>
-                        <li><a href="https://twitter.com/jobs">Jobs</a></li>
-                        <li><a href="https://business.twitter.com/en/advertise/start">Advertisers</a></li>
-                        <li><a href="https://business.twitter.com/index_en.html">Businesses</a></li>
-                        <li><a href="http://media.twitter.com/">Media</a></li>
-                        <li><a href="https://dev.twitter.com/">Developers</a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="content-main js-content-main breakable">
-    <div id="js-promptbird-below-black-bar-hook"></div>
-    <div id="js-empty-timeline-recommendations-module-hook"></div>
-    <div class="content-header js-stream-header">
-        <div class="header-inner">
-            <h2>
-                <span class="content-header-buttons js-header-button-container"></span>
-
-
-                <span class="js-stream-title">Tweets</span>&nbsp;
-                <small class="view-toggler js-view-toggler"></small>
-            </h2>
-        </div>
-    </div>
-
-    <div class="stream js-stream-manager-container">
-        <div class="stream-manager js-stream-manager-container" id="home-stream-manager">
-
-            <div class="stream-title"></div>
-            <div class="stream-container">
-                <div media="true" data-component-term="stream" class="stream home-stream">
-
-                    <div class="js-stream-items stream-items" id="stream-items-id">
-                        <ul id="stream-list">
-                        </ul>
-
-                    </div>
-
-                    <div class="stream-loading">
-                        <div class="stream-end-inner">
-                            <span class="spinner" title="Loading..."></span>
+                <div data-component-term="footer" class="component">
+                    <div class="module site-footer ">
+                        <div class="flex-module">
+                            <div class="flex-module-inner js-items-container">
+                                <ul class="clearfix">
+                                    <li class="copyright">&#169; 2012 DiCon</li>
+                                    <li><a href="https://twitter.com/about">About</a></li>
+                                    <li><a href="https://support.twitter.com/">Help</a></li>
+                                    <li><a href="https://twitter.com/tos">Terms</a></li>
+                                    <li><a href="https://twitter.com/privacy">Privacy</a></li>
+                                    <li><a href="http://blog.twitter.com/">Blog</a></li>
+                                    <li><a href="http://status.twitter.com/">Status</a></li>
+                                    <li><a href="https://twitter.com/download">Apps</a></li>
+                                    <li><a href="https://twitter.com/about/resources">Resources</a></li>
+                                    <li><a href="https://twitter.com/jobs">Jobs</a></li>
+                                    <li><a href="https://business.twitter.com/en/advertise/start">Advertisers</a></li>
+                                    <li><a href="https://business.twitter.com/index_en.html">Businesses</a></li>
+                                    <li><a href="http://media.twitter.com/">Media</a></li>
+                                    <li><a href="https://dev.twitter.com/">Developers</a></li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
-                    <script type="text/javascript">
-                        $(document).ready(function () {
+                </div>
+            </div>
+            <div class="content-main js-content-main breakable">
+                <div id="js-promptbird-below-black-bar-hook"></div>
+                <div id="js-empty-timeline-recommendations-module-hook"></div>
+                <div class="content-header js-stream-header">
+                    <div class="header-inner">
+                        <h2>
+                            <span class="content-header-buttons js-header-button-container"></span>
 
-                            $("#moretab").mouseenter(function() {
-                                $("#categories").show();
-                            });
 
-                            $("#categories, #moretab").mouseleave(function() {
-                                $("#categories").hide();
-                            });
-                        });
-                    </script>
+                            <span class="js-stream-title">Tweets</span>&nbsp;
+                            <small class="view-toggler js-view-toggler"></small>
+                        </h2>
+                    </div>
+                </div>
+
+                <div class="stream js-stream-manager-container">
+                    <div class="stream-manager js-stream-manager-container" id="home-stream-manager">
+
+                        <div class="stream-title"></div>
+                        <div class="stream-container">
+                            <div media="true" data-component-term="stream" class="stream home-stream">
+
+                                <div class="js-stream-items stream-items" id="stream-items-id">
+                                    <ul id="stream-list">
+                                    </ul>
+
+                                </div>
+
+                                <div class="stream-loading">
+                                    <div class="stream-end-inner">
+                                        <span class="spinner" title="Loading..."></span>
+                                    </div>
+                                </div>
+                                <script type="text/javascript">
+                                    $(document).ready(function () {
+
+                                        $("#moretab").mouseenter(function() {
+                                            $("#categories").show();
+                                        });
+
+                                        $("#categories, #moretab").mouseleave(function() {
+                                            $("#categories").hide();
+                                        });
+                                    });
+                                </script>
 
 
 </body>

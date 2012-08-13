@@ -2,7 +2,6 @@ CRITICAL
 --------
 data validation of edit details
 able to edit others details after login -- perform auth check -- same user should be logged in
-fix follower/following query to not show the follow button for self
 AVOID AJAX FOR INITITAL POSTS/NEWSFEED ?
 check dom ready on all javascript
 
@@ -14,14 +13,14 @@ rename phone to location in database
 smooth out file upload in edit details
 show new tweets only upon button click
 move javascript into different file
-update timestamps of posts dynamically
 fix all links to real twitter
 back button still shows the page, even tho session is invalidated
-slide profile page tabs in/out
+
+SMOOTHING OUT
+-------------
+Show alert messages on successful change of details, etc.
 
 BONUS
 -----
-1)Improve similar ppl suggestions
-2)Follow suggestions
-
+1)Trending -- use hash tags n trend table ?
 

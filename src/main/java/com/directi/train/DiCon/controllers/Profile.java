@@ -12,8 +12,10 @@ import sun.misc.BASE64Encoder;
 
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 @Controller
 @RequestMapping("{userID}")
@@ -131,17 +133,29 @@ public class Profile {
     @RequestMapping(value = "similar_ppl", method = RequestMethod.GET)
     @ResponseBody
     public List<Map<String,Object>> similarPpl(@PathVariable("userID") Integer userID){
-        return dao.getSimilarPpl(userID);
+        List<Map<String, Object>> similarPpl = dao.getSimilarPpl(userID);
+        Collections.shuffle(similarPpl, new Random(System.nanoTime()));
+        if(similarPpl.size() < 3)
+            return similarPpl;
+        else
+            return similarPpl.subList(0,3);
+    }
+
+    @RequestMapping(value = "follow_suggestions", method = RequestMethod.GET)
+    @ResponseBody
+    public List<Map<String,Object>> followSuggestions(@PathVariable("userID") Integer userID){
+        List<Map<String, Object>> followSuggestions = dao.getFollowSuggestions(userID);
+        Collections.shuffle(followSuggestions, new Random(System.nanoTime()));
+        if(followSuggestions.size() <= 3)
+            return followSuggestions;
+        else
+            return followSuggestions.subList(0,3);
     }
 
     @RequestMapping(value = "retweet", method = RequestMethod.POST)
     @ResponseBody
     public String reTweet(HttpSession session, @RequestParam("tweet_id") Integer tweet_id){
         return "{ success : " +  dao.upDateRetweet((Integer) session.getAttribute("userID"),tweet_id)+"}";
-
-
     }
-
-
 }
 
