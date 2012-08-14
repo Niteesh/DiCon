@@ -91,7 +91,7 @@ public class UserController {
         }
         session.setAttribute("email", email);
         session.setAttribute("userID", userID);
-        String authToken =   tokenizer.getToken();
+        String authToken = tokenizer.getToken();
         tokenizer.registerToken(userID, authToken);
         session.setAttribute("auth_token", authToken);
         mv.setViewName("redirect:/home");

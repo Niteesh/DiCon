@@ -41,25 +41,25 @@ public class TokenController {
                                         @RequestParam("password") String password) {
 
         Map<String, Object> jsonResponseMap = new HashMap<String, Object>();
-            Integer userID = 0;
-            try {
-                userID = twitterUser.authanticateUser(email, password);
+        Integer userID = 0;
+        try {
+            userID = twitterUser.authanticateUser(email, password);
 
-                if (userID == 0) {
-                    jsonResponseMap.put("success", 0);
-                    jsonResponseMap.put("error","wrong password") ;
-                    return jsonResponseMap;
-                }
-
-            } catch (EmptyResultDataAccessException e) {
+            if (userID == 0) {
                 jsonResponseMap.put("success", 0);
-                jsonResponseMap.put("Error","No account with this email exists.") ;
-
+                jsonResponseMap.put("error", "wrong password");
                 return jsonResponseMap;
             }
-        String token =  tokenizer.getToken();
+
+        } catch (EmptyResultDataAccessException e) {
+            jsonResponseMap.put("success", 0);
+            jsonResponseMap.put("Error", "No account with this email exists.");
+
+            return jsonResponseMap;
+        }
+        String token = tokenizer.getToken();
         jsonResponseMap.put("success", 1);
-        jsonResponseMap.put("auth_token",token) ;
+        jsonResponseMap.put("auth_token", token);
         tokenizer.registerToken(userID, token);
         return jsonResponseMap;
     }

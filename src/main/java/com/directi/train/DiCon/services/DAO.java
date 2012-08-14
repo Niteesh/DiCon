@@ -2,6 +2,7 @@ package com.directi.train.DiCon.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 import org.springframework.stereotype.Service;
 
@@ -159,7 +160,11 @@ public class DAO {
     }
 
     public Integer getUidForToken(String token){
-        return db.queryForInt("select user_id from twitter.token where token = ?", token) ;
+        try{
+            return db.queryForInt("select user_id from twitter.token where token = ?", token) ;
+        }catch(EmptyResultDataAccessException e){
+            return 0;
+        }
     }
 
     public int newToken(Integer userID, String token) {

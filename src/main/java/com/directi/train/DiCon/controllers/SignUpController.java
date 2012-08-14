@@ -27,15 +27,15 @@ public class SignUpController {
     @Autowired
     public SignUpController(TwitterUser twitterUser) {
 
-        this.twitterUser =  twitterUser;
+        this.twitterUser = twitterUser;
 
-     }
+    }
 
     @RequestMapping(value = "/sign_up", method = RequestMethod.POST)
     public ModelAndView signUp(@RequestParam("fullname") String fullName,
-                              @RequestParam("email") String email,
-                              @RequestParam("password") String password,
-                              HttpSession session) {
+                               @RequestParam("email") String email,
+                               @RequestParam("password") String password,
+                               HttpSession session) {
 
         ModelAndView mv = new ModelAndView("/index");
 
@@ -43,15 +43,14 @@ public class SignUpController {
         fullName = xssHandler.makeXSSSafe(fullName);
 
 
-        if(!TwitterUser.isValidEmail(email)) {
+        if (!TwitterUser.isValidEmail(email)) {
             mv.addObject("message", "invalid email...");
 
-        }
-         else{
-            try{
-                if(!twitterUser.isUserExist(email)){
-                    Integer userID =  twitterUser.addUser(fullName, email, password);
-                    if(userID != -1){
+        } else {
+            try {
+                if (!twitterUser.isUserExist(email)) {
+                    Integer userID = twitterUser.addUser(fullName, email, password);
+                    if (userID != -1) {
                         session.setAttribute("email", email);
                         session.setAttribute("userID", userID);
                         mv.setViewName("redirect:/home");
@@ -59,12 +58,10 @@ public class SignUpController {
                     } else {
                         mv.addObject("message", "Oops faced some error.. Please try again later");
                     }
+                } else {
+                    mv.addObject("message", "user with this email already exist already exist");
                 }
-                else
-                {
-                    mv.addObject("message","user with this email already exist already exist");
-                }
-            }catch(DataAccessException e){
+            } catch (DataAccessException e) {
                 mv.addObject("message", "Oops faced some error.. Please try again later");
             }
         }
@@ -73,5 +70,4 @@ public class SignUpController {
     }
 
 
-
-    }
+}
