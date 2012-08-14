@@ -11,7 +11,7 @@
  with-social-proof
 
 " data-tweet-id="224970532737654784" data-item-id="224970532737654784" data-screen-name="<%=user_id%>"
-         data-name="Enrique Iglesias" data-user-id="46452468" data-is-reply-to="">
+         data-name="<%=fullname%>" data-user-id="46452468" data-is-reply-to="">
 
 
         <i class="dogear"></i>
@@ -22,7 +22,7 @@
 
             <div class="stream-item-header">
                 <small class="time">
-                    <a href="https://twitter.com/enrique305/status/224970532737654784"
+                    <a href="#"
                        class="tweet-timestamp js-permalink" title="2:25 AM - 17 Jul 12"><span
                             class="_timestamp js-short-timestamp " days="<%=timestamp["days"]%>" hours="<%=timestamp["hours"]%>" minutes="<%=timestamp["minutes"]%>" data-time="1342472130000"
                             data-long-form="true"><%=timestamp_readable%></span></a>
@@ -30,7 +30,7 @@
                 <a class="account-group js-account-group js-action-profile js-user-profile-link"
                    href="/<%=user_id%>" data-user-id="46452468">
                     <img class="avatar js-action-profile-avatar" src="data:image/jpeg;base64,<%=dp%>"
-                         alt="Enrique Iglesias">
+                         alt="<%=fullname%>">
                     <strong class="fullname js-action-profile-name show-popup-with-id"><%=fullname%></strong>
                     <span>‏</span><span class="username js-action-profile-name"><s>@</s><b><%=user_id%></b></span>
                 </a>
@@ -43,18 +43,10 @@
             <div class="stream-item-footer">
 
 
-                <div class="context">
-                </div>
 
 
                 <ul class="tweet-actions js-actions">
-                    <li class="action-reply-container">
 
-                        <a class="with-icn js-action-reply" data-modal="tweet-reply" href="#" title="Reply">
-                            <i class="sm-reply"></i>
-                            <b>Reply</b>
-                        </a>
-                    </li>
                     <li class="action-rt-container">
                         <a class="with-icn js-toggle-rt" data-modal="tweet-retweet" href="javascript:retweet(<%=tweet_id%>);" id ="retweet-button">
                             <i class="sm-rt"></i>
@@ -64,27 +56,12 @@
                             <span class="retweet" title="Retweet">Retweet</span></b>
                         </a>
                     </li>
-                    <li class="action-del-container">
-                        <a class="with-icn js-action-del" href="#" title="Delete">
-                            <i class="sm-trash"></i>
-                            <b>Delete</b>
-                        </a>
-                    </li>
-                    <li class="action-fav-container">
-                        <a class="with-icn js-toggle-fav" href="#">
-                            <i class="sm-fav"></i>
 
-
-                            <b><span class="unfavorite" title="Undo favorite">Favorited</span><span class="favorite"
-                                                                                                    title="Favorite">Favorite</span></b>
-                        </a>
-                    </li>
                 </ul>
             </div>
 
 
-            <div class="expanded-content js-tweet-details-dropdown">
-            </div>
+
         </div>
     </div>
 

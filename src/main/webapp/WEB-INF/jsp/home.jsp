@@ -231,7 +231,7 @@ function makeTimestamp(days, hours, minutes) {
 }
 
 function updateTimestamps() {
-   require(["dojo/query","dojo/domReady!"], function(query) {
+    require(["dojo/query","dojo/domReady!"], function(query) {
         var list = query(".js-short-timestamp");
         for (var i = 0; i < list.length; i++) {
             list[i].setAttribute("minutes", parseInt(list[i].getAttribute("minutes")) + 1);
@@ -406,23 +406,7 @@ function getTrends() {
 <style charset="utf-8" class="lazyload">@import "https://si0.twimg.com/a/1342481270/t1/css/t1_more.bundle.css";</style>
 </head>
 <body class="t1  logged-in front-random-image-city-balcony    mozilla user-style-niteesh3k">
-<iframe tabindex="-1" role="presentation" style="position: absolute; top: -9999px;"
-        src="${pageContext.request.contextPath}/static/html/receiver.html"></iframe>
-
 <div class="topbar js-topbar">
-    <div id="banners" class="js-banners">
-        <noscript>
-            <div class="banner-outer">
-                <div class="banner">
-                    <div class="banner-inside noscript-warning">
-                        <h5>Our site makes heavy use of JavaScript.</h5>
-                        <span class="warning">If you cannot enable it in your browser's preferences, it is not our problem.</span>
-                    </div>
-                </div>
-            </div>
-        </noscript>
-
-    </div>
     <div class="global-nav" data-section-term="top_nav">
         <div class="global-nav-inner">
             <div class="container">
@@ -433,20 +417,7 @@ function getTrends() {
                             <span class="new-wrapper"><i class="nav-home"></i><i class="nav-new"></i></span> Home
                         </a>
                     </li>
-                    <li class="people" data-global-action="connect">
-                        <a class="js-hover" href="https://twitter.com/i/connect" data-component-term="connect_nav"
-                           data-nav="connect">
-                            <span class="new-wrapper"><i class="nav-people"></i><i class="nav-new"></i></span>
-                            Connect
-                        </a>
-                    </li>
-                    <li class="topics" data-global-action="discover">
-                        <a class="js-hover" href="https://twitter.com/i/discover" data-component-term="discover_nav"
-                           data-nav="discover">
-                            <span class="new-wrapper"><i class="nav-topics"></i><i class="nav-new"></i></span>
-                            Discover
-                        </a>
-                    </li>
+
                 </ul>
                 <i class="bird-topbar-etched"></i>
 
@@ -505,16 +476,11 @@ function getTrends() {
         </div>
     </div>
 </div>
-<div class="alert-messages " id="message-drawer">
-</div>
 
 <div id="page-outer">
     <div id="page-container" class="wrapper home-container">
-        <div class="new-js-banners"></div>
         <div id="page-node-home">
             <div class="dashboard">
-                <div data-component-term="promptbird_dashboard_placeholder" id="js-promptbird-dashboard-narrow-hook"
-                     class="component"></div>
                 <div data-component-term="mini_home_profile" class="module mini-profile component">
 
                     <div class="flex-module profile-summary js-profile-summary">
@@ -556,37 +522,17 @@ function getTrends() {
                                 </div>
                             </div>
                             <div class="tweet-button-container">
-                                <div class="turkey-control">
-                                    <div class="turkey-add-action">
-                                        <div class="turkey"></div>
-                                        <div class="swf"></div>
-                                    </div>
-                                    <form method="post"
-                                          action="https://upload.twitter.com/1/statuses/update_with_media.iframe"
-                                          enctype="multipart/form-data" class="turkey-selected-files"
-                                          target="tweetbox_1"></form>
-                                    <iframe class="turkey-post-target" name="tweetbox_1"></iframe>
-                                </div>
-      <span class="geo-control">
-  <a href="#" class="geo-location">
-      <span original-title="" class="geo-icon">&nbsp;</span>
-      <span class="geo-dropdown-icon">&nbsp;</span>
-  </a>
-</span>
-
                                 <div class="tweet-button-sub-container">
-                                    <img src="DiCon_Home_Files/spinner.gif" class="tweet-spinner"
-                                         style="display: none;">
                                     <span style="opacity: 0;" class="tweetbox-counter-tipsy"></span>
                                     <input class="tweet-counter"
                                            value="140"
                                            disabled="disabled">
-                                    <a href="#" class="tweet-button btn disabled" id="tweet-button">Tweet</a></div>
+                                    <a href="#" class="tweet-button btn disabled" id="tweet-button">Tweet</a>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div data-component-term="japanese_ad" style="display: none;" class="component"></div>
                 <div data-component-term="user_recommendations" class="component">
                     <div class="module wtf-module js-wtf-module has-content">
 
@@ -631,19 +577,19 @@ function getTrends() {
                             <div class="flex-module-inner js-items-container">
                                 <ul class="clearfix">
                                     <li class="copyright">&#169; 2012 DiCon</li>
-                                    <li><a href="https://twitter.com/about">About</a></li>
-                                    <li><a href="https://support.twitter.com/">Help</a></li>
-                                    <li><a href="https://twitter.com/tos">Terms</a></li>
-                                    <li><a href="https://twitter.com/privacy">Privacy</a></li>
-                                    <li><a href="http://blog.twitter.com/">Blog</a></li>
-                                    <li><a href="http://status.twitter.com/">Status</a></li>
-                                    <li><a href="https://twitter.com/download">Apps</a></li>
-                                    <li><a href="https://twitter.com/about/resources">Resources</a></li>
-                                    <li><a href="https://twitter.com/jobs">Jobs</a></li>
-                                    <li><a href="https://business.twitter.com/en/advertise/start">Advertisers</a></li>
-                                    <li><a href="https://business.twitter.com/index_en.html">Businesses</a></li>
-                                    <li><a href="http://media.twitter.com/">Media</a></li>
-                                    <li><a href="https://dev.twitter.com/">Developers</a></li>
+                                    <li><a href="#">About</a></li>
+                                    <li><a href="#">Help</a></li>
+                                    <li><a href="#">Terms</a></li>
+                                    <li><a href="#">Privacy</a></li>
+                                    <li><a href="#">Blog</a></li>
+                                    <li><a href="#">Status</a></li>
+                                    <li><a href="#">Apps</a></li>
+                                    <li><a href="#">Resources</a></li>
+                                    <li><a href="#">Jobs</a></li>
+                                    <li><a href="#">Advertisers</a></li>
+                                    <li><a href="#">Businesses</a></li>
+                                    <li><a href="#">Media</a></li>
+                                    <li><a href="#">Developers</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -651,16 +597,10 @@ function getTrends() {
                 </div>
             </div>
             <div class="content-main js-content-main breakable">
-                <div id="js-promptbird-below-black-bar-hook"></div>
-                <div id="js-empty-timeline-recommendations-module-hook"></div>
                 <div class="content-header js-stream-header">
                     <div class="header-inner">
                         <h2>
-                            <span class="content-header-buttons js-header-button-container"></span>
-
-
                             <span class="js-stream-title">Tweets</span>&nbsp;
-                            <small class="view-toggler js-view-toggler"></small>
                         </h2>
                     </div>
                 </div>
@@ -668,7 +608,6 @@ function getTrends() {
                 <div class="stream js-stream-manager-container">
                     <div class="stream-manager js-stream-manager-container" id="home-stream-manager">
 
-                        <div class="stream-title"></div>
                         <div class="stream-container">
                             <div media="true" data-component-term="stream" class="stream home-stream">
 
@@ -683,19 +622,14 @@ function getTrends() {
                                         <span class="spinner" title="Loading..."></span>
                                     </div>
                                 </div>
-                                <script type="text/javascript">
-                                    $(document).ready(function () {
-
-                                        $("#moretab").mouseenter(function() {
-                                            $("#categories").show();
-                                        });
-
-                                        $("#categories, #moretab").mouseleave(function() {
-                                            $("#categories").hide();
-                                        });
-                                    });
-                                </script>
-
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 </body>
 </html>

@@ -1,6 +1,5 @@
 package com.directi.train.DiCon.controllers;
 
-import com.directi.train.DiCon.model.Admirer;
 import com.directi.train.DiCon.services.DAO;
 import com.directi.train.DiCon.services.ImageHandler;
 import com.directi.train.DiCon.services.XSSHandler;
@@ -43,7 +42,7 @@ public class Profile {
 
         mv.addObject("user_id", userID);
         mv.addObject("profile_name", userDetails.get("fullname"));
-        mv.addObject("profile_phone", userDetails.get("phone"));
+        mv.addObject("profile_location", userDetails.get("location"));
         mv.addObject("profile_following", followingCount);
         mv.addObject("profile_follower", followerCount);
         mv.addObject("profile_tweetCount", tweetCount);
@@ -124,11 +123,6 @@ public class Profile {
         return dao.getFollowersList(userID, (Integer) session.getAttribute("userID"));
     }
 
-    @RequestMapping(value = "test", method = RequestMethod.GET)
-    public ModelAndView test(@PathVariable("userID") Integer userID) {
-        ModelAndView mv = new ModelAndView("test");
-        return mv;
-    }
 
     @RequestMapping(value = "similar_ppl", method = RequestMethod.GET)
     @ResponseBody
