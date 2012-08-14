@@ -1,16 +1,13 @@
 CRITICAL
 --------
 data validation of edit details
-able to edit others details after login -- perform auth check -- same user should be logged in
 AVOID AJAX FOR INITITAL POSTS/NEWSFEED ?
-check dom ready on all javascript
+change chain of retweeter names into immediate retweeter only
 
 NON-CRITICAL
 ------------
-change chain of retweeter names into immediate retweeter only
 improve lookahead search query
 smooth out file upload in edit details
-move javascript into different file
 back button still shows the page, even tho session is invalidated
 
 SMOOTHING OUT

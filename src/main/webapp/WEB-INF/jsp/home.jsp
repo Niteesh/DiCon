@@ -8,7 +8,7 @@
 <meta charset="utf-8">
 
 
-<link href="https://twitter.com/favicons/favicon.ico" rel="shortcut icon" type="image/x-icon">
+<link href="${pageContext.request.contextPath}/static/img/favicon.ico" rel="shortcut icon" type="image/x-icon">
 
 <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/t1_core.css" type="text/css" media="screen"/>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/t1_core.bundle.css" type="text/css"
@@ -16,11 +16,10 @@
 <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/t1_more.bundle.css" type="text/css"
       media="screen"/>
 
-<link rel="canonical" href="https://twitter.com/">
-
-
 <script src="//ajax.googleapis.com/ajax/libs/dojo/1.7.2/dojo/dojo.js" data-dojo-config="async: true"></script>
 <script type="text/javascript" src='${pageContext.request.contextPath}/static/js/ejs_production.js'></script>
+<script type="text/javascript" src='${pageContext.request.contextPath}/static/js/core2.js'></script>
+
 <script type="text/javascript">
 require(["dojo/_base/xhr", "dojo/on", "dojo/dom", "dojo/query", "dojo/dom-construct", "dojo/_base/array", "dojo/NodeList-dom", "dojo/domReady!"], function(xhr, on, dom, query, domConstruct) {
 
@@ -37,8 +36,8 @@ require(["dojo/_base/xhr", "dojo/on", "dojo/dom", "dojo/query", "dojo/dom-constr
     });
 
     on(dom.byId("new-tweet-textarea"), "keyup", function() {
-        query(".tweet-counter")[0].value = 140 - dom.byId("new-tweet-textarea").value.length;
-        if (dom.byId("new-tweet-textarea").value == "" || query(".tweet-counter")[0].value < 0) {
+        query(".tweet-char-counter")[0].value = 140 - dom.byId("new-tweet-textarea").value.length;
+        if (dom.byId("new-tweet-textarea").value == "" || query(".tweet-char-counter")[0].value < 0) {
             query("#tweet-button").addClass("disabled");
             query("#tweet-button").removeClass("primary-btn");
         }
@@ -47,64 +46,14 @@ require(["dojo/_base/xhr", "dojo/on", "dojo/dom", "dojo/query", "dojo/dom-constr
             query("#tweet-button").removeClass("disabled");
         }
     });
-    var hide_searchresults_timeout;
-    on(dom.byId("search-query"), "focus", function() {
-        clearTimeout(hide_searchresults_timeout);
-        query("#global-nav-search").addClass("focus");
-        query("#search-query").addClass("focus");
-
-        if (this.value != "")
-            dom.byId("search-results-container").style.display = "block";
-    });
-
-    on(dom.byId("search-query"), "blur", function() {
-        query("#global-nav-search").removeClass("focus");
-        query("#search-query").removeClass("focus");
-        hide_searchresults_timeout = setTimeout(function() {
-            dom.byId("search-results-container").style.display = "none"
-        }, 1000);
-    });
-
-    on(dom.byId("search-query"), "keyup", function() {
-        if (this.value != "")
-            searchQuery(this.value);
-        else {
-            domConstruct.empty(dom.byId("results-list"));
-            dom.byId("search-results-container").style.display = "none";
-        }
-    });
-
-    function searchQuery(search_string) {
-        xhr.post({
-                    url: "/search.json",
-                    handleAs: "json",
-                    content: {
-                        search_string : search_string
-                    },
-                    load: function(response) {
-                        if (response.length == 0)
-                            dom.byId("search-results-container").style.display = "none";
-                        else
-                            dom.byId("search-results-container").style.display = "block";
-                        domConstruct.empty(dom.byId("results-list"));
-                        for (var i in response) {
-                            var result = new EJS({url: '${pageContext.request.contextPath}/static/ejs/searchResult.ejs'}).render(response[i]);
-                            domConstruct.place(result, dom.byId("results-list"));
-                        }
-                    },
-                    error: function() {
-                        console.log("Error fetching search results.");
-                    }
-                });
-    }
-
 });
 
 
 require(["dojo/_base/xhr", "dojo/on", "dojo/dom", "dojo/query", "dojo/NodeList-dom", "dojo/domReady!"],
         function(xhr, on, dom, query) {
-
             on(dom.byId("tweet-button"), "click", function() {
+                if(dom.byId("new-tweet-textarea").value.length > 140)
+                    return;
                 xhr.post({
                             url: "/${current_user_id}/tweets/new",
                             handleAs: "json",
@@ -120,6 +69,7 @@ require(["dojo/_base/xhr", "dojo/on", "dojo/dom", "dojo/query", "dojo/NodeList-d
                                 query("#tweet-button").removeClass("primary-btn");
                                 query("#new-tweet-textarea-container").addClass("condensed");
                                 query(".tweet-button-container")[0].style.display = "none";
+                                query(".tweet-char-counter")[0].value = 140;
                             },
                             error: function() {
                                 console.log("Error sending tweets.");
@@ -141,23 +91,24 @@ setInterval(updateTimestamps, 60000);
 getFollowSuggestions();
 getTrends();
 
-window.onscroll = function(ev) {
-    if (document.documentElement.scrollTop) {
-        scrollCursor = document.documentElement.scrollTop;
-    }
-    else {
-        scrollCursor = document.body.scrollTop;
-    }
-    if (scrollCursor <= 57)
-        newOrOldFlag = 2;
-    else if (document.body.parentNode.scrollHeight == scrollCursor + window.innerHeight) {
-
-        newOrOldFlag = 1;
-        refreshFeed();
-    }
-    else
-        newOrOldFlag = 0;
-};
+require(["dojo/domReady!"], function() {
+    window.onscroll = function(ev) {
+        if (document.documentElement.scrollTop) {
+            scrollCursor = document.documentElement.scrollTop;
+        }
+        else {
+            scrollCursor = document.body.scrollTop;
+        }
+        if (scrollCursor <= 57)
+            newOrOldFlag = 2;
+        else if (document.body.parentNode.scrollHeight == scrollCursor + window.innerHeight) {
+            newOrOldFlag = 1;
+            refreshFeed();
+        }
+        else
+            newOrOldFlag = 0;
+    };
+});
 
 function refreshFeed() {
     var position;
@@ -214,42 +165,6 @@ function refreshFeed() {
             });
 }
 
-function makeTimestamp(days, hours, minutes) {
-    if (days > 1)
-        return days + " days ago";
-    else if (days == 1)
-        return "1 day ago";
-    else if (hours > 1)
-        return hours + " hours ago";
-    else if (hours == 1)
-        return "1 hour ago";
-    else if (minutes > 1)
-        return minutes + " minutes ago";
-    else if (minutes == 1)
-        return "1 minute ago";
-    else return "a few seconds ago";
-}
-
-function updateTimestamps() {
-    require(["dojo/query","dojo/domReady!"], function(query) {
-        var list = query(".js-short-timestamp");
-        for (var i = 0; i < list.length; i++) {
-            list[i].setAttribute("minutes", parseInt(list[i].getAttribute("minutes")) + 1);
-
-            if (parseInt(list[i].getAttribute("minutes")) == 60) {
-                list[i].setAttribute("minutes", 0);
-                list[i].setAttribute("hours", parseInt(list[i].getAttribute("hours")) + 1);
-            }
-            if (parseInt(list[i].getAttribute("hours")) == 24) {
-                list[i].setAttribute("hours", 0);
-                list[i].setAttribute("days", parseInt(list[i].getAttribute("days")) + 1);
-            }
-            list[i].innerHTML = makeTimestamp(list[i].getAttribute("days"), list[i].getAttribute("hours"), list[i].getAttribute("minutes"));
-        }
-    });
-
-
-}
 function getFollowSuggestions() {
 
     require(["dojo/_base/xhr", "dojo/dom", "dojo/dom-construct", "dojo/_base/array", "dojo/NodeList-dom", "dojo/domReady!"],
@@ -524,7 +439,7 @@ function getTrends() {
                             <div class="tweet-button-container">
                                 <div class="tweet-button-sub-container">
                                     <span style="opacity: 0;" class="tweetbox-counter-tipsy"></span>
-                                    <input class="tweet-counter"
+                                    <input class="tweet-char-counter"
                                            value="140"
                                            disabled="disabled">
                                     <a href="#" class="tweet-button btn disabled" id="tweet-button">Tweet</a>

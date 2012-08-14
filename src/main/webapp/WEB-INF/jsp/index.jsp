@@ -9,6 +9,7 @@
     <meta name="descripetion"
           content="Instantly connect to what's most important to you. Follow your friends, experts, favorite celebrities, and breaking news.">
 
+    <link href="${pageContext.request.contextPath}/static/img/favicon.ico" rel="shortcut icon" type="image/x-icon">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/t1_core_logged_out.css" type="text/css"
           media="screen">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/t1_more.css" type="text/css"

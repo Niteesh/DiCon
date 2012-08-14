@@ -15,15 +15,15 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
 
-<link href="https://twitter.com/favicons/favicon.ico" rel="shortcut icon" type="image/x-icon">
+<link href="${pageContext.request.contextPath}/static/img/favicon.ico" rel="shortcut icon" type="image/x-icon">
 
 <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/t1_core.css" type="text/css" media="screen">
 
 <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/t1_more.css" type="text/css" media="screen">
+<script type="text/javascript" src='${pageContext.request.contextPath}/static/js/core2.js'></script>
 <script type="text/javascript" src='${pageContext.request.contextPath}/static/js/ejs_production.js'></script>
 <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/dojo/1.7.2/dojo/dojo.js"
         data-dojo-config="async: true, parseOnLoad: true"></script>
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
 
 
 <script type="text/javascript">
@@ -31,85 +31,31 @@ var latest_tweet_id = 0;
 var oldest_tweet_id = -1;
 var newOrOldFlag = 2;
 
-
-require(["dojo/_base/xhr", "dojo/on", "dojo/dom", "dojo/query", "dojo/dom-construct", "dojo/_base/array", "dojo/NodeList-dom", "dojo/domReady!"], function(xhr, on, dom, query, domConstruct) {
-    var hide_searchresults_timeout;
-    on(dom.byId("search-query"), "focus", function() {
-        clearTimeout(hide_searchresults_timeout);
-        query("#global-nav-search").addClass("focus");
-        query("#search-query").addClass("focus");
-
-
-        if (this.value != "" && dom.byId("results-list").childNodes.length > 0)
-            dom.byId("search-results-container").style.display = "block";
-    });
-
-
-    on(dom.byId("search-query"), "blur", function() {
-        query("#global-nav-search").removeClass("focus");
-        query("#search-query").removeClass("focus");
-        hide_searchresults_timeout = setTimeout(function() {
-            dom.byId("search-results-container").style.display = "none"
-        }, 1000);
-    });
-
-    on(dom.byId("search-query"), "keyup", function() {
-        if (this.value != "")
-            searchQuery(this.value);
-        else {
-            domConstruct.empty(dom.byId("results-list"));
-            dom.byId("search-results-container").style.display = "none";
-        }
-    });
-
-    function searchQuery(search_string) {
-        xhr.post({
-                    url: "/search.json",
-                    handleAs: "json",
-                    content: {
-                        search_string : search_string
-                    },
-                    load: function(response) {
-                        if (response.length == 0)
-                            dom.byId("search-results-container").style.display = "none";
-                        else
-                            dom.byId("search-results-container").style.display = "block";
-                        domConstruct.empty(dom.byId("results-list"));
-                        for (var i in response) {
-                            var result = new EJS({url: '${pageContext.request.contextPath}/static/ejs/searchResult.ejs'}).render(response[i]);
-                            domConstruct.place(result, dom.byId("results-list"));
-                        }
-                    },
-                    error: function() {
-                        console.log("Error fetching search results.");
-                    }
-                });
-    }
-
-});
-
 refreshTweets();
 var tweetRefreshTimer = setInterval(refreshTweets, 5000);
+setInterval(updateTimestamps, 60000);
 var currentTab = "tweets-tab";
 getSimilarPeople();
 
-window.onscroll = function(ev) {
-    if (document.documentElement.scrollTop) {
-        scrollCursor = document.documentElement.scrollTop;
-    }
-    else {
-        scrollCursor = document.body.scrollTop;
-    }
-    if (scrollCursor <= 240)
-        newOrOldFlag = 2;
-    else if (document.body.parentNode.scrollHeight == scrollCursor + window.innerHeight) {
-        newOrOldFlag = 1;
-        if (document.getElementById("tweets-tab").style.display == "block")
-            refreshTweets();
-    }
-    else
-        newOrOldFlag = 0;
-};
+require(["dojo/domReady!"], function() {
+    window.onscroll = function(ev) {
+        if (document.documentElement.scrollTop) {
+            scrollCursor = document.documentElement.scrollTop;
+        }
+        else {
+            scrollCursor = document.body.scrollTop;
+        }
+        if (scrollCursor <= 240)
+            newOrOldFlag = 2;
+        else if (document.body.parentNode.scrollHeight == scrollCursor + window.innerHeight) {
+            newOrOldFlag = 1;
+            if (document.getElementById("tweets-tab").style.display == "block")
+                refreshTweets();
+        }
+        else
+            newOrOldFlag = 0;
+    };
+});
 
 function saveChangedDetails() {
     require(["dojo/dom","dojo/_base/xhr","dojo/domReady!"], function(dom, xhr) {
@@ -162,7 +108,7 @@ function refreshTweets() {
                                     if (response[i]["user_id"] ==${user_id} && response[0]["tweet_id"] == latest_tweet_id) {
                                         dom.byId("profile-tweet-count").innerHTML = parseInt(dom.byId("profile-tweet-count").innerHTML) + 1;
                                     }
-                                    response[i]["timestamp_readable"] = makeTimestamp(response[i]["timestamp"]);
+                                    response[i]["timestamp_readable"] = makeTimestamp(response[i]["timestamp"]["days"], response[i]["timestamp"]["hours"], response[i]["timestamp"]["minutes"]);
                                     var newTweet = new EJS({url: '${pageContext.request.contextPath}/static/ejs/tweet.ejs'}).render(response[i]);
                                     domConstruct.place(newTweet, dom.byId("stream-list"), position);
                                     fx.wipeIn({ node: dom.byId("stream-item-" + response[i]["tweet_id"]) }).play();
@@ -184,30 +130,6 @@ function refreshTweets() {
                         });
 
             });
-}
-
-function makeTimestamp(timestamp) {
-    if (timestamp["days"] != 0)
-        return timestamp["days"] + " days ago";
-    else if (timestamp["hours"] != 0)
-        return timestamp["hours"] + " hours ago";
-    else if (timestamp["minutes"] != 0)
-        return timestamp["minutes"] + " minutes ago";
-    else return "a few seconds ago";
-}
-
-function hasClass(el, name) {
-    return new RegExp('(\\s|^)' + name + '(\\s|$)').test(el.className);
-}
-function addClass(el, name) {
-    if (!hasClass(el, name)) {
-        el.className += (el.className ? ' ' : '') + name;
-    }
-}
-function removeClass(el, name) {
-    if (hasClass(el, name)) {
-        el.className = el.className.replace(new RegExp('(\\s|^)' + name + '(\\s|$)'), ' ').replace(/^\s+|\s+$/g, '');
-    }
 }
 
 function triggerFollow(btn, id) {

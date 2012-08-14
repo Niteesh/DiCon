@@ -153,7 +153,7 @@ public class DAO {
 
     public int upDateRetweet(Integer user_id, Integer tweet_id) {
         return db.update(" Insert into twitter.tweets (user_id, text) " +
-                "select ?,'via<a href=\"/'||d.user_id ||'\"> '|| d.fullname ||' : </a> '|| retweet.text as text from twitter.details d INNER JOIN " +
+                "select ?,'via <a href=\"/'||d.user_id ||'\">'|| d.fullname ||'</a> : '|| retweet.text as text from twitter.details d INNER JOIN " +
                 " (select  user_id,text, tweet_id from twitter.tweets t where tweet_id = ?) as retweet " +
                 "ON retweet.user_id = d.user_id;", user_id, tweet_id);
     }
