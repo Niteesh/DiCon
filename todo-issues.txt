@@ -1,19 +1,12 @@
 CRITICAL
 --------
 data validation of edit details
-able to edit others details after login -- perform auth check -- same user should be logged in
-AVOID AJAX FOR INITITAL POSTS/NEWSFEED ?
-check dom ready on all javascript
+change chain of retweeter names into immediate retweeter only
 
 NON-CRITICAL
 ------------
-change chain of retweeter names into immediate retweeter only
 improve lookahead search query
-rename phone to location in database
 smooth out file upload in edit details
-show new tweets only upon button click
-move javascript into different file
-fix all links to real twitter
 back button still shows the page, even tho session is invalidated
 
 SMOOTHING OUT
