@@ -8,7 +8,7 @@
 <meta charset="utf-8">
 
 
-<link href="https://twitter.com/favicons/favicon.ico" rel="shortcut icon" type="image/x-icon">
+<link href="${pageContext.request.contextPath}/static/img/favicon.ico" rel="shortcut icon" type="image/x-icon">
 
 <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/t1_core.css" type="text/css" media="screen"/>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/t1_core.bundle.css" type="text/css"
@@ -16,11 +16,10 @@
 <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/t1_more.bundle.css" type="text/css"
       media="screen"/>
 
-<link rel="canonical" href="https://twitter.com/">
-
-
 <script src="//ajax.googleapis.com/ajax/libs/dojo/1.7.2/dojo/dojo.js" data-dojo-config="async: true"></script>
 <script type="text/javascript" src='${pageContext.request.contextPath}/static/js/ejs_production.js'></script>
+<script type="text/javascript" src='${pageContext.request.contextPath}/static/js/core2.js'></script>
+
 <script type="text/javascript">
 require(["dojo/_base/xhr", "dojo/on", "dojo/dom", "dojo/query", "dojo/dom-construct", "dojo/_base/array", "dojo/NodeList-dom", "dojo/domReady!"], function(xhr, on, dom, query, domConstruct) {
 
@@ -37,8 +36,8 @@ require(["dojo/_base/xhr", "dojo/on", "dojo/dom", "dojo/query", "dojo/dom-constr
     });
 
     on(dom.byId("new-tweet-textarea"), "keyup", function() {
-        query(".tweet-counter")[0].value = 140 - dom.byId("new-tweet-textarea").value.length;
-        if (dom.byId("new-tweet-textarea").value == "" || query(".tweet-counter")[0].value < 0) {
+        query(".tweet-char-counter")[0].value = 140 - dom.byId("new-tweet-textarea").value.length;
+        if (dom.byId("new-tweet-textarea").value == "" || query(".tweet-char-counter")[0].value < 0) {
             query("#tweet-button").addClass("disabled");
             query("#tweet-button").removeClass("primary-btn");
         }
@@ -47,64 +46,14 @@ require(["dojo/_base/xhr", "dojo/on", "dojo/dom", "dojo/query", "dojo/dom-constr
             query("#tweet-button").removeClass("disabled");
         }
     });
-    var hide_searchresults_timeout;
-    on(dom.byId("search-query"), "focus", function() {
-        clearTimeout(hide_searchresults_timeout);
-        query("#global-nav-search").addClass("focus");
-        query("#search-query").addClass("focus");
-
-        if (this.value != "")
-            dom.byId("search-results-container").style.display = "block";
-    });
-
-    on(dom.byId("search-query"), "blur", function() {
-        query("#global-nav-search").removeClass("focus");
-        query("#search-query").removeClass("focus");
-        hide_searchresults_timeout = setTimeout(function() {
-            dom.byId("search-results-container").style.display = "none"
-        }, 1000);
-    });
-
-    on(dom.byId("search-query"), "keyup", function() {
-        if (this.value != "")
-            searchQuery(this.value);
-        else {
-            domConstruct.empty(dom.byId("results-list"));
-            dom.byId("search-results-container").style.display = "none";
-        }
-    });
-
-    function searchQuery(search_string) {
-        xhr.post({
-                    url: "/search.json",
-                    handleAs: "json",
-                    content: {
-                        search_string : search_string
-                    },
-                    load: function(response) {
-                        if (response.length == 0)
-                            dom.byId("search-results-container").style.display = "none";
-                        else
-                            dom.byId("search-results-container").style.display = "block";
-                        domConstruct.empty(dom.byId("results-list"));
-                        for (var i in response) {
-                            var result = new EJS({url: '${pageContext.request.contextPath}/static/ejs/searchResult.ejs'}).render(response[i]);
-                            domConstruct.place(result, dom.byId("results-list"));
-                        }
-                    },
-                    error: function() {
-                        console.log("Error fetching search results.");
-                    }
-                });
-    }
-
 });
 
 
 require(["dojo/_base/xhr", "dojo/on", "dojo/dom", "dojo/query", "dojo/NodeList-dom", "dojo/domReady!"],
         function(xhr, on, dom, query) {
-
             on(dom.byId("tweet-button"), "click", function() {
+                if(dom.byId("new-tweet-textarea").value.length > 140)
+                    return;
                 xhr.post({
                             url: "/${current_user_id}/tweets/new",
                             handleAs: "json",
@@ -120,6 +69,7 @@ require(["dojo/_base/xhr", "dojo/on", "dojo/dom", "dojo/query", "dojo/NodeList-d
                                 query("#tweet-button").removeClass("primary-btn");
                                 query("#new-tweet-textarea-container").addClass("condensed");
                                 query(".tweet-button-container")[0].style.display = "none";
+                                query(".tweet-char-counter")[0].value = 140;
                             },
                             error: function() {
                                 console.log("Error sending tweets.");
@@ -142,23 +92,24 @@ setInterval(updateTimestamps, 60000);
 getFollowSuggestions();
 getTrends();
 
-window.onscroll = function(ev) {
-    if (document.documentElement.scrollTop) {
-        scrollCursor = document.documentElement.scrollTop;
-    }
-    else {
-        scrollCursor = document.body.scrollTop;
-    }
-    if (scrollCursor <= 57)
-        newOrOldFlag = 2;
-    else if (document.body.parentNode.scrollHeight == scrollCursor + window.innerHeight) {
-
-        newOrOldFlag = 1;
-        refreshFeed();
-    }
-    else
-        newOrOldFlag = 0;
-};
+require(["dojo/domReady!"], function() {
+    window.onscroll = function(ev) {
+        if (document.documentElement.scrollTop) {
+            scrollCursor = document.documentElement.scrollTop;
+        }
+        else {
+            scrollCursor = document.body.scrollTop;
+        }
+        if (scrollCursor <= 57)
+            newOrOldFlag = 2;
+        else if (document.body.parentNode.scrollHeight == scrollCursor + window.innerHeight) {
+            newOrOldFlag = 1;
+            refreshFeed();
+        }
+        else
+            newOrOldFlag = 0;
+    };
+});
 
 function refreshFeed() {
     var position;
@@ -215,42 +166,6 @@ function refreshFeed() {
             });
 }
 
-function makeTimestamp(days, hours, minutes) {
-    if (days > 1)
-        return days + " days ago";
-    else if (days == 1)
-        return "1 day ago";
-    else if (hours > 1)
-        return hours + " hours ago";
-    else if (hours == 1)
-        return "1 hour ago";
-    else if (minutes > 1)
-        return minutes + " minutes ago";
-    else if (minutes == 1)
-        return "1 minute ago";
-    else return "a few seconds ago";
-}
-
-function updateTimestamps() {
-   require(["dojo/query","dojo/domReady!"], function(query) {
-        var list = query(".js-short-timestamp");
-        for (var i = 0; i < list.length; i++) {
-            list[i].setAttribute("minutes", parseInt(list[i].getAttribute("minutes")) + 1);
-
-            if (parseInt(list[i].getAttribute("minutes")) == 60) {
-                list[i].setAttribute("minutes", 0);
-                list[i].setAttribute("hours", parseInt(list[i].getAttribute("hours")) + 1);
-            }
-            if (parseInt(list[i].getAttribute("hours")) == 24) {
-                list[i].setAttribute("hours", 0);
-                list[i].setAttribute("days", parseInt(list[i].getAttribute("days")) + 1);
-            }
-            list[i].innerHTML = makeTimestamp(list[i].getAttribute("days"), list[i].getAttribute("hours"), list[i].getAttribute("minutes"));
-        }
-    });
-
-
-}
 function getFollowSuggestions() {
 
     require(["dojo/_base/xhr", "dojo/dom", "dojo/dom-construct", "dojo/_base/array", "dojo/NodeList-dom", "dojo/domReady!"],
@@ -407,23 +322,7 @@ function getTrends() {
 <style charset="utf-8" class="lazyload">@import "https://si0.twimg.com/a/1342481270/t1/css/t1_more.bundle.css";</style>
 </head>
 <body class="t1  logged-in front-random-image-city-balcony    mozilla user-style-niteesh3k">
-<iframe tabindex="-1" role="presentation" style="position: absolute; top: -9999px;"
-        src="${pageContext.request.contextPath}/static/html/receiver.html"></iframe>
-
 <div class="topbar js-topbar">
-    <div id="banners" class="js-banners">
-        <noscript>
-            <div class="banner-outer">
-                <div class="banner">
-                    <div class="banner-inside noscript-warning">
-                        <h5>Our site makes heavy use of JavaScript.</h5>
-                        <span class="warning">If you cannot enable it in your browser's preferences, it is not our problem.</span>
-                    </div>
-                </div>
-            </div>
-        </noscript>
-
-    </div>
     <div class="global-nav" data-section-term="top_nav">
         <div class="global-nav-inner">
             <div class="container">
@@ -434,20 +333,7 @@ function getTrends() {
                             <span class="new-wrapper"><i class="nav-home"></i><i class="nav-new"></i></span> Home
                         </a>
                     </li>
-                    <li class="people" data-global-action="connect">
-                        <a class="js-hover" href="https://twitter.com/i/connect" data-component-term="connect_nav"
-                           data-nav="connect">
-                            <span class="new-wrapper"><i class="nav-people"></i><i class="nav-new"></i></span>
-                            Connect
-                        </a>
-                    </li>
-                    <li class="topics" data-global-action="discover">
-                        <a class="js-hover" href="https://twitter.com/i/discover" data-component-term="discover_nav"
-                           data-nav="discover">
-                            <span class="new-wrapper"><i class="nav-topics"></i><i class="nav-new"></i></span>
-                            Discover
-                        </a>
-                    </li>
+
                 </ul>
                 <i class="bird-topbar-etched"></i>
 
@@ -506,16 +392,11 @@ function getTrends() {
         </div>
     </div>
 </div>
-<div class="alert-messages " id="message-drawer">
-</div>
 
 <div id="page-outer">
     <div id="page-container" class="wrapper home-container">
-        <div class="new-js-banners"></div>
         <div id="page-node-home">
             <div class="dashboard">
-                <div data-component-term="promptbird_dashboard_placeholder" id="js-promptbird-dashboard-narrow-hook"
-                     class="component"></div>
                 <div data-component-term="mini_home_profile" class="module mini-profile component">
 
                     <div class="flex-module profile-summary js-profile-summary">
@@ -557,37 +438,17 @@ function getTrends() {
                                 </div>
                             </div>
                             <div class="tweet-button-container">
-                                <div class="turkey-control">
-                                    <div class="turkey-add-action">
-                                        <div class="turkey"></div>
-                                        <div class="swf"></div>
-                                    </div>
-                                    <form method="post"
-                                          action="https://upload.twitter.com/1/statuses/update_with_media.iframe"
-                                          enctype="multipart/form-data" class="turkey-selected-files"
-                                          target="tweetbox_1"></form>
-                                    <iframe class="turkey-post-target" name="tweetbox_1"></iframe>
-                                </div>
-      <span class="geo-control">
-  <a href="#" class="geo-location">
-      <span original-title="" class="geo-icon">&nbsp;</span>
-      <span class="geo-dropdown-icon">&nbsp;</span>
-  </a>
-</span>
-
                                 <div class="tweet-button-sub-container">
-                                    <img src="DiCon_Home_Files/spinner.gif" class="tweet-spinner"
-                                         style="display: none;">
                                     <span style="opacity: 0;" class="tweetbox-counter-tipsy"></span>
-                                    <input class="tweet-counter"
+                                    <input class="tweet-char-counter"
                                            value="140"
                                            disabled="disabled">
-                                    <a href="#" class="tweet-button btn disabled" id="tweet-button">Tweet</a></div>
+                                    <a href="#" class="tweet-button btn disabled" id="tweet-button">Tweet</a>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div data-component-term="japanese_ad" style="display: none;" class="component"></div>
                 <div data-component-term="user_recommendations" class="component">
                     <div class="module wtf-module js-wtf-module has-content">
 
@@ -632,19 +493,19 @@ function getTrends() {
                             <div class="flex-module-inner js-items-container">
                                 <ul class="clearfix">
                                     <li class="copyright">&#169; 2012 DiCon</li>
-                                    <li><a href="https://twitter.com/about">About</a></li>
-                                    <li><a href="https://support.twitter.com/">Help</a></li>
-                                    <li><a href="https://twitter.com/tos">Terms</a></li>
-                                    <li><a href="https://twitter.com/privacy">Privacy</a></li>
-                                    <li><a href="http://blog.twitter.com/">Blog</a></li>
-                                    <li><a href="http://status.twitter.com/">Status</a></li>
-                                    <li><a href="https://twitter.com/download">Apps</a></li>
-                                    <li><a href="https://twitter.com/about/resources">Resources</a></li>
-                                    <li><a href="https://twitter.com/jobs">Jobs</a></li>
-                                    <li><a href="https://business.twitter.com/en/advertise/start">Advertisers</a></li>
-                                    <li><a href="https://business.twitter.com/index_en.html">Businesses</a></li>
-                                    <li><a href="http://media.twitter.com/">Media</a></li>
-                                    <li><a href="https://dev.twitter.com/">Developers</a></li>
+                                    <li><a href="#">About</a></li>
+                                    <li><a href="#">Help</a></li>
+                                    <li><a href="#">Terms</a></li>
+                                    <li><a href="#">Privacy</a></li>
+                                    <li><a href="#">Blog</a></li>
+                                    <li><a href="#">Status</a></li>
+                                    <li><a href="#">Apps</a></li>
+                                    <li><a href="#">Resources</a></li>
+                                    <li><a href="#">Jobs</a></li>
+                                    <li><a href="#">Advertisers</a></li>
+                                    <li><a href="#">Businesses</a></li>
+                                    <li><a href="#">Media</a></li>
+                                    <li><a href="#">Developers</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -652,16 +513,10 @@ function getTrends() {
                 </div>
             </div>
             <div class="content-main js-content-main breakable">
-                <div id="js-promptbird-below-black-bar-hook"></div>
-                <div id="js-empty-timeline-recommendations-module-hook"></div>
                 <div class="content-header js-stream-header">
                     <div class="header-inner">
                         <h2>
-                            <span class="content-header-buttons js-header-button-container"></span>
-
-
                             <span class="js-stream-title">Tweets</span>&nbsp;
-                            <small class="view-toggler js-view-toggler"></small>
                         </h2>
                     </div>
                 </div>
@@ -669,7 +524,6 @@ function getTrends() {
                 <div class="stream js-stream-manager-container">
                     <div class="stream-manager js-stream-manager-container" id="home-stream-manager">
 
-                        <div class="stream-title"></div>
                         <div class="stream-container">
                             <div media="true" data-component-term="stream" class="stream home-stream">
 
@@ -684,19 +538,14 @@ function getTrends() {
                                         <span class="spinner" title="Loading..."></span>
                                     </div>
                                 </div>
-                                <script type="text/javascript">
-                                    $(document).ready(function () {
-
-                                        $("#moretab").mouseenter(function() {
-                                            $("#categories").show();
-                                        });
-
-                                        $("#categories, #moretab").mouseleave(function() {
-                                            $("#categories").hide();
-                                        });
-                                    });
-                                </script>
-
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 </body>
 </html>

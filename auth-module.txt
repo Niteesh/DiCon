@@ -1,0 +1,16 @@
+/sign_up -- ignore
+/sign_in -- AuthInterceptor
+/home -- AuthInterceptor
+/uid -- AuthInterceptor
+/uid/newsfeed -- ignore
+/uid/tweets/new -- APIAuthInterceptor
+/uid/tweets/fetch -- ignore
+/uid/edit -- APIAuthInterceptor
+/uid/follow -- AuthInterceptor
+/uid/unfollow -- AuthInterceptor
+/uid/followers -- ignore
+/uid/following -- ignore
+/uid/similar_ppl -- ignore
+/uid/follow_suggestions -- ignore
+/uid/retweet -- APIAuthInterceptor
+/trends -- ignore

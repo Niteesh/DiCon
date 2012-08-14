@@ -8,22 +8,22 @@
 <meta charset="utf-8">
 
 <script>
-document.domain = 'twitter.com'</script>
+    document.domain = 'twitter.com'</script>
 
 <title>${profile_name} (${user_id}) on DiCon</title>
 
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
 
-<link href="https://twitter.com/favicons/favicon.ico" rel="shortcut icon" type="image/x-icon">
+<link href="${pageContext.request.contextPath}/static/img/favicon.ico" rel="shortcut icon" type="image/x-icon">
 
 <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/t1_core.css" type="text/css" media="screen">
 
 <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/t1_more.css" type="text/css" media="screen">
+<script type="text/javascript" src='${pageContext.request.contextPath}/static/js/core2.js'></script>
 <script type="text/javascript" src='${pageContext.request.contextPath}/static/js/ejs_production.js'></script>
 <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/dojo/1.7.2/dojo/dojo.js"
         data-dojo-config="async: true, parseOnLoad: true"></script>
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
 
 
 <script type="text/javascript">
@@ -31,85 +31,31 @@ var latest_tweet_id = 0;
 var oldest_tweet_id = -1;
 var newOrOldFlag = 2;
 
-
-require(["dojo/_base/xhr", "dojo/on", "dojo/dom", "dojo/query", "dojo/dom-construct", "dojo/_base/array", "dojo/NodeList-dom", "dojo/domReady!"], function(xhr, on, dom, query, domConstruct) {
-    var hide_searchresults_timeout;
-    on(dom.byId("search-query"), "focus", function() {
-        clearTimeout(hide_searchresults_timeout);
-        query("#global-nav-search").addClass("focus");
-        query("#search-query").addClass("focus");
-
-
-        if (this.value != "" && dom.byId("results-list").childNodes.length > 0)
-            dom.byId("search-results-container").style.display = "block";
-    });
-
-
-    on(dom.byId("search-query"), "blur", function() {
-        query("#global-nav-search").removeClass("focus");
-        query("#search-query").removeClass("focus");
-        hide_searchresults_timeout = setTimeout(function() {
-            dom.byId("search-results-container").style.display = "none"
-        }, 1000);
-    });
-
-    on(dom.byId("search-query"), "keyup", function() {
-        if (this.value != "")
-            searchQuery(this.value);
-        else {
-            domConstruct.empty(dom.byId("results-list"));
-            dom.byId("search-results-container").style.display = "none";
-        }
-    });
-
-    function searchQuery(search_string) {
-        xhr.post({
-                    url: "/search.json",
-                    handleAs: "json",
-                    content: {
-                        search_string : search_string
-                    },
-                    load: function(response) {
-                        if (response.length == 0)
-                            dom.byId("search-results-container").style.display = "none";
-                        else
-                            dom.byId("search-results-container").style.display = "block";
-                        domConstruct.empty(dom.byId("results-list"));
-                        for (var i in response) {
-                            var result = new EJS({url: '${pageContext.request.contextPath}/static/ejs/searchResult.ejs'}).render(response[i]);
-                            domConstruct.place(result, dom.byId("results-list"));
-                        }
-                    },
-                    error: function() {
-                        console.log("Error fetching search results.");
-                    }
-                });
-    }
-
-});
-
 refreshTweets();
 var tweetRefreshTimer = setInterval(refreshTweets, 5000);
+setInterval(updateTimestamps, 60000);
 var currentTab = "tweets-tab";
 getSimilarPeople();
 
-window.onscroll = function(ev) {
-    if (document.documentElement.scrollTop) {
-        scrollCursor = document.documentElement.scrollTop;
-    }
-    else {
-        scrollCursor = document.body.scrollTop;
-    }
-    if (scrollCursor <= 240)
-        newOrOldFlag = 2;
-    else if (document.body.parentNode.scrollHeight == scrollCursor + window.innerHeight) {
-        newOrOldFlag = 1;
-        if (document.getElementById("tweets-tab").style.display == "block")
-            refreshTweets();
-    }
-    else
-        newOrOldFlag = 0;
-};
+require(["dojo/domReady!"], function() {
+    window.onscroll = function(ev) {
+        if (document.documentElement.scrollTop) {
+            scrollCursor = document.documentElement.scrollTop;
+        }
+        else {
+            scrollCursor = document.body.scrollTop;
+        }
+        if (scrollCursor <= 240)
+            newOrOldFlag = 2;
+        else if (document.body.parentNode.scrollHeight == scrollCursor + window.innerHeight) {
+            newOrOldFlag = 1;
+            if (document.getElementById("tweets-tab").style.display == "block")
+                refreshTweets();
+        }
+        else
+            newOrOldFlag = 0;
+    };
+});
 
 function saveChangedDetails() {
     require(["dojo/dom","dojo/_base/xhr","dojo/domReady!"], function(dom, xhr) {
@@ -162,7 +108,7 @@ function refreshTweets() {
                                     if (response[i]["user_id"] ==${user_id} && response[0]["tweet_id"] == latest_tweet_id) {
                                         dom.byId("profile-tweet-count").innerHTML = parseInt(dom.byId("profile-tweet-count").innerHTML) + 1;
                                     }
-                                    response[i]["timestamp_readable"] = makeTimestamp(response[i]["timestamp"]);
+                                    response[i]["timestamp_readable"] = makeTimestamp(response[i]["timestamp"]["days"], response[i]["timestamp"]["hours"], response[i]["timestamp"]["minutes"]);
                                     var newTweet = new EJS({url: '${pageContext.request.contextPath}/static/ejs/tweet.ejs'}).render(response[i]);
                                     domConstruct.place(newTweet, dom.byId("stream-list"), position);
                                     fx.wipeIn({ node: dom.byId("stream-item-" + response[i]["tweet_id"]) }).play();
@@ -184,30 +130,6 @@ function refreshTweets() {
                         });
 
             });
-}
-
-function makeTimestamp(timestamp) {
-    if (timestamp["days"] != 0)
-        return timestamp["days"] + " days ago";
-    else if (timestamp["hours"] != 0)
-        return timestamp["hours"] + " hours ago";
-    else if (timestamp["minutes"] != 0)
-        return timestamp["minutes"] + " minutes ago";
-    else return "a few seconds ago";
-}
-
-function hasClass(el, name) {
-    return new RegExp('(\\s|^)' + name + '(\\s|$)').test(el.className);
-}
-function addClass(el, name) {
-    if (!hasClass(el, name)) {
-        el.className += (el.className ? ' ' : '') + name;
-    }
-}
-function removeClass(el, name) {
-    if (hasClass(el, name)) {
-        el.className = el.className.replace(new RegExp('(\\s|^)' + name + '(\\s|$)'), ' ').replace(/^\s+|\s+$/g, '');
-    }
 }
 
 function triggerFollow(btn, id) {
@@ -314,7 +236,7 @@ function getFollowerList() {
 }
 
 function transitionTabs(destTab) {
-    if(currentTab==destTab) return;
+    if (currentTab == destTab) return;
     require(["dojo/dom","dojo/fx","dojo/_base/fx","dojo/on","dojo/domReady!"], function(dom, fx, basefx, on) {
         var anim2 = fx.combine([
             fx.slideTo({ node: dom.byId(destTab),left:"0",duration:"500"}),
@@ -336,9 +258,9 @@ function transitionTabs(destTab) {
 }
 
 function highlightTab(selectedOption) {
-    require(["dojo/query","dojo/domReady!"],function(query){
+    require(["dojo/query","dojo/domReady!"], function(query) {
         query(".profile-sidebar-item").removeClass("active");
-        addClass(selectedOption.parentNode,"active");
+        addClass(selectedOption.parentNode, "active");
     });
 }
 
@@ -542,75 +464,6 @@ function retweet(tweet_id) {
     }
 </style>
 
-<script>
-
-    (function() {
-        function a() {
-            document.write = "",window.top.location = window.self.location,setTimeout(function() {
-                document.body.innerHTML = ""
-            }, 0),window.self.onload = function(a) {
-                document.body.innerHTML = ""
-            }
-        }
-
-        if (window.top !== window.self)try {
-            window.top.location.host || a()
-        } catch(b) {
-            a()
-        }
-    })();
-</script>
-
-<script>(function() {
-    function f(a) {
-        a = a || window.event;
-        if (!a)return;
-        !a.target && a.srcElement && (a.target = a.srcElement);
-        if (!j(a))return;
-        if (!document.addEventListener) {
-            var b = {};
-            for (var c in a)b[c] = a[c];
-            a = b
-        }
-        return a.preventDefault = a.stopPropagation = function() {
-        },d.push(a),!1
-    }
-
-    function g($) {
-        i();
-        for (var b = 0,c; c = d[b]; b++) {
-            var e = $(c.target);
-            if (c.type == "click" && c.target.tagName.toLowerCase() == "a") {
-                var f = $.data(e.get(0), "events"),g = f && f.click,j = !c.target.hostname.match(a) || !c.target.href.match(/#$/);
-                if (!g && j) {
-                    window.location = c.target.href;
-                    continue
-                }
-            }
-            e.trigger(c)
-        }
-        window.swiftActionQueue.wasFlushed = !0
-    }
-
-    function i() {
-        e && clearTimeout(e);
-        for (var a = 0; a < c.length; a++)document["on" + c[a]] = null
-    }
-
-    function j(c) {
-        var d = c.target.tagName.toLowerCase();
-        if (d == "label")if (c.target.getAttribute("for")) {
-            var e = document.getElementById(c.target.getAttribute("for"));
-            if (e.getAttribute("type") == "checkbox")return!1
-        } else for (var f = 0; f < c.target.childNodes.length; f++)if ((c.target.childNodes[f].tagName || "").toLowerCase() == "input" && c.target.childNodes[f].getAttribute("type") == "checkbox")return!1;
-        if (d == "textarea" || d == "input" && c.target.getAttribute("type") == "text")if (c.type.match(b))return!1;
-        return c.metaKey ? !1 : c.clientX && c.shiftKey && d == "a" ? !1 : c.target && c.target.hostname && !c.target.hostname.match(a) ? !1 : !0
-    }
-
-    var a = /^([^\.]+\.)*twitter.com$/,b = /^key/,c = ["click","keydown","keypress","keyup"],d = [],e = null;
-    for (var k = 0; k < c.length; k++)document["on" + c[k]] = f;
-    setTimeout(i, 1e4),window.swiftActionQueue = {flush:g,wasFlushed:!1}
-})();</script>
 </head>
 
 <body class="t1 logged-in user-style-${user_id}">
@@ -639,20 +492,7 @@ function retweet(tweet_id) {
                             <span class="new-wrapper"><i class="nav-home"></i><i class="nav-new"></i></span> Home
                         </a>
                     </li>
-                    <li class="people" data-global-action="connect">
-                        <a class="js-hover" href="https://twitter.com/i/connect" data-component-term="connect_nav"
-                           data-nav="connect">
-                            <span class="new-wrapper"><i class="nav-people"></i><i class="nav-new"></i></span>
-                            Connect
-                        </a>
-                    </li>
-                    <li class="topics" data-global-action="discover">
-                        <a class="js-hover" href="https://twitter.com/i/discover" data-component-term="discover_nav"
-                           data-nav="discover">
-                            <span class="new-wrapper"><i class="nav-topics"></i><i class="nav-new"></i></span>
-                            Discover
-                        </a>
-                    </li>
+
                 </ul>
                 <i class="bird-topbar-etched"></i>
 
@@ -733,7 +573,6 @@ function retweet(tweet_id) {
         <div class="profile-card-inner" data-screen-name="${user_id}" data-user-id="51376979">
             <h1 class="fullname">
                 ${profile_name}
-                <i class="verified-large" title="Verified profile"></i>
             </h1>
 
             <h2 class="username">
@@ -744,9 +583,7 @@ function retweet(tweet_id) {
             <p class="bio ">${profile_description}</p>
 
           <span class="url">
-            <a target="_blank" rel="me nofollow" href="">
-
-            </a>
+            <p class="bio ">${profile_location}</p>
           </span>
             </p>
         </div>
@@ -761,10 +598,6 @@ function retweet(tweet_id) {
                     <span class="button-text following-text">Following</span>
                     <span class="button-text unfollow-text">Unfollow</span>
                     <span class="button-text edit-text">Edit</span>
-                    <span class="button-text blocked-text">Blocked</span>
-                    <span class="button-text unblock-text">Unblock</span>
-                    <span class="button-text pending-text">Pending</span>
-                    <span class="button-text cancel-text">Cancel</span>
                 </button>
 
 
@@ -783,1072 +616,196 @@ function retweet(tweet_id) {
     </div>
 </div>
 <div class="dashboard">
-<div class="module component" data-component-term="profile_tweetbox">
-    <div class="profile-tweet-box flex-module" data-screen-name="${user_id}">
-        <div class="tweet-box-title">
-            <h2>Tweet to ${profile_name}</h2>
-        </div>
-        <form class="tweet-form condensed" method="post" target="tweet-post-iframe"
-              action="//upload.twitter.com/i/tweet/create_with_media.iframe" enctype="multipart/form-data">
-            <input name="post_authenticity_token" class="auth-token" type="hidden">
-            <input name="iframe_callback" class="iframe-callback" type="hidden">
-            <input name="in_reply_to_status_id" class="in-reply-to-status-id" type="hidden">
-            <input name="impression_id" class="impression-id" type="hidden">
-
-            <div class="tweet-content">
-
-                <label class="hidden-elements" for="tweet-box-1343080785">Tweet text</label>
-                <textarea dir="ltr" class="tweet-box" id="tweet-box-1343080785">@${user_id}</textarea><textarea
-                    style="display: none;" dir="ltr" class="tweet-box" name="status">@${user_id}</textarea>
-
-                <ul style="display: none;" class="dropdown-menu autocomplete-results">
-                    <li class="dropdown-link dropdown-account template-row autocomplete-item">
-                        <img class="avatar size24" width="24" height="24">
-                        <strong class="fullname"></strong>
-                        <span class="pretty-link"><s>@</s><b class="username"></b></span>
-                    </li>
-                </ul>
-
-                <div class="thumbnail-container">
-                    <div class="preview">
-                        <div class="dismiss">
-                            <i class="close"></i>
-                        </div>
-                        <span class="filename"></span>
-                    </div>
-                    <div class="preview-message">Image will appear as a link</div>
-                </div>
-
-            </div>
-
-            <div class="tweet-box-extras">
-
-                <div class="photo-selector">
-                    <button class="btn" type="button" tabindex="-1">
-                        <i class="tweet-camera"></i>
-                    </button>
-                    <div class="image-selector">
-                        <input name="media_data_empty" class="file-data" type="hidden">
-                        <input name="media_empty" class="file-input" tabindex="-1" type="file">
-
-                        <div class="swf-container"></div>
-                    </div>
-                </div>
-
-                <div class="geo-picker">
-                    <button class="btn geo-picker-btn" type="button" tabindex="-1">
-                        <i class="tweet-geo"><span class="hidden-elements">Add location</span></i> <span
-                            class="caret"></span>
-                    </button>
-                    <span class="dropdown-container"></span>
-                    <span class="geo-status"></span>
-                    <input name="place_id" type="hidden">
-                </div>
-
-            </div>
-            <div class="tweet-button">
-                <span class="link-message single">Link will appear shortened</span>
-                <span class="link-message plural">Links will appear shortened</span>
-                <span class="spinner"></span>
-                <span class="tweet-counter">140</span>
-                <button class="btn primary-btn tweet-action" type="button">Tweet</button>
-            </div>
-        </form>
-    </div>
-</div>
-
-<div class="component">
-    <div class="module profile-nav">
-        <ul class="js-nav-links">
-            <li class="active profile-sidebar-item">
-
-                <a class="list-link" href="#" data-nav="profile"
-                   onclick="highlightTab(this);refreshTweets();tweetRefreshTimer = setInterval(refreshTweets, 5000);">Tweets<i
-
-                        class="chev-right"></i></a>
-            </li>
-            <li class="profile-sidebar-item">
-                <a class="list-link" href="#" data-nav="following" onclick="highlightTab(this);getFollowingList()">Following<i
-                        class="chev-right"></i></a>
-            </li>
-            <li class="profile-sidebar-item">
-                <a class="list-link" href="#" data-nav="followers" onclick="highlightTab(this);getFollowerList()">Followers<i
-                        class="chev-right"></i></a>
-            </li>
 
 
-        </ul>
-    </div>
-</div>
+    <div class="component">
+        <div class="module profile-nav">
+            <ul class="js-nav-links">
+                <li class="active profile-sidebar-item">
+
+                    <a class="list-link" href="#" data-nav="profile"
+                       onclick="highlightTab(this);refreshTweets();tweetRefreshTimer = setInterval(refreshTweets, 5000);">Tweets<i
+
+                            class="chev-right"></i></a>
+                </li>
+                <li class="profile-sidebar-item">
+                    <a class="list-link" href="#" data-nav="following" onclick="highlightTab(this);getFollowingList()">Following<i
+                            class="chev-right"></i></a>
+                </li>
+                <li class="profile-sidebar-item">
+                    <a class="list-link" href="#" data-nav="followers" onclick="highlightTab(this);getFollowerList()">Followers<i
+                            class="chev-right"></i></a>
+                </li>
 
 
-<div class="component" data-component-term="similar_user_recommendations">
-    <div class="module profile-nav wtf-module js-similar-to-module  has-content">
-
-        <ul>
-            <li class="js-sidenav-link" data-name="similarTo">
-                <p class="list-link" style="background-color:#f9f9f9" >
-                    Similar to ${profile_name}
-
-                </p>
-            </li>
-        </ul>
-
-        <div class="flex-module">
-            <div style="opacity: 1;" id="wtf" class="dashboard-user-recommendations flex-module-inner"
-                 data-section-id="wtf">
-
-
-                <!-- similar ppl here -->
-
-
-            </div>
-        </div>
-
-    </div>
-</div>
-<div class="module site-footer ">
-    <div class="flex-module">
-        <div class="flex-module-inner js-items-container">
-            <ul class="clearfix">
-                <li class="copyright">© 2012 DiCon</li>
-                <li><a href="https://twitter.com/about">About</a></li>
-                <li><a href="https://support.twitter.com/">Help</a></li>
-                <li><a href="https://twitter.com/tos">Terms</a></li>
-                <li><a href="https://twitter.com/privacy">Privacy</a></li>
-                <li><a href="http://blog.twitter.com/">Blog</a></li>
-                <li><a href="http://status.twitter.com/">Status</a></li>
-                <li><a href="https://twitter.com/download">Apps</a></li>
-                <li><a href="https://twitter.com/about/resources">Resources</a></li>
-                <li><a href="https://twitter.com/jobs">Jobs</a></li>
-                <li><a href="https://business.twitter.com/en/advertise/start">Advertisers</a></li>
-                <li><a href="https://business.twitter.com/index_en.html">Businesses</a></li>
-                <li><a href="http://media.twitter.com/">Media</a></li>
-                <li><a href="https://dev.twitter.com/">Developers</a></li>
             </ul>
         </div>
     </div>
-</div>
+
+
+    <div class="component" data-component-term="similar_user_recommendations">
+        <div class="module profile-nav wtf-module js-similar-to-module  has-content">
+
+            <ul>
+                <li class="js-sidenav-link" data-name="similarTo">
+                    <p class="list-link" style="background-color:#f9f9f9">
+                        Similar to ${profile_name}
+
+                    </p>
+                </li>
+            </ul>
+
+            <div class="flex-module">
+                <div style="opacity: 1;" id="wtf" class="dashboard-user-recommendations flex-module-inner"
+                     data-section-id="wtf">
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="module site-footer ">
+        <div class="flex-module">
+            <div class="flex-module-inner js-items-container">
+                <ul class="clearfix">
+                    <li class="copyright">&#169; 2012 DiCon</li>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Help</a></li>
+                    <li><a href="#">Terms</a></li>
+                    <li><a href="#">Privacy</a></li>
+                    <li><a href="#">Blog</a></li>
+                    <li><a href="#">Status</a></li>
+                    <li><a href="#">Apps</a></li>
+                    <li><a href="#">Resources</a></li>
+                    <li><a href="#">Jobs</a></li>
+                    <li><a href="#">Advertisers</a></li>
+                    <li><a href="#">Businesses</a></li>
+                    <li><a href="#">Media</a></li>
+                    <li><a href="#">Developers</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
 </div>
 <div class="component" id="suggested-users"></div>
-<div class="content-main" id="timeline">      <!-- ----------------------------------- -->
-<div id="tweets-tab" style="position:relative;">
-    <div class="content-header">
-        <div class="header-inner">
-            <h2 class="js-timeline-title">Tweets
-                <small class="view-toggler"><a class="toggle-item-1 "
-                                               href="https://twitter.com/${user_id}/with_replies">All</a> /
-                    <a class="toggle-item-2 active" href="https://twitter.com/${user_id}">No replies</a></small>
-            </h2>
+<div class="content-main" id="timeline">
+    <div id="tweets-tab" style="position:relative;">
+        <div class="content-header">
+            <div class="header-inner">
+                <h2 class="js-timeline-title">Tweets</h2>
+            </div>
         </div>
+        <ul id="stream-list">
+        </ul>
     </div>
-    <ul id="stream-list">
-    </ul>
-</div>
 
 
-<div id="following-tab" style="position:relative;opacity:0;left:200px;display:none;">
-    <div class="content-header">
-        <div class="header-inner">
-            <h2 class="js-timeline-title">Following
-            </h2>
+    <div id="following-tab" style="position:relative;opacity:0;left:200px;display:none;">
+        <div class="content-header">
+            <div class="header-inner">
+                <h2 class="js-timeline-title">Following
+                </h2>
+            </div>
         </div>
+        <ul id="stream-list-following">
+        </ul>
     </div>
-    <ul id="stream-list-following">
-    </ul>
-</div>
 
-<div id="follower-tab" style="position:relative;opacity:0;left:200px;display:none;">
-    <div class="content-header">
-        <div class="header-inner">
-            <h2 class="js-timeline-title">Followers
-            </h2>
+    <div id="follower-tab" style="position:relative;opacity:0;left:200px;display:none;">
+        <div class="content-header">
+            <div class="header-inner">
+                <h2 class="js-timeline-title">Followers
+                </h2>
+            </div>
         </div>
+        <ul id="stream-list-follower">
+        </ul>
     </div>
-    <ul id="stream-list-follower">
-    </ul>
-</div>
 
-<div class="modal-overlay"></div>
+    <div class="content-main" id="edit-details-tab" style="position:relative;opacity:0;left:200px;display:none;">
+        <div class="content-header">
+            <div class="header-inner">
+                <h2>Profile</h2>
 
-<div class="hidden-elements">
-    <div id="flash-preload"></div>
-    <iframe class="tweet-post-iframe" name="tweet-post-iframe"></iframe>
+                <p class="subheader">This information appears on your public profile, search results, and beyond.</p>
+            </div>
+        </div>
+        <form action="/${user_id}/edit" method="post" enctype="multipart/form-data" id="edit-details-container"
+              class="content-inner no-stream-end">
+            <div id="profile-form" class="form-horizontal">
+                <div id="settings-alert-box" class="alert" style="display: none;">
+                    <i id="settings-alert-close" class="close"></i>
+                </div>
+                <input name="authenticity_token" value="6682db2dd8ff40c23fb4265318fd06d67d834a66" type="hidden">
+                <input value="PUT" name="_method" type="hidden">
+                <fieldset id="profile-image-controls" class="control-group">
+                    <label class="control-label" for="profile_image_uploaded_data">Picture</label>
 
+                    <div class="controls">
+                        <div class="uploader-avatar clearfix">
+                            <img class="avatar size73" id="avatar_preview"
+                                 src="data:image/jpeg;base64,${profile_dp}">
 
-    <div id="inline-reply-tweetbox">
-        <form class="tweet-form " method="post" target="tweet-post-iframe"
-              action="//upload.twitter.com/i/tweet/create_with_media.iframe" enctype="multipart/form-data">
-            <input name="post_authenticity_token" class="auth-token" type="hidden">
-            <input name="iframe_callback" class="iframe-callback" type="hidden">
-            <input name="in_reply_to_status_id" class="in-reply-to-status-id" type="hidden">
-            <input name="impression_id" class="impression-id" type="hidden">
+                            <div class="uploader-tools">
+                                <div class="photo-selector">
+                                    <button class="btn" type="button">Choose file</button>
+                                    <span class="photo-file-name">No file selected</span>
 
-            <div class="tweet-content">
+                                    <div class="image-selector">
+                                        <input name="media_file_name" class="file-name" type="hidden">
+                                        <input name="media_data_empty" class="file-data" type="hidden">
+                                        <input class="file-input" type="file" name="dp">
 
-                <label class="hidden-elements" for="tweet-box-1343080786">Tweet text</label>
-                <textarea class="tweet-box" name="status" id="tweet-box-1343080786"></textarea>
+                                        <div class="swf-container"></div>
+                                    </div>
+                                </div>
 
-                <ul class="dropdown-menu autocomplete-results">
-                    <li class="dropdown-link dropdown-account template-row autocomplete-item">
-                        <img class="avatar size24" width="24" height="24">
-                        <strong class="fullname"></strong>
-                        <span class="pretty-link"><s>@</s><b class="username"></b></span>
-                    </li>
-                </ul>
-
-                <div class="thumbnail-container">
-                    <div class="preview">
-                        <div class="dismiss">
-                            <i class="close"></i>
+                            </div>
                         </div>
-                        <span class="filename"></span>
                     </div>
-                    <div class="preview-message">Image will appear as a link</div>
-                </div>
+                </fieldset>
+                <hr>
+                <fieldset class="control-group">
+                    <label class="control-label" for="user_name">Name</label>
 
-            </div>
+                    <div class="controls">
+                        <input id="user_name" maxlength="20" name="fullname"
+                               value="${profile_name}" type="text">
 
-            <div class="tweet-box-extras">
-
-                <div class="photo-selector">
-                    <button class="btn" type="button" tabindex="-1">
-                        <i class="tweet-camera"></i>
-                    </button>
-                    <div class="image-selector">
-                        <input name="media_data_empty" class="file-data" type="hidden">
-                        <input name="media_empty" class="file-input" tabindex="-1" type="file">
-
-                        <div class="swf-container"></div>
+                        <p>Enter your real name, so people you know can recognize you.</p>
                     </div>
-                </div>
+                </fieldset>
+                <fieldset class="control-group">
+                    <label class="control-label" for="user_location">Location</label>
 
-                <div class="geo-picker">
-                    <button class="btn geo-picker-btn" type="button" tabindex="-1">
-                        <i class="tweet-geo"><span class="hidden-elements">Add location</span></i> <span
-                            class="caret"></span>
-                    </button>
-                    <span class="dropdown-container"></span>
-                    <span class="geo-status"></span>
-                    <input name="place_id" type="hidden">
-                </div>
+                    <div class="controls">
+                        <input id="user_location" name="location" value="${profile_location}" type="text">
 
-            </div>
-            <div class="tweet-button">
-                <span class="link-message single">Link will appear shortened</span>
-                <span class="link-message plural">Links will appear shortened</span>
-                <span class="spinner"></span>
-                <span class="tweet-counter">140</span>
-                <button class="btn primary-btn tweet-action disabled" type="button">Tweet</button>
+                        <p>Where in the world are you?</p>
+                    </div>
+                </fieldset>
+
+                <fieldset class="control-group">
+                    <label class="control-label" for="user_description">Bio</label>
+
+                    <div class="controls">
+                        <textarea class="input-xlarge" id="user_description"
+                                  maxlength="160"
+                                  name="description">${profile_description}</textarea>
+
+                        <p>About yourself in fewer than <strong>160</strong> characters.</p>
+                    </div>
+                </fieldset>
+
+                <hr>
+                <div class="form-actions">
+                    <button id="save-details" class="btn primary-btn" type="submit">Save changes</button>
+                </div>
             </div>
         </form>
+
     </div>
 </div>
-
-<div id="dm_dialog" class="modal-container dm-conversation-list">
-    <div class="close-modal-background-target"></div>
-    <div class="modal draggable twttr-dialog dm-dialog">
-        <div id="dm_dialog_conversation_list" class="modal-content">
-
-            <div class="twttr-dialog-header modal-header">
-                <h3>Direct messages</h3>
-                <a class="btn dm-new-button dm-header-new" href="#">New message</a>
-
-                <div class="twttr-dialog-close"><b>×</b></div>
-            </div>
-
-
-            <div class="twttr-dialog-inside">
-                <div class="twttr-dialog-body clearfix">
-                    <div class="dm-error js-dm-error">
-                        <a href="#" class="js-dismiss">
-                            <i class="close"></i>
-                        </a>
-                        <span class="dm-error-text"></span>
-                    </div>
-                    <div class="twttr-dialog-content">
-                        <div class="dm-threads js-dm-threads js-modal-scrollable js-twttr-dialog-not-draggable">
-                            <ul class="dm-thread-list js-dm-thread-list">
-                                <div class="dm-placeholder-empty dm-no-messages">
-                                    <p><strong>You don't have any messages yet.</strong></p>
-
-                                    <p>Direct messages are 140 characters, private, and can be sent to any user who
-                                        follows you on Twitter.</p>
-                                </div>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="twttr-dialog-footer">
-                        Tip: you can send a message to anyone who follows you. <a
-                            href="http://support.twitter.com/groups/31-twitter-basics/topics/109-tweets-messages/articles/14606-what-is-a-direct-message-dm"
-                            target="_blank" class="learn-more">Learn more</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div id="dm_dialog_conversation" class="modal-content">
-
-            <div class="twttr-dialog-header modal-header">
-                <h3><a class="js-dm-header-title" href="#">Direct messages</a> › with <span
-                        class="dm_dialog_real_name"></span></h3>
-
-                <div class="twttr-dialog-close"><b>×</b></div>
-            </div>
-
-
-            <div class="twttr-dialog-inside">
-                <div class="twttr-dialog-body clearfix">
-                    <div class="dm-error js-dm-error">
-                        <a href="#" class="js-dismiss">
-                            <i class="close"></i>
-                        </a>
-                        <span class="dm-error-text"></span>
-                    </div>
-                    <div class="twttr-dialog-content">
-                    </div>
-                    <form class="dm-tweetbox tweet-form">
-                        <div class="tweet-content">
-                            <label class="hidden-elements" for="tweet-box-1343080787">Tweet text</label>
-                            <textarea id="tweet-box-1343080787" class="tweet-box"></textarea>
-                        </div>
-                        <div class="tweet-button">
-                            <span class="spinner"></span>
-                            <span class="tweet-counter">140</span>
-                            <button class="btn tweet-action primary-btn disabled" type="submit">Send message</button>
-                        </div>
-                        <div class="dm-delete-confirm js-dm-delete-confirm">
-                            <p>Are you sure you want to delete this message?</p>
-                            <button type="button" class="btn caution-btn js-prompt-ok" data-message-id="">Delete
-                                message
-                            </button>
-                            <button type="button" class="btn js-prompt-cancel">Cancel</button>
-                        </div>
-                    </form>
-                </div>
-
-                <div class="twttr-dialog-footer">
-                    Tip: you can send a message to anyone who follows you. <a
-                        href="http://support.twitter.com/groups/31-twitter-basics/topics/109-tweets-messages/articles/14606-what-is-a-direct-message-dm"
-                        target="_blank" class="learn-more">Learn more</a>
-                </div>
-            </div>
-        </div>
-        <div id="dm_dialog_new" class="modal-content">
-
-            <div class="twttr-dialog-header modal-header">
-                <h3><a href="#">Direct messages</a> › New</h3>
-
-                <div class="twttr-dialog-close"><b>›</b></div>
-            </div>
-
-
-            <div class="twttr-dialog-inside">
-                <div class="twttr-dialog-body clearfix">
-                    <div class="dm-dialog-content">
-                        <div class="dm-to">
-                            <input class="dm-to-input twttr-directmessage-input" type="text">
-                            <img class="avatar size24 selected-profile"
-                                 src="${user_id}_files/default_profile_6_mini.png"
-                                 data-default-img="https://si0.twimg.com/sticky/default_profile_images/default_profile_6_mini.png">
-                            <ul style="display: none;" class="dropdown-menu autocomplete-results">
-                                <li class="dropdown-link dropdown-account template-row autocomplete-item">
-                                    <img class="avatar size24" width="24" height="24">
-                                    <strong class="fullname"></strong>
-                                    <span class="pretty-link"><s>@</s><b class="username"></b></span>
-                                </li>
-                            </ul>
-                        </div>
-
-                        <div class="dm-convo-placeholder">
-                            <div class="dm-error js-dm-error">
-                                <a href="#" class="js-dismiss">
-                                    <i class="close"></i>
-                                </a>
-                                <span class="dm-error-text"></span>
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <form class="dm-tweetbox tweet-form">
-                        <div class="tweet-content">
-                            <label class="hidden-elements" for="tweet-box-1343080788">Tweet text</label>
-                            <textarea id="tweet-box-1343080788" class="tweet-box"></textarea>
-                        </div>
-                        <div class="tweet-button">
-                            <span class="spinner"></span>
-                            <span class="tweet-counter">140</span>
-                            <button class="btn tweet-action primary-btn disabled" type="submit">Send message</button>
-                        </div>
-                        <div class="dm-delete-confirm js-dm-delete-confirm">
-                            <p>Are you sure you want to delete this message?</p>
-                            <button type="button" class="btn caution-btn js-prompt-ok" data-message-id="">Delete
-                                message
-                            </button>
-                            <button type="button" class="btn js-prompt-cancel">Cancel</button>
-                        </div>
-                    </form>
-                    <div class="twttr-dialog-footer">
-                        Tip: you can send a message to anyone who follows you. <a
-                            href="http://support.twitter.com/groups/31-twitter-basics/topics/109-tweets-messages/articles/14606-what-is-a-direct-message-dm"
-                            target="_blank" class="learn-more">Learn more</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="content-main" id="edit-details-tab" style="position:relative;opacity:0;left:200px;display:none;">
-    <div class="content-header">
-        <div class="header-inner">
-            <h2>Profile</h2>
-
-            <p class="subheader">This information appears on your public profile, search results, and beyond.</p>
-        </div>
-    </div>
-    <form action="/${user_id}/edit" method="post" enctype="multipart/form-data" id="edit-details-container"
-          class="content-inner no-stream-end">
-        <div id="profile-form" class="form-horizontal">
-            <div id="settings-alert-box" class="alert" style="display: none;">
-                <i id="settings-alert-close" class="close"></i>
-            </div>
-            <input name="authenticity_token" value="6682db2dd8ff40c23fb4265318fd06d67d834a66" type="hidden">
-            <input value="PUT" name="_method" type="hidden">
-            <fieldset id="profile-image-controls" class="control-group">
-                <label class="control-label" for="profile_image_uploaded_data">Picture</label>
-
-                <div class="controls">
-                    <div class="uploader-avatar clearfix">
-                        <img class="avatar size73" id="avatar_preview"
-                             src="data:image/jpeg;base64,${profile_dp}">
-
-                        <div class="uploader-tools">
-                            <div class="photo-selector">
-                                <button class="btn" type="button">Choose file</button>
-                                <span class="photo-file-name">No file selected</span>
-
-                                <div class="image-selector">
-                                    <input name="media_file_name" class="file-name" type="hidden">
-                                    <input name="media_data_empty" class="file-data" type="hidden">
-                                    <input class="file-input" type="file" name="dp">
-
-                                    <div class="swf-container"></div>
-                                </div>
-                            </div>
-                            <p>
-                                Maximum size of 700k. JPG, GIF, PNG.<br>
-                                Need help uploading a profile image? <a
-                                    href="https://support.twitter.com/articles/127871" target="_blank"
-                                    id="profile_image_help">Learn more</a>.<br>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </fieldset>
-            <hr>
-            <fieldset class="control-group">
-                <label class="control-label" for="user_name">Name</label>
-
-                <div class="controls">
-                    <input id="user_name" maxlength="20" name="fullname"
-                           value="${profile_name}" type="text">
-
-                    <p>Enter your real name, so people you know can recognize you.</p>
-                </div>
-            </fieldset>
-            <fieldset class="control-group">
-                <label class="control-label" for="user_location">Location</label>
-
-                <div class="controls">
-                    <input id="user_location" name="location" value="${profile_phone}" type="text">
-
-                    <p>Where in the world are you?</p>
-                </div>
-            </fieldset>
-
-            <fieldset class="control-group">
-                <label class="control-label" for="user_description">Bio</label>
-
-                <div class="controls">
-                    <textarea class="input-xlarge" id="user_description"
-                              maxlength="160"
-                              name="description">${profile_description}</textarea>
-
-                    <p>About yourself in fewer than <strong>160</strong> characters.</p>
-                </div>
-            </fieldset>
-
-            <hr>
-            <div class="form-actions">
-                <button id="save-details" class="btn primary-btn" type="submit">Save changes</button>
-            </div>
-        </div>
-    </form>
-
-    <div id="in_product_help_dialog" class="modal-container modal-profile-image-help">
-        <div class="close-modal-background-target"></div>
-        <div class="modal modal-small draggable">
-            <div class="modal-content">
-                <button class="modal-btn modal-close"><i class="close-medium"></i></button>
-                <div class="modal-header">
-                    <h3 class="modal-title">Upload a profile image</h3>
-                </div>
-                <div class="modal-body">
-                    <p>How to upload or change your profile picture:</p>
-                    <ol>
-                        <li>Click the <strong>Choose file</strong> button.</li>
-                        <li><strong>Select a file</strong> to upload as your picture. It must be smaller than 700k
-                            and in JPG, GIF, or PNG format (no animated GIFs).
-                        </li>
-                        <li>Click <strong>Save changes</strong> at the bottom of the page to see a thumbnail.</li>
-                    </ol>
-                </div>
-                <div class="modal-footer">
-                    <span class="satisfaction-prompt">
-                      <span id="satisfaction_question">Was this helpful?</span>
-                      <span style="display: none;" id="satisfaction_feedback">Thanks for the feedback!</span>
-                    </span>
-
-                    <div id="satisfaction_buttons">
-                        <button id="helpful_button" class="btn">Yes</button>
-                        <button id="not_helpful_button" class="btn">No</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-</div>
-</div>
-
-<div id="global-tweet-dialog" class="modal-container">
-    <div class="close-modal-background-target"></div>
-    <div class="modal draggable">
-        <div class="modal-content">
-            <button type="button" class="modal-btn modal-close"><i class="close-medium"><span class="hidden-elements">Close</span></i>
-            </button>
-
-            <div class="modal-header">
-                <h3 class="modal-title"></h3>
-            </div>
-
-            <div class="modal-body">
-                <form class="tweet-form " method="post" target="tweet-post-iframe"
-                      action="//upload.twitter.com/i/tweet/create_with_media.iframe" enctype="multipart/form-data">
-                    <input name="post_authenticity_token" class="auth-token" type="hidden">
-                    <input name="iframe_callback" class="iframe-callback" type="hidden">
-                    <input name="in_reply_to_status_id" class="in-reply-to-status-id" type="hidden">
-                    <input name="impression_id" class="impression-id" type="hidden">
-
-                    <div class="tweet-content">
-
-                        <label class="hidden-elements" for="tweet-box-1343080789">Tweet text</label>
-                        <textarea class="tweet-box" name="status" id="tweet-box-1343080789"></textarea>
-
-                        <ul style="display: none;" class="dropdown-menu autocomplete-results">
-                            <li class="dropdown-link dropdown-account template-row autocomplete-item">
-                                <img class="avatar size24" width="24" height="24">
-                                <strong class="fullname"></strong>
-                                <span class="pretty-link"><s>@</s><b class="username"></b></span>
-                            </li>
-                        </ul>
-
-                        <div class="thumbnail-container">
-                            <div class="preview">
-                                <div class="dismiss">
-                                    <i class="close"></i>
-                                </div>
-                                <span class="filename"></span>
-                            </div>
-                            <div class="preview-message">Image will appear as a link</div>
-                        </div>
-
-                    </div>
-
-                    <div class="tweet-box-extras">
-
-                        <div class="photo-selector">
-                            <button class="btn" type="button" tabindex="-1">
-                                <i class="tweet-camera"></i>
-                            </button>
-                            <div class="image-selector">
-                                <input name="media_data_empty" class="file-data" type="hidden">
-                                <input name="media_empty" class="file-input" tabindex="-1" type="file">
-
-                                <div class="swf-container"></div>
-                            </div>
-                        </div>
-
-                        <div class="geo-picker">
-                            <button class="btn geo-picker-btn" type="button" tabindex="-1">
-                                <i class="tweet-geo"><span class="hidden-elements">Add location</span></i> <span
-                                    class="caret"></span>
-                            </button>
-                            <span class="dropdown-container"></span>
-                            <span class="geo-status"></span>
-                            <input name="place_id" type="hidden">
-                        </div>
-
-                    </div>
-                    <div class="tweet-button">
-                        <span class="link-message single">Link will appear shortened</span>
-                        <span class="link-message plural">Links will appear shortened</span>
-                        <span class="spinner"></span>
-                        <span class="tweet-counter">140</span>
-                        <button class="btn primary-btn tweet-action disabled" type="button">Tweet</button>
-                    </div>
-                </form>
-            </div>
-
-            <div style="display: none;" class="modal-footer modal-tweet"></div>
-        </div>
-    </div>
-</div>
-
-
-<div id="goto-user-dialog" class="modal-container">
-    <div class="modal modal-small draggable">
-        <div class="modal-content">
-            <button type="button" class="modal-btn modal-close"><i class="close-medium"><span class="hidden-elements">Close</span></i>
-            </button>
-
-            <div class="modal-header">
-                <h3 class="modal-title">Go to a person's profile</h3>
-            </div>
-
-            <div class="modal-body">
-                <div class="modal-inner">
-                    <form class="goto-user-form">
-                        <input class="username-input" placeholder="Start typing a name to jump to a profile"
-                               type="text">
-                        <ul style="display: none;" class="dropdown-menu autocomplete-results">
-                            <li class="dropdown-link dropdown-account template-row autocomplete-item">
-                                <img class="avatar size24" width="24" height="24">
-                                <strong class="fullname"></strong>
-                                <span class="pretty-link"><s>@</s><b class="username"></b></span>
-                            </li>
-                        </ul>
-                    </form>
-                </div>
-            </div>
-
-        </div>
-    </div>
-</div>
-
-
-<div id="retweet-tweet-dialog" class="modal-container">
-    <div class="close-modal-background-target"></div>
-    <div class="modal draggable">
-        <div class="modal-content">
-            <button class="modal-btn modal-close"><i class="close-medium"><span class="hidden-elements">Close</span></i>
-            </button>
-
-            <div class="modal-header">
-
-                <h3 class="modal-title">Retweet this to your followers?</h3>
-
-            </div>
-
-            <div style="display: none;" class="modal-body modal-tweet"></div>
-
-            <div class="modal-footer">
-                <button class="btn cancel-action">Cancel</button>
-
-                <button class="btn primary-btn retweet-action">Retweet</button>
-
-            </div>
-        </div>
-    </div>
-</div>
-<div id="delete-tweet-dialog" class="modal-container">
-    <div class="close-modal-background-target"></div>
-    <div class="modal draggable">
-        <div class="modal-content">
-            <button class="modal-btn modal-close"><i class="close-medium"><span class="hidden-elements">Close</span></i>
-            </button>
-
-            <div class="modal-header">
-                <h3 class="modal-title">Are you sure you want to delete this Tweet?</h3>
-            </div>
-
-            <div style="display: none;" class="modal-body modal-tweet"></div>
-
-            <div class="modal-footer">
-                <button class="btn cancel-action">Cancel</button>
-                <button class="btn primary-btn delete-action">Delete</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-<div id="keyboard-shortcut-dialog" class="modal-container">
-    <div class="close-modal-background-target"></div>
-    <div class="modal modal-large draggable">
-        <div class="modal-content">
-            <button type="button" class="modal-btn modal-close js-dimiss"><i class="close-medium"><span
-                    class="hidden-elements">Close</span></i></button>
-
-
-            <div class="modal-header">
-                <h3 class="modal-title">Keyboard shortcuts</h3>
-            </div>
-
-
-            <div class="modal-body">
-
-                <div class="keyboard-shortcuts clearfix" id="keyboard-shortcut-menu">
-
-                    <table class="modal-table">
-                        <thead>
-                        <tr>
-                            <th colspan="2">Actions</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <td class="shortcut">
-                                <b class="sc-key">F</b>
-                            </td>
-                            <td class="shortcut-label">Favorite</td>
-                        </tr>
-                        <tr>
-                            <td class="shortcut">
-                                <b class="sc-key">R</b>
-                            </td>
-                            <td class="shortcut-label">Reply</td>
-                        </tr>
-                        <tr>
-                            <td class="shortcut">
-                                <b class="sc-key">T</b>
-                            </td>
-                            <td class="shortcut-label">Retweet</td>
-                        </tr>
-                        <tr>
-                            <td class="shortcut">
-                                <b class="sc-key">M</b>
-                            </td>
-                            <td class="shortcut-label">Direct message</td>
-                        </tr>
-                        <tr>
-                            <td class="shortcut">
-                                <b class="sc-key">N</b>
-                            </td>
-                            <td class="shortcut-label">New Tweet</td>
-                        </tr>
-                        <tr>
-                            <td class="shortcut">
-                                <b class="sc-key">Enter</b>
-                            </td>
-                            <td class="shortcut-label">Open Tweet details</td>
-                        </tr>
-                        <tr>
-                            <td class="shortcut">
-                                <b class="sc-key">L</b>
-                            </td>
-                            <td class="shortcut-label">Close all open Tweets</td>
-                        </tr>
-                        </tbody>
-                    </table>
-                    <table class="modal-table">
-                        <thead>
-                        <tr>
-                            <th colspan="2">Navigation</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <td class="shortcut">
-                                <b class="sc-key">?</b>
-                            </td>
-                            <td class="shortcut-label">This menu</td>
-                        </tr>
-                        <tr>
-                            <td class="shortcut">
-                                <b class="sc-key">J</b>
-                            </td>
-                            <td class="shortcut-label">Next Tweet</td>
-                        </tr>
-                        <tr>
-                            <td class="shortcut">
-                                <b class="sc-key">K</b>
-                            </td>
-                            <td class="shortcut-label">Previous Tweet</td>
-                        </tr>
-                        <tr>
-                            <td class="shortcut">
-                                <b class="sc-key">Space</b>
-                            </td>
-                            <td class="shortcut-label">Page down</td>
-                        </tr>
-                        <tr>
-                            <td class="shortcut">
-                                <b class="sc-key">/</b>
-                            </td>
-                            <td class="shortcut-label">Search</td>
-                        </tr>
-                        <tr>
-                            <td class="shortcut">
-                                <b class="sc-key">.</b>
-                            </td>
-                            <td class="shortcut-label">Load new Tweets</td>
-                        </tr>
-                        </tbody>
-                    </table>
-                    <table class="modal-table">
-                        <thead>
-                        <tr>
-                            <th colspan="2">Timelines</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <td class="shortcut">
-                                <b class="sc-key">G</b> <b class="sc-key">H</b>
-                            </td>
-                            <td class="shortcut-label">Home</td>
-                        </tr>
-
-                        <tr>
-                            <td class="shortcut">
-                                <b class="sc-key">G</b> <b class="sc-key">R</b>
-                            </td>
-                            <td class="shortcut-label">Mentions</td>
-                        </tr>
-
-                        <tr>
-                            <td class="shortcut">
-                                <b class="sc-key">G</b> <b class="sc-key">D</b>
-                            </td>
-                            <td class="shortcut-label">Discover</td>
-                        </tr>
-                        <tr>
-                            <td class="shortcut">
-                                <b class="sc-key">G</b> <b class="sc-key">P</b>
-                            </td>
-                            <td class="shortcut-label">Profile</td>
-                        </tr>
-                        <tr>
-                            <td class="shortcut">
-                                <b class="sc-key">G</b> <b class="sc-key">F</b>
-                            </td>
-                            <td class="shortcut-label">Favorites</td>
-                        </tr>
-                        <tr>
-                            <td class="shortcut">
-                                <b class="sc-key">G</b> <b class="sc-key">M</b>
-                            </td>
-                            <td class="shortcut-label">Messages</td>
-                        </tr>
-                        <tr>
-                            <td class="shortcut">
-                                <b class="sc-key">G</b> <b class="sc-key">U</b>
-                            </td>
-                            <td class="shortcut-label">Go to user...</td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-<div id="geo-disabled-dropdown">
-    <ul class="dropdown-menu" tabindex="-1">
-        <li class="dropdown-caret">
-            <span class="caret-outer"></span>
-            <span class="caret-inner"></span>
-        </li>
-        <li class="geo-not-enabled-yet">
-            <h2>Add a location to your Tweets</h2>
-
-            <p>
-                When you tweet with a location, Twitter stores that location.
-                You can switch location on/off before each Tweet and always have the option to delete your location
-                history.
-                <a href="http://support.twitter.com/forums/26810/entries/78525" target="_blank">Learn more</a>
-            </p>
-
-            <div>
-                <button type="button" class="geo-turn-on btn primary-btn">Turn location on</button>
-                <button type="button" class="geo-not-now btn-link">Not now</button>
-            </div>
-        </li>
-    </ul>
-</div>
-
-<div id="geo-enabled-dropdown">
-    <ul class="dropdown-menu" tabindex="-1">
-        <li class="dropdown-caret">
-            <span class="caret-outer"></span>
-            <span class="caret-inner"></span>
-        </li>
-        <li class="geo-query-location">
-            <input autocomplete="off" placeholder="Search for a neighborhood or city" type="text">
-            <i class="generic-search"></i>
-        </li>
-        <li class="geo-dropdown-status"></li>
-        <li class="dropdown-link geo-turn-off-item geo-focusable">
-            <i class="close"></i>Turn off location
-        </li>
-    </ul>
-</div>
-
-
-<div id="profile_popup" class="modal-container">
-    <div class="close-modal-background-target"></div>
-    <div style="height: auto;" class="modal modal-small draggable">
-        <div class="modal-content clearfix">
-            <button class="modal-btn modal-close"><i class="close-medium"><span class="hidden-elements">Close</span></i>
-            </button>
-            <div class="modal-header">
-                <h3 class="modal-title">Profile summary</h3>
-            </div>
-
-            <div class="modal-body profile-modal"></div>
-
-            <div class="loading">
-                <img src="${user_id}_files/bigger_spinner.gif">
-            </div>
-        </div>
-    </div>
-</div>
-<div id="list-membership-dialog" class="modal-container">
-    <div class="close-modal-background-target"></div>
-    <div class="modal modal-small draggable">
-        <div class="modal-content">
-            <button class="modal-btn modal-close"><i class="close-medium"><span class="hidden-elements">Close</span></i>
-            </button>
-            <div class="modal-header">
-                <h3 class="modal-title">Your lists</h3>
-            </div>
-            <div class="modal-body">
-                <div class="list-membership-content"></div>
-                <span class="spinner lists-spinner" title="Loading…"></span>
-            </div>
-        </div>
-    </div>
-</div>
-<div id="list-create-dialog" class="modal-container">
-    <div class="close-modal-background-target"></div>
-    <div class="modal modal-medium draggable">
-        <div class="modal-content">
-            <button class="modal-btn modal-close"><i class="close-medium"><span class="hidden-elements">Close</span></i>
-            </button>
-            <div class="modal-header">
-                <h3 class="modal-title">Create a new list</h3>
-            </div>
-            <div class="modal-body">
-
-                <div class="list-editor">
-                    <div class="field">
-                        <label for="list-name">List name</label>
-                        <input class="text" name="name" type="text">
-                    </div>
-                    <div class="field" style="display:none">
-                        <label for="list-link">List link</label>
-                        <span></span>
-                    </div>
-                    <hr>
-
-                    <div class="field">
-                        <label for="description">Description</label>
-                        <textarea name="description"></textarea>
-                        <span class="help-text">Under 100 characters, optional</span>
-                    </div>
-                    <hr>
-
-                    <div class="field">
-                        <label for="mode">Privacy</label>
-
-                        <div class="options">
-                            <label for="list-public-radio">
-                                <input class="radio" name="mode" id="list-public-radio" value="public" checked="checked"
-                                       type="radio">
-                                <b>Public</b> · Anyone can follow this list
-                            </label>
-                            <label for="list-private-radio">
-                                <input class="radio" name="mode" id="list-private-radio" value="private" type="radio">
-                                <b>Private</b> · Only you can access this list
-                            </label>
-                        </div>
-                    </div>
-                    <hr>
-
-                    <div class="list-editor-save">
-                        <div class="button btn btn-primary update-list-button disabled" data-list-id="50406360">Save
-                            list
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<div id="activity-popup-dialog" class="modal-container">
-    <div class="close-modal-background-target"></div>
-    <div class="modal draggable">
-        <div class="modal-content clearfix">
-            <button type="button" class="modal-btn modal-close"><i class="close-medium"><span class="hidden-elements">Close</span></i>
-            </button>
-
-            <div class="modal-header">
-                <h3 class="modal-title"></h3>
-            </div>
-
-            <div class="modal-body">
-                <div class="activity-tweet clearfix"></div>
-                <div class="loading">
-                    <img src="${user_id}_files/bigger_spinner.gif">
-                </div>
-                <div class="activity-content clearfix"></div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div id="confirm_dialog" class="modal-container">
-    <div class="close-modal-background-target"></div>
-    <div class="modal draggable">
-        <div class="modal-content">
-            <button class="modal-btn modal-close"><i class="close-medium"><span class="hidden-elements">Close</span></i>
-            </button>
-            <div class="modal-header">
-                <h3 class="modal-title"></h3>
-            </div>
-            <div class="modal-body">
-                <p class="modal-body-text"></p>
-            </div>
-            <div class="modal-footer">
-                <button class="btn" id="confirm_dialog_cancel_button"></button>
-                <button id="confirm_dialog_submit_button" class="btn primary-btn modal-submit"></button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<script>
-    using.path = 'https://si0.twimg.com/c/swift/en';
-
-    using.bundles.push({"$bundle\/search.81c566ac7f7721d7b785f3b52b20f080.js":["app\/data\/trends","app\/data\/trends_scribe","app\/ui\/trends\/trends","app\/ui\/trends\/trends_dialog","app\/boot\/trends","app\/ui\/dialogs\/search_operators_dialog","app\/pages\/search\/home","app\/ui\/advanced_search","app\/pages\/search\/advanced"],"$bundle\/vitonboarding.0a9c7438137152d76afd16977d5daa76.js":["app\/ui\/vit\/verification_step","app\/ui\/vit\/mobile_topbar","app\/pages\/vit\/onboarding"],"$bundle\/typeahead.c30cf835bdc22b8bd059e73828fe1f42.js":["app\/pages\/search\/swift_typeahead"],"$bundle\/login.461661e75296ca05c612e3af0605c027.js":["app\/ui\/forms\/input_with_placeholder","app\/pages\/login"],"$bundle\/core.abb4ec6bab8d4be1d1ba0d4fb9f85ff2.js":["$lib\/jquery.js","$lib\/jquery.event.drag.js","core\/jquery","core\/utils","app\/utils\/is_ie","core\/compose","core\/fn","core\/registry","core\/component","core\/clock","core\/parameterize","core\/i18n","core\/logger","$lib\/mustache.js","debug\/mustache","debug\/debug","app\/utils\/querystring","app\/utils\/params","app\/utils\/auth_token","app\/data\/scribe_transport","app\/data\/client_event","app\/data\/with_scribe","app\/data\/scribe_monitor","app\/data\/ddg","app\/ui\/with_interaction_data","app\/utils\/scribe_item_types","app\/utils\/scribe_association_types","app\/data\/with_interaction_data_scribe","app\/data\/tweet_actions_scribe","app\/data\/user_actions_scribe","app\/data\/item_actions_scribe","app\/data\/navigation_scribe","app\/boot\/scribing","app\/data\/with_auth_token","app\/data\/with_data","app\/data\/promoted_logger","app\/ui\/keyboard_shortcuts","app\/ui\/navigation","app\/utils\/time","app\/data\/navigation","$lib\/jquery_autoellipsis.js","$lib\/jquery_color_picker.js","$lib\/jquery.swfobject.js","$lib\/jquery.hashchange.js","$lib\/bootstrap_tooltip.js","app\/jquery_with_plugins","app\/ui\/with_scrollbar_width","app\/ui\/with_dialog","app\/ui\/with_position","app\/ui\/dialogs\/keyboard_shortcuts_dialog","app\/ui\/dialogs\/with_modal_tweet","app\/ui\/dialogs\/retweet_dialog","app\/ui\/dialogs\/delete_tweet_dialog","app\/utils\/with_event_params","app\/ui\/dialogs\/confirm_dialog","app\/ui\/dialogs\/list_membership_dialog","app\/ui\/dialogs\/list_create_dialog","app\/data\/direct_messages","app\/data\/direct_messages_scribe","app\/utils\/levenshtein","app\/utils\/storage\/core","$lib\/gibberish-aes.js","app\/utils\/crypto\/aes","app\/utils\/storage\/with_crypto","app\/utils\/storage\/with_expiry","app\/utils\/storage\/array\/with_array","app\/utils\/storage\/array\/with_max_elements","app\/utils\/storage\/array\/with_unique_elements","app\/utils\/storage\/custom","app\/utils\/cached_ajax","app\/data\/autocomplete","app\/ui\/with_timestamp_updating","app\/ui\/direct_message_dialog","lib\/twitter-text","app\/ui\/with_character_counter","app\/utils\/caret","app\/ui\/with_rtl_tweet_box","app\/ui\/tweet_box","app\/ui\/with_autocomplete_helpers","app\/utils\/string","app\/ui\/autocomplete_dropdown","app\/boot\/direct_messages","app\/data\/profile_popup","app\/data\/profile_popup_scribe","app\/ui\/with_user_actions","app\/ui\/with_item_actions","app\/ui\/profile_popup","app\/data\/user","app\/data\/lists","app\/boot\/profile_popup","app\/ui\/message_drawer","app\/ui\/dialogs\/goto_user_dialog","app\/utils\/setup_polling_with_backoff","app\/ui\/page_title","app\/utils\/cookie","app\/data\/geo","app\/data\/tweet","app\/ui\/tweet_dialog","app\/ui\/new_tweet_button","app\/data\/tweet_box_scribe","app\/utils\/image","app\/utils\/image_thumbnail","app\/ui\/tweet_box_thumbnails","app\/utils\/image_resize","app\/ui\/with_image_selection","app\/ui\/image_selector","app\/ui\/with_click_outside","app\/ui\/geo_picker","app\/ui\/tweet_box_manager","app\/boot\/tweet_boxes","app\/ui\/with_dropdown","app\/ui\/user_dropdown","app\/ui\/signin_dropdown","app\/ui\/language_dropdown","app\/ui\/search_input","app\/ui\/global_nav","app\/ui\/navigation_links","app\/data\/typeahead\/with_cache","app\/utils\/typeahead_helpers","app\/data\/typeahead\/accounts_datasource","app\/data\/typeahead\/saved_searches_datasource","app\/data\/typeahead\/with_external_event_listeners","app\/data\/typeahead\/topics_datasource","app\/data\/typeahead\/typeahead","app\/ui\/typeahead\/with_accounts","app\/ui\/typeahead\/with_saved_searches","app\/ui\/typeahead\/with_topics","app\/ui\/typeahead\/typeahead_dropdown","app\/ui\/typeahead\/typeahead_input","app\/data\/typeahead_scribe","app\/boot\/top_bar","app\/ui\/google","app\/ui\/tooltips","app\/ui\/facebook_token_iframe","app\/ui\/impression_cookies","app\/ui\/banners\/email_banner","app\/ui\/search_query_source","app\/data\/email_banner","app\/boot","app\/utils\/ttft"],"$bundle\/home.d7681b0487cd666f6e252056ec1e0d78.js":["app\/data\/trends","app\/data\/trends_scribe","app\/ui\/trends\/trends","app\/ui\/trends\/trends_dialog","app\/boot\/trends","app\/ui\/infinite_scroll_watcher","app\/data\/timeline","app\/boot\/timeline","app\/data\/activity_popup","app\/ui\/dialogs\/activity_popup","app\/data\/activity_popup_scribe","app\/boot\/activity_popup","app\/data\/tweet_actions","app\/data\/conversations","app\/data\/media_settings","app\/ui\/dialogs\/sensitive_flag_confirmation","app\/ui\/expando\/with_expanding_containers","app\/ui\/expando\/expando_helpers","app\/utils\/tweet_helper","app\/ui\/with_tweet_actions","app\/ui\/tweets","app\/ui\/tweet_injector","app\/utils\/google_maps","app\/ui\/map","app\/ui\/expando\/with_expanding_social_activity","app\/ui\/expando\/expanding_tweets","app\/ui\/expando\/close_all_button","app\/ui\/media\/phoenix_shim","app\/utils\/twt","app\/ui\/media\/types","$lib\/easyXDM.js","app\/utils\/easy_xdm","app\/utils\/sandboxed_ajax","app\/ui\/media\/with_legacy_icons","app\/utils\/third_party_application","app\/ui\/media\/legacy_embed","app\/ui\/media\/with_legacy_embeds","app\/ui\/media\/with_flag_action","app\/ui\/media\/with_hidden_display","app\/ui\/media\/with_legacy_media","app\/ui\/media\/with_native_media","app\/ui\/media\/media_tweets","app\/data\/url_resolver","app\/ui\/timelines\/with_keyboard_navigation","app\/ui\/timelines\/with_base_timeline","app\/ui\/timelines\/with_timeline_tweet_spam","app\/ui\/timelines\/with_old_items","app\/utils\/chrome","app\/ui\/timelines\/with_new_items","app\/ui\/timelines\/with_tweet_pagination","app\/ui\/timelines\/tweet_timeline","app\/ui\/user_actions","app\/boot\/tweet_timeline","app\/ui\/who_to_follow_dashboard","app\/data\/who_to_follow","app\/data\/who_to_follow_scribe","app\/ui\/promptbird","app\/utils\/oauth_popup","app\/data\/promptbird","app\/data\/promptbird_scribe","app\/ui\/dashboard_tweetbox","app\/utils\/boomerang","app\/pages\/home"],"$bundle\/mobile_gallery.5f4cde88d8646201ffcafd82980b7faa.js":["app\/ui\/dialogs\/mobile_gallery_download_dialog","app\/ui\/mobile_gallery\/gallery_buttons","app\/ui\/forms\/mobile_gallery_email_form","app\/data\/mobile_gallery\/send_download_link","app\/pages\/mobile_gallery\/gallery","app\/pages\/mobile_gallery\/apps","app\/ui\/mobile_gallery\/firefox_tweet_button","app\/pages\/mobile_gallery\/firefox"],"$bundle\/events.aeffd306337fb07a346eebadf4ad45b9.js":["app\/ui\/media\/phoenix_shim","app\/utils\/twt","app\/ui\/media\/types","$lib\/easyXDM.js","app\/utils\/easy_xdm","app\/utils\/sandboxed_ajax","app\/ui\/media\/with_legacy_icons","app\/utils\/third_party_application","app\/ui\/media\/legacy_embed","app\/ui\/media\/with_legacy_embeds","app\/ui\/media\/with_flag_action","app\/ui\/media\/with_hidden_display","app\/ui\/media\/with_legacy_media","app\/ui\/media\/media_thumbnails","app\/data\/media_thumbnails_scribe","app\/ui\/dashboard_tweetbox","app\/ui\/dialogs\/signin_or_signup","app\/ui\/forms\/input_with_placeholder","app\/ui\/signup_call_out","app\/data\/signup_click_scribe","app\/logged_out_boot","app\/ui\/infinite_scroll_watcher","app\/data\/timeline","app\/boot\/timeline","app\/data\/activity_popup","app\/ui\/dialogs\/activity_popup","app\/data\/activity_popup_scribe","app\/boot\/activity_popup","app\/data\/tweet_actions","app\/data\/conversations","app\/data\/media_settings","app\/ui\/dialogs\/sensitive_flag_confirmation","app\/ui\/expando\/with_expanding_containers","app\/ui\/expando\/expando_helpers","app\/utils\/tweet_helper","app\/ui\/with_tweet_actions","app\/ui\/tweets","app\/ui\/tweet_injector","app\/utils\/google_maps","app\/ui\/map","app\/ui\/expando\/with_expanding_social_activity","app\/ui\/expando\/expanding_tweets","app\/ui\/expando\/close_all_button","app\/ui\/media\/with_native_media","app\/ui\/media\/media_tweets","app\/data\/url_resolver","app\/ui\/timelines\/with_keyboard_navigation","app\/ui\/timelines\/with_base_timeline","app\/ui\/timelines\/with_timeline_tweet_spam","app\/ui\/timelines\/with_old_items","app\/utils\/chrome","app\/ui\/timelines\/with_new_items","app\/ui\/timelines\/with_tweet_pagination","app\/ui\/timelines\/tweet_timeline","app\/ui\/user_actions","app\/boot\/tweet_timeline","app\/ui\/timelines\/event_timeline","app\/ui\/gallery\/gallery","app\/pages\/events\/hashtag"],"$bundle\/permalink.9db193ec5b4a66ca4888d6ecc20d6bff.js":["app\/utils\/tweet_helper","app\/ui\/with_tweet_actions","app\/ui\/permalink_keyboard_shortcuts","app\/data\/activity_popup","app\/ui\/dialogs\/activity_popup","app\/data\/activity_popup_scribe","app\/boot\/activity_popup","app\/utils\/twt","app\/ui\/dialogs\/embed_tweet","app\/data\/tweet_actions","app\/ui\/expando\/with_expanding_containers","app\/ui\/expando\/expando_helpers","app\/ui\/tweets","app\/ui\/tweet_injector","app\/utils\/google_maps","app\/ui\/map","app\/ui\/expando\/with_expanding_social_activity","app\/ui\/expando\/expanding_tweets","app\/ui\/dialogs\/sms_codes","app\/ui\/dialogs\/signin_or_signup","app\/ui\/forms\/input_with_placeholder","app\/ui\/signup_call_out","app\/data\/signup_click_scribe","app\/logged_out_boot","app\/data\/url_resolver","app\/ui\/media\/phoenix_shim","app\/ui\/media\/types","$lib\/easyXDM.js","app\/utils\/easy_xdm","app\/utils\/sandboxed_ajax","app\/ui\/media\/with_legacy_icons","app\/utils\/third_party_application","app\/ui\/media\/legacy_embed","app\/ui\/media\/with_legacy_embeds","app\/ui\/media\/with_flag_action","app\/ui\/media\/with_hidden_display","app\/ui\/media\/with_legacy_media","app\/ui\/media\/with_native_media","app\/ui\/media\/media_tweets","app\/pages\/permalink","app\/pages\/permalink_photo"],"$bundle\/boomerang.24a59a23201b496f7e7a68a52f6dd115.js":["$lib\/boomerang.js","app\/utils\/boomerang_lib"],"$bundle\/profiles.ca311df49d6d2e8278bccc548952a7fc.js":["app\/ui\/dialogs\/signin_or_signup","app\/ui\/forms\/input_with_placeholder","app\/ui\/signup_call_out","app\/data\/signup_click_scribe","app\/logged_out_boot","app\/ui\/profile\/head","app\/ui\/timelines\/profile_timeline","app\/ui\/dashboard_tweetbox","app\/ui\/who_to_follow_dashboard","app\/data\/who_to_follow","app\/data\/who_to_follow_scribe","app\/ui\/media\/phoenix_shim","app\/utils\/twt","app\/ui\/media\/types","$lib\/easyXDM.js","app\/utils\/easy_xdm","app\/utils\/sandboxed_ajax","app\/ui\/media\/with_legacy_icons","app\/utils\/third_party_application","app\/ui\/media\/legacy_embed","app\/ui\/media\/with_legacy_embeds","app\/ui\/media\/with_flag_action","app\/ui\/media\/with_hidden_display","app\/ui\/media\/with_legacy_media","app\/ui\/media\/media_thumbnails","app\/data\/media_thumbnails_scribe","app\/ui\/suggested_users","app\/data\/suggested_users","app\/boot\/profile","app\/ui\/infinite_scroll_watcher","app\/data\/timeline","app\/boot\/timeline","app\/data\/activity_popup","app\/ui\/dialogs\/activity_popup","app\/data\/activity_popup_scribe","app\/boot\/activity_popup","app\/data\/tweet_actions","app\/data\/conversations","app\/data\/media_settings","app\/ui\/dialogs\/sensitive_flag_confirmation","app\/ui\/expando\/with_expanding_containers","app\/ui\/expando\/expando_helpers","app\/utils\/tweet_helper","app\/ui\/with_tweet_actions","app\/ui\/tweets","app\/ui\/tweet_injector","app\/utils\/google_maps","app\/ui\/map","app\/ui\/expando\/with_expanding_social_activity","app\/ui\/expando\/expanding_tweets","app\/ui\/expando\/close_all_button","app\/ui\/media\/with_native_media","app\/ui\/media\/media_tweets","app\/data\/url_resolver","app\/ui\/timelines\/with_keyboard_navigation","app\/ui\/timelines\/with_base_timeline","app\/ui\/timelines\/with_timeline_tweet_spam","app\/ui\/timelines\/with_old_items","app\/utils\/chrome","app\/ui\/timelines\/with_new_items","app\/ui\/timelines\/with_tweet_pagination","app\/ui\/timelines\/tweet_timeline","app\/ui\/user_actions","app\/boot\/tweet_timeline","app\/pages\/profile\/favorites","app\/pages\/profile\/tweets","app\/ui\/timelines\/with_cursor_pagination","app\/ui\/timelines\/user_timeline","app\/boot\/user_timeline","app\/pages\/profile\/followers","app\/pages\/profile\/following"],"$bundle\/signup.504db5a9d9c96629ee5825e0a4155765.js":["app\/ui\/signup\/with_captcha","app\/utils\/common_regexp","app\/ui\/signup\/signup_form","app\/ui\/with_password_strength","app\/data\/signup_data","app\/data\/settings","app\/data\/signup_scribe","app\/ui\/signup\/suggestions","app\/ui\/signup\/small_print_expander","app\/pages\/signup\/signup"],"$bundle\/accounts.44dff1420609cffc7755a1914f85dae1.js":["app\/ui\/account\/password_reset_controls","app\/ui\/password_match_pair","app\/ui\/with_password_strength","app\/ui\/password_strength","app\/pages\/account\/password_reset","app\/pages\/account\/password_reset_sent","app\/pages\/account\/password_reset_type","app\/ui\/captcha_dialog","app\/ui\/account\/resend_password_controls","app\/pages\/account\/resend_password","app\/ui\/account\/verify_personal_information_controls","app\/pages\/account\/verify_personal_information","app\/ui\/account\/verify_device_token_controls","app\/pages\/account\/verify_device_token","app\/pages\/account\/mobile_complete","app\/pages\/account\/mobile_sms_complete","app\/pages\/account\/mobile_verify"],"$bundle\/discover.92a242703342e23b34938def6ac20304.js":["app\/data\/trends","app\/data\/trends_scribe","app\/ui\/trends\/trends","app\/ui\/trends\/trends_dialog","app\/boot\/trends","app\/data\/activity_popup","app\/ui\/dialogs\/activity_popup","app\/data\/activity_popup_scribe","app\/boot\/activity_popup","app\/data\/tweet_actions","app\/data\/discover_scribe","app\/data\/discover","app\/utils\/ellipsis","app\/ui\/expando\/with_expanding_containers","app\/ui\/expando\/expando_helpers","app\/utils\/tweet_helper","app\/ui\/with_tweet_actions","app\/ui\/tweets","app\/ui\/tweet_injector","app\/utils\/google_maps","app\/ui\/map","app\/ui\/expando\/with_expanding_social_activity","app\/ui\/with_discover_expando","app\/ui\/with_discover_clicks","app\/ui\/discover","app\/ui\/expando\/close_all_button","app\/ui\/discover_nav","app\/pages\/discover\/discover"],"$bundle\/connect.0315b0f632613cab2a098ee4a70dd1c1.js":["app\/ui\/who_to_follow_dashboard","app\/data\/who_to_follow","app\/data\/who_to_follow_scribe","app\/boot\/connect","app\/ui\/infinite_scroll_watcher","app\/data\/timeline","app\/boot\/timeline","app\/data\/activity_popup","app\/ui\/dialogs\/activity_popup","app\/data\/activity_popup_scribe","app\/boot\/activity_popup","app\/data\/tweet_actions","app\/data\/conversations","app\/data\/media_settings","app\/ui\/dialogs\/sensitive_flag_confirmation","app\/ui\/expando\/with_expanding_containers","app\/ui\/expando\/expando_helpers","app\/utils\/tweet_helper","app\/ui\/with_tweet_actions","app\/ui\/tweets","app\/ui\/tweet_injector","app\/utils\/google_maps","app\/ui\/map","app\/ui\/expando\/with_expanding_social_activity","app\/ui\/expando\/expanding_tweets","app\/ui\/expando\/close_all_button","app\/ui\/media\/phoenix_shim","app\/utils\/twt","app\/ui\/media\/types","$lib\/easyXDM.js","app\/utils\/easy_xdm","app\/utils\/sandboxed_ajax","app\/ui\/media\/with_legacy_icons","app\/utils\/third_party_application","app\/ui\/media\/legacy_embed","app\/ui\/media\/with_legacy_embeds","app\/ui\/media\/with_flag_action","app\/ui\/media\/with_hidden_display","app\/ui\/media\/with_legacy_media","app\/ui\/media\/with_native_media","app\/ui\/media\/media_tweets","app\/data\/url_resolver","app\/ui\/timelines\/with_keyboard_navigation","app\/ui\/timelines\/with_base_timeline","app\/ui\/timelines\/with_timeline_tweet_spam","app\/ui\/timelines\/with_old_items","app\/utils\/chrome","app\/ui\/timelines\/with_new_items","app\/ui\/timelines\/with_tweet_pagination","app\/ui\/timelines\/tweet_timeline","app\/ui\/user_actions","app\/boot\/tweet_timeline","app\/pages\/connect\/interactions","app\/pages\/connect\/mentions"],"$bundle\/settings.ebb0e2b41f3d0e81e48721e2cbb03de3.js":["app\/data\/settings","app\/ui\/alert_banner","app\/boot\/settings","app\/data\/settings\/account_scribe","app\/data\/form_scribe","app\/ui\/with_forgot_password","app\/ui\/password_dialog","app\/ui\/protected_verified_dialog","app\/ui\/validating_fieldset","app\/ui\/email_confirmation","app\/ui\/timezone_detector","app\/ui\/deactivated","app\/ui\/geo_deletion","app\/ui\/settings_controls","app\/pages\/settings\/account","app\/data\/settings\/applications_scribe","app\/ui\/oauth_revoker","app\/pages\/settings\/applications","app\/data\/settings\/confirm_deactivation_scribe","app\/pages\/settings\/confirm_deactivation","app\/data\/settings\/design_scribe","app\/ui\/color_picker","app\/ui\/design","app\/ui\/theme_preview","app\/ui\/theme_picker","app\/ui\/image_uploader","app\/pages\/settings\/design","app\/data\/settings\/enhanced_profile_scribe","app\/ui\/capped_file_upload","app\/ui\/settings\/enhanced_profile_form","app\/pages\/settings\/enhanced_profile","app\/ui\/settings\/notifications","app\/pages\/settings\/notifications","app\/ui\/password","app\/ui\/password_match_pair","app\/ui\/with_password_strength","app\/ui\/password_strength","app\/pages\/settings\/password","app\/pages\/settings\/password_confirmation","app\/data\/settings\/profile_scribe","app\/ui\/facebook_button","app\/ui\/profile_image_monitor","app\/ui\/field_edit_warning","app\/ui\/dialogs\/in_product_help_dialog","app\/pages\/settings\/profile","app\/data\/settings\/sms_scribe","app\/ui\/forms\/select_box","app\/ui\/settings\/sms_phone_create_form","app\/ui\/forms\/element_group_toggler","app\/ui\/settings\/device_verified_form","app\/ui\/settings\/sms_phone_verify_form","app\/pages\/settings\/sms"]});
-
-
-    using(
-            'app/pages/profile/tweets',
-            'core/jquery',
-
-            function(page, $) {
-
-                page({"smsDeviceVerified":false,"swiftRoutes":{"profile":"\/niteesh3k"},"pageName":"profile","initialState":{"module":"app\/pages\/profile\/tweets","cache_ttl":300,"section":null,"title":"${profile_name} (${user_id}) on Twitter"},"deviceEnabled":false,"pushState":false,"sectionName":"no_replies","loggedIn":true,"sandboxes":{"jsonp":"https:\/\/si0.twimg.com\/a\/1342841381\/jsonp_sandbox.html","detailsPane":"https:\/\/si0.twimg.com\/a\/1342841381\/details_pane_content_sandbox.html"},"hasPushDevice":false,"scribeMetrics":500,"geoEnabled":false,"experiments":{"recommended_bid_283":{"bucket":"lower_recommended_bid","experiment_key":"recommended_bid_283","bucket_names":["control","lower_recommended_bid"],"version":8},"mobile_redirect_to_signup_278":{"bucket":"redirect","experiment_key":"mobile_redirect_to_signup_278","bucket_names":["control","redirect"],"version":5},"mobile_screen_name_hint_new_281":{"bucket":"fancy","experiment_key":"mobile_screen_name_hint_new_281","bucket_names":["control","fancy"],"version":4},"search_experiments":{"bucket":"hashtags_hits_500_decay_60","experiment_key":"more_recent_hashtag_cashtag_ranking_310","bucket_names":["control","hashtags_hits_750_decay_60","hashtags_hits_500_decay_360","hashtags_hits_500_decay_60","hashtags_hits_250_decay_60"],"version":8},"welcome_top_people_286":{"bucket":"control","experiment_key":"welcome_top_people_286","bucket_names":["control","top_people"],"version":3},"mobile_m5_nux_295":{"bucket":"control","experiment_key":"mobile_m5_nux_295","bucket_names":["control","sul_then_wtf","no_blocking"],"version":6}},"assetsBasePath":"https:\/\/si0.twimg.com\/a\/1342841381\/","profile_id":51376979,"internalReferer":"\/","typeaheadData":{"savedSearches":{"items":[],"enabled":true},"accounts":{"remoteQueriesEnabled":true,"blockedIds":[],"enabled":true,"localQueriesEnabled":true},"showDebugInfo":false,"topics":{"remoteQueriesEnabled":true,"enabled":true,"localQueriesEnabled":true}},"scribeBufferSize":3,"periodicScribeFlush":0,"screenName":"niteesh3k","environment":"production","wtf_options":{"screen_name":"${user_id}","limit":3,"small_avatar":true,"pc":true,"display_location":"st-component"},"formAuthenticityToken":"534b1bd42ec027a09d024e9b698d9ad37d9171f2","profile_user":{"id":51376979,"profile_image_url_https":"https:\/\/si0.twimg.com\/profile_images\/2325645639\/image_normal.jpg","geo_enabled":false,"default_profile_image":false,"profile_sidebar_border_color":"edf2ea","favourites_count":4,"following":true,"show_all_inline_media":false,"utc_offset":19800,"profile_background_tile":true,"profile_image_url":"http:\/\/a0.twimg.com\/profile_images\/2325645639\/image_normal.jpg","url":null,"profile_sidebar_fill_color":"292028","name":"${profile_name}","followers_count":1412237,"created_at":"Sat Jun 27 07:25:39 +0000 2009","verified":true,"protected":false,"time_zone":"Mumbai","default_profile":false,"profile_background_color":"7a8282","friends_count":279,"id_str":"51376979","location":"\u00dcT: 19.167049,72.845301","description":"a female actor who lives to eat and read in that order.","follow_request_sent":false,"profile_background_image_url":"http:\/\/a0.twimg.com\/profile_background_images\/437788738\/GRAZIA-SonamKapoor-2584.jpg","screen_name":"${user_id}","profile_background_image_url_https":"https:\/\/si0.twimg.com\/profile_background_images\/437788738\/GRAZIA-SonamKapoor-2584.jpg","listed_count":11332,"profile_link_color":"a6b0b3","lang":"en","profile_use_background_image":true,"statuses_count":5968,"status":{"in_reply_to_user_id":null,"in_reply_to_status_id_str":null,"id_str":"227688930449965056","in_reply_to_status_id":null,"favorited":false,"created_at":"Tue Jul 24 08:57:25 +0000 2012","in_reply_to_user_id_str":null,"in_reply_to_screen_name":null,"truncated":false,"coordinates":null,"geo":null,"place":null,"retweet_count":43,"source":"\u003Ca href=\"http:\/\/ubersocial.com\" rel=\"nofollow\"\u003EUberSocial for BlackBerry\u003C\/a\u003E","contributors":null,"retweeted":false,"id":227688930449965056,"text":"Ok I'm obsessed with cut the rope."},"is_translator":false,"profile_text_color":"e8e1e8","notifications":false,"contributors_enabled":false},"timeline_url":"\/${user_id}"});
-                window.__swift_loaded = true;
-                window.swiftActionQueue && window.swiftActionQueue.flush($);
-                $(document).trigger('uiSwiftLoaded');
-            });
-</script>
 </body>
 </html>

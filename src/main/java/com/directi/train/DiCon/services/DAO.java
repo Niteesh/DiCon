@@ -93,8 +93,8 @@ public class DAO {
         return db.update("UPDATE twitter.details SET fullname = ? WHERE user_id = ?;", fullname, user_id);
     }
 
-    public int updatePhone(int user_id, String phone) {
-        return db.update("UPDATE twitter.details SET phone = ? WHERE user_id = ?;", phone, user_id);
+    public int updateLocation(int user_id, String location) {
+        return db.update("UPDATE twitter.details SET location = ? WHERE user_id = ?;", location, user_id);
     }
 
     public int updateDP(int user_id, String dp) {
@@ -103,9 +103,9 @@ public class DAO {
 
     public int updateDetails(int user_id, String fullname, String description, String location, String dp) {
         if (!dp.equals(""))
-            return db.update("UPDATE twitter.details SET fullname = ?, description = ?, phone = ?,dp = ? WHERE user_id = ?;", fullname, description, location, dp, user_id);
+            return db.update("UPDATE twitter.details SET fullname = ?, description = ?, location = ?,dp = ? WHERE user_id = ?;", fullname, description, location, dp, user_id);
         else
-            return db.update("UPDATE twitter.details SET fullname = ?, description = ?, phone = ? WHERE user_id = ?;", fullname, description, location, user_id);
+            return db.update("UPDATE twitter.details SET fullname = ?, description = ?, location = ? WHERE user_id = ?;", fullname, description, location, user_id);
 
     }
 
@@ -154,7 +154,7 @@ public class DAO {
 
     public int upDateRetweet(Integer user_id, Integer tweet_id) {
         return db.update(" Insert into twitter.tweets (user_id, text) " +
-                "select ?,'via<a href=\"/'||d.user_id ||'\"> '|| d.fullname ||' : </a> '|| retweet.text as text from twitter.details d INNER JOIN " +
+                "select ?,'via <a href=\"/'||d.user_id ||'\">'|| d.fullname ||'</a> : '|| retweet.text as text from twitter.details d INNER JOIN " +
                 " (select  user_id,text, tweet_id from twitter.tweets t where tweet_id = ?) as retweet " +
                 "ON retweet.user_id = d.user_id;", user_id, tweet_id);
     }
