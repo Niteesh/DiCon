@@ -2,6 +2,7 @@ package com.directi.train.DiCon.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 import org.springframework.stereotype.Service;
 
@@ -156,6 +157,22 @@ public class DAO {
                 "select ?,'via <a href=\"/'||d.user_id ||'\">'|| d.fullname ||'</a> : '|| retweet.text as text from twitter.details d INNER JOIN " +
                 " (select  user_id,text, tweet_id from twitter.tweets t where tweet_id = ?) as retweet " +
                 "ON retweet.user_id = d.user_id;", user_id, tweet_id);
+    }
+
+    public Integer getUidForToken(String token){
+        try{
+            return db.queryForInt("select user_id from twitter.token where token = ?", token) ;
+        }catch(EmptyResultDataAccessException e){
+            return 0;
+        }
+    }
+
+    public int newToken(Integer userID, String token) {
+        return db.update("INSERT INTO twitter.token (user_id, token) values(?,?)",userID, token);
+    }
+
+    public int deleteToken(String token) {
+        return db.update("DELETE FROM twitter.token where token = ? ", token);
     }
 
     public List<Map<String, Object>> getFollowSuggestions(Integer userID) {

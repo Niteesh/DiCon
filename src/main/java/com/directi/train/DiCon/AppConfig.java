@@ -22,7 +22,7 @@ public class AppConfig {
     }
 
     @Bean
-    public ThreadLocal<Long> userID() {
-        return new ThreadLocal<Long>();
+    public ThreadLocal<Integer> loginID() {
+        return new ThreadLocal<Integer>();
     }
 }

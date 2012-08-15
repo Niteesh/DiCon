@@ -1,7 +1,9 @@
 CRITICAL
 --------
 data validation of edit details
+
 AVOID AJAX FOR INITITAL POSTS/NEWSFEED ?
+
 change chain of retweeter names into immediate retweeter only
 
 NON-CRITICAL

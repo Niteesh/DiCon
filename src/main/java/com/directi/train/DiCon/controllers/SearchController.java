@@ -18,9 +18,9 @@ public class SearchController {
     @Autowired
     private DAO dao;
 
-    @RequestMapping(value="search.json",method= RequestMethod.POST)
+    @RequestMapping(value = "search.json", method = RequestMethod.POST)
     @ResponseBody
-    public List<Map<String, Object>> searchQuery(@RequestParam String search_string, HttpSession session){
+    public List<Map<String, Object>> searchQuery(@RequestParam String search_string, HttpSession session) {
         return dao.searchByFullname(search_string);
     }
 

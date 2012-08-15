@@ -89,25 +89,21 @@ public class Profile {
     @RequestMapping(value = "newsfeed", method = RequestMethod.GET)
     @ResponseBody
     public List<Map<String, Object>> newsFeed(HttpSession session, @PathVariable("userID") Integer userID, @RequestParam Integer latest_feed_id, @RequestParam Integer oldest_feed_id, @RequestParam Integer newOrOldFlag) {
+
         return dao.getNewsFeed(userID, latest_feed_id, oldest_feed_id, newOrOldFlag);
     }
-
 
 
     @RequestMapping(value = "edit", method = RequestMethod.POST)
     public ModelAndView submitEdit(HttpSession session, @RequestParam CommonsMultipartFile dp, @RequestParam String fullname, @RequestParam String description, @RequestParam String location, @PathVariable("userID") Integer userID) throws IOException {
 
 
-        if(!userID.equals(session.getAttribute("userID"))){
-            return  new ModelAndView("redirect:/");
-        }
-
         String fileNameToLowerCase = dp.getOriginalFilename().toLowerCase();
         String fileExtension = fileNameToLowerCase.substring(fileNameToLowerCase.indexOf(".") + 1, fileNameToLowerCase.length());
         System.out.println("file extension =" + fileExtension);
         ImageHandler imageHandler = new ImageHandler();
-        dao.updateDetails(userID,fullname,description,location, new BASE64Encoder().encode(imageHandler.resizeImage(dp.getBytes(), fileExtension, 128)));
-        return new ModelAndView("redirect:/"+userID);
+        dao.updateDetails(userID, fullname, description, location, new BASE64Encoder().encode(imageHandler.resizeImage(dp.getBytes(), fileExtension, 128)));
+        return new ModelAndView("redirect:/" + userID);
     }
 
 
@@ -126,30 +122,30 @@ public class Profile {
 
     @RequestMapping(value = "similar_ppl", method = RequestMethod.GET)
     @ResponseBody
-    public List<Map<String,Object>> similarPpl(@PathVariable("userID") Integer userID){
+    public List<Map<String, Object>> similarPpl(@PathVariable("userID") Integer userID) {
         List<Map<String, Object>> similarPpl = dao.getSimilarPpl(userID);
         Collections.shuffle(similarPpl, new Random(System.nanoTime()));
-        if(similarPpl.size() < 3)
+        if (similarPpl.size() < 3)
             return similarPpl;
         else
-            return similarPpl.subList(0,3);
+            return similarPpl.subList(0, 3);
     }
 
     @RequestMapping(value = "follow_suggestions", method = RequestMethod.GET)
     @ResponseBody
-    public List<Map<String,Object>> followSuggestions(@PathVariable("userID") Integer userID){
+    public List<Map<String, Object>> followSuggestions(@PathVariable("userID") Integer userID) {
         List<Map<String, Object>> followSuggestions = dao.getFollowSuggestions(userID);
         Collections.shuffle(followSuggestions, new Random(System.nanoTime()));
-        if(followSuggestions.size() <= 3)
+        if (followSuggestions.size() <= 3)
             return followSuggestions;
         else
-            return followSuggestions.subList(0,3);
+            return followSuggestions.subList(0, 3);
     }
 
     @RequestMapping(value = "retweet", method = RequestMethod.POST)
     @ResponseBody
-    public String reTweet(HttpSession session, @RequestParam("tweet_id") Integer tweet_id){
-        return "{ success : " +  dao.upDateRetweet((Integer) session.getAttribute("userID"),tweet_id)+"}";
+    public String reTweet(HttpSession session, @RequestParam("tweet_id") Integer tweet_id) {
+        return "{ success : " + dao.upDateRetweet((Integer) session.getAttribute("userID"), tweet_id) + "}";
     }
 }
 

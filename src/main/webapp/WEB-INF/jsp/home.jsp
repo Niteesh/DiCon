@@ -81,6 +81,7 @@ require(["dojo/_base/xhr", "dojo/on", "dojo/dom", "dojo/query", "dojo/NodeList-d
         });
 
 
+
 var latest_feed_id = 0;
 var oldest_feed_id = -1;
 var newOrOldFlag = 2;
