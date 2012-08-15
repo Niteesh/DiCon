@@ -44,7 +44,7 @@ public class APIAuthInterceptor extends HandlerInterceptorAdapter {
             if (authToken != null) {
                 int userID = verifyToken((String) session.getAttribute("auth_token"));
                 if ((userID == 0) || (userID != (Integer) session.getAttribute("userID"))) {//auth failed
-
+                    System.out.println("auth failed for************** : "+userID);
                     response.setHeader("Error", "invalid token");
                     response.sendRedirect("/");
                     return false;

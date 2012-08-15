@@ -22,10 +22,12 @@ import java.util.Random;
 public class Profile {
 
     private DAO dao;
+   private final XSSHandler xssHandler;
 
     @Autowired
-    public Profile(DAO dao) {
+    public Profile(DAO dao, XSSHandler xssHandler) {
         this.dao = dao;
+        this.xssHandler = xssHandler;
     }
 
     @RequestMapping
@@ -34,12 +36,16 @@ public class Profile {
 
         ModelAndView mv = new ModelAndView("profile");
         Map<String, Object> userDetails = dao.getDetails(userID);
+        if(userDetails ==  null){
+            mv.setViewName("redirect:/home");
+            return mv;
+        }
         int followerCount = dao.getFollowerCount(userID);
         int followingCount = dao.getFollowingCount(userID);
         int tweetCount = dao.getTweetCount(userID);
         String status = dao.getUsersStatus(userID, (Integer) session.getAttribute("userID"));
 
-
+        mv.addObject("login_id",session.getAttribute("userID"));
         mv.addObject("user_id", userID);
         mv.addObject("profile_name", userDetails.get("fullname"));
         mv.addObject("profile_location", userDetails.get("location"));
@@ -74,7 +80,7 @@ public class Profile {
     @RequestMapping(value = "tweets/new", method = RequestMethod.POST)
     @ResponseBody
     public String postTweet(HttpSession session, @RequestParam String tweet_text) {
-        XSSHandler xssHandler = new XSSHandler();
+
         String tweetText = xssHandler.makeXSSSafe(tweet_text);
 
         return "{ success : " + dao.newTweet((Integer) session.getAttribute("userID"), tweetText) + ", tweet_text : \"" + tweet_text + "\", user_id:\"" + (Integer) session.getAttribute("userID") + "\"}";
@@ -96,6 +102,9 @@ public class Profile {
 
     @RequestMapping(value = "edit", method = RequestMethod.POST)
     public ModelAndView submitEdit(HttpSession session, @RequestParam CommonsMultipartFile dp, @RequestParam String fullname, @RequestParam String description, @RequestParam String location, @PathVariable("userID") Integer userID) throws IOException {
+         fullname = xssHandler.makeXSSSafe(fullname);
+        description = xssHandler.makeXSSSafe(description);
+        location = xssHandler.makeXSSSafe(location);
 
 
         String fileNameToLowerCase = dp.getOriginalFilename().toLowerCase();

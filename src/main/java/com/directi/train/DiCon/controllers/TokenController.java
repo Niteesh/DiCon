@@ -60,6 +60,7 @@ public class TokenController {
         String token = tokenizer.getToken();
         jsonResponseMap.put("success", 1);
         jsonResponseMap.put("auth_token", token);
+        jsonResponseMap.put("user_id", userID);
         tokenizer.registerToken(userID, token);
         return jsonResponseMap;
     }

@@ -40,7 +40,7 @@ require(["dojo/_base/xhr", "dojo/on", "dojo/dom", "dojo/query", "dojo/dom-constr
                             dom.byId("search-results-container").style.display = "block";
                         domConstruct.empty(dom.byId("results-list"));
                         for (var i in response) {
-                            var result = new EJS({url: '${pageContext.request.contextPath}/static/ejs/searchResult.ejs'}).render(response[i]);
+                            var result = new EJS({url: '/static/ejs/searchResult.ejs'}).render(response[i]);
                             domConstruct.place(result, dom.byId("results-list"));
                         }
                     },

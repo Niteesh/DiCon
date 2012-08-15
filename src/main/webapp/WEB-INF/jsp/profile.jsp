@@ -8,7 +8,7 @@
 <meta charset="utf-8">
 
 <script>
-    document.domain = 'twitter.com'</script>
+    document.domain = '172.16.152.212'</script>
 
 <title>${profile_name} (${user_id}) on DiCon</title>
 
@@ -355,7 +355,7 @@ function retweet(tweet_id) {
 
                 console.log("retweeting " + tweet_id);
                 xhr.post({
-                            url: "${user_id}/retweet",
+                            url: "${login_id}/retweet",
                             handleAs: "json",
                             content: {
                                 tweet_id : tweet_id
@@ -371,6 +371,18 @@ function retweet(tweet_id) {
 
             });
 }
+
+function previewDP(){
+	var file = (document.getElementById("dp").files[0]);
+	var blob = new Blob([file],{type:file.type});
+	var imgUrl;
+	 if(window.webkitURL)
+	    imgUrl=window.webkitURL.createObjectURL(blob);
+	 else if(window.URL)
+	    imgUrl=window.URL.createObjectURL(blob);
+	document.getElementById("avatar_preview").setAttribute("src",imgUrl);
+}
+
 </script>
 
 
@@ -566,7 +578,7 @@ function retweet(tweet_id) {
     <div class="flex-module clearfix ">
 
 
-        <a href="https://si0.twimg.com/profile_images/2325645639/image.jpg" class="profile-picture" target="_blank">
+        <a href="#" class="profile-picture" target="_blank">
             <img src="data:image/jpeg;base64,${profile_dp}" alt="${profile_name}" class="avatar size128">
         </a>
 
@@ -755,7 +767,7 @@ function retweet(tweet_id) {
                                     <div class="image-selector">
                                         <input name="media_file_name" class="file-name" type="hidden">
                                         <input name="media_data_empty" class="file-data" type="hidden">
-                                        <input class="file-input" type="file" name="dp">
+                                        <input class="file-input" type="file" id="dp" name="dp" onchange="previewDP();">
 
                                         <div class="swf-container"></div>
                                     </div>

@@ -28,7 +28,11 @@ public class DAO {
     }
 
     public Map<String, Object> getDetails(int user_id) {
+        try{
         return db.queryForMap("SELECT * FROM twitter.details WHERE user_id = ?;", user_id);
+        }catch(EmptyResultDataAccessException e){
+            return null;
+        }
     }
 
 
@@ -78,7 +82,8 @@ public class DAO {
     }
 
     public int follow(int follower_id, int following_id) {
-        return db.update("INSERT INTO twitter.follows(follower_id,following_id) VALUES(?,?);", follower_id, following_id);
+        return db.update("insert into twitter.follows (follower_id, following_id) select ?, ? where not exists\n" +
+                "   (select follower_id from twitter.follows where follower_id = ? and following_id = ? and stop_time is null)", follower_id, following_id, follower_id, following_id);
     }
 
     public int unFollow(int follower_id, int following_id) {
@@ -110,7 +115,9 @@ public class DAO {
     }
 
     public Map<String, Object> getLoginDetails(String email, String password) {
+
         return db.queryForMap("SELECT * from twitter.login WHERE email = ?", email);
+
     }
 
     public int getTweetCount(Integer userID) {
@@ -154,9 +161,7 @@ public class DAO {
 
     public int upDateRetweet(Integer user_id, Integer tweet_id) {
         return db.update(" Insert into twitter.tweets (user_id, text) " +
-                "select ?,'via <a href=\"/'||d.user_id ||'\">'|| d.fullname ||'</a> : '|| retweet.text as text from twitter.details d INNER JOIN " +
-                " (select  user_id,text, tweet_id from twitter.tweets t where tweet_id = ?) as retweet " +
-                "ON retweet.user_id = d.user_id;", user_id, tweet_id);
+                "select ?,retweet(?)", user_id, tweet_id);
     }
 
     public Integer getUidForToken(String token){

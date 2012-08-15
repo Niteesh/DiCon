@@ -1,5 +1,6 @@
 package com.directi.train.DiCon.controllers;
 
+import com.directi.train.DiCon.services.Tokenizer;
 import com.directi.train.DiCon.services.TwitterUser;
 import com.directi.train.DiCon.services.XSSHandler;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,12 +24,16 @@ import javax.servlet.http.HttpSession;
 public class SignUpController {
 
     private TwitterUser twitterUser;
+    private final XSSHandler xssHandler;
+    private final Tokenizer tokenizer;
 
     @Autowired
-    public SignUpController(TwitterUser twitterUser) {
+    public SignUpController(TwitterUser twitterUser, XSSHandler xssHandler, Tokenizer tokenizer) {
 
         this.twitterUser = twitterUser;
 
+        this.xssHandler = xssHandler;
+        this.tokenizer = tokenizer;
     }
 
     @RequestMapping(value = "/sign_up", method = RequestMethod.POST)
@@ -36,6 +41,10 @@ public class SignUpController {
                                @RequestParam("email") String email,
                                @RequestParam("password") String password,
                                HttpSession session) {
+
+        fullName = xssHandler.makeXSSSafe(fullName);
+        email = xssHandler.makeXSSSafe(email);
+
 
         ModelAndView mv = new ModelAndView("/index");
 
@@ -51,7 +60,10 @@ public class SignUpController {
                 if (!twitterUser.isUserExist(email)) {
                     Integer userID = twitterUser.addUser(fullName, email, password);
                     if (userID != -1) {
-                        session.setAttribute("email", email);
+                        String authToken = tokenizer.getToken();
+                        tokenizer.registerToken(userID, authToken);
+                        session.setAttribute("auth_token", authToken);
+                        session.setAttribute("auth_token", email);
                         session.setAttribute("userID", userID);
                         mv.setViewName("redirect:/home");
                         return mv;

@@ -48,6 +48,29 @@ require(["dojo/_base/xhr", "dojo/on", "dojo/dom", "dojo/query", "dojo/dom-constr
     });
 });
 
+function retweet(tweet_id) {
+    require(["dojo/_base/xhr", "dojo/on", "dojo/dom", "dojo/query", "dojo/NodeList-dom", "dojo/domReady!"],
+            function(xhr, on, dom, query) {
+
+
+                console.log("retweeting " + tweet_id);
+                xhr.post({
+                            url: "/${current_user_id}/retweet",
+                            handleAs: "json",
+                            content: {
+                                tweet_id : tweet_id
+                            },
+                            load: function(response) {
+                                console.log("Successfully retweeted : " + response["success"]);
+                            },
+
+                            error: function() {
+                                console.log("Error sending retweets.");
+                            }
+                        });
+
+            });
+}
 
 require(["dojo/_base/xhr", "dojo/on", "dojo/dom", "dojo/query", "dojo/NodeList-dom", "dojo/domReady!"],
         function(xhr, on, dom, query) {
@@ -438,9 +461,10 @@ function getTrends() {
                                 </div>
                             </div>
                             <div class="tweet-button-container">
+
                                 <div class="tweet-button-sub-container">
                                     <span style="opacity: 0;" class="tweetbox-counter-tipsy"></span>
-                                    <input class="tweet-char-counter"
+                                    <input class="tweet-char-counter tweet-counter"
                                            value="140"
                                            disabled="disabled">
                                     <a href="#" class="tweet-button btn disabled" id="tweet-button">Tweet</a>
